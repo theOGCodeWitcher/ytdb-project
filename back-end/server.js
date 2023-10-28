@@ -18,6 +18,7 @@ const serverConfig = config.serverConfig;
 const logger = config.loggerConfig.logger;
 
 const models = require("./app/models/");
+const { userController } = require("./app/controllers/");
 const { userService } = require("./app/services");
 
 var corsOptions = {
@@ -43,6 +44,7 @@ app.listen(PORT, () => {
 
 app.use(async (req, res, next) => {
   try {
+    await userController.updateChannelsData();
     console.log("Request Method:", req.method);
     console.log("Request URL:", req.originalUrl);
     console.log("Request Body:", req.body);

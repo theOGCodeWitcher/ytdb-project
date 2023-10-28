@@ -21,4 +21,8 @@ module.exports = function (app) {
     endPointConfig.generalEndpoint + "/searchByCriteria",
     userController.searchByCriteria
   );
+  app.get(
+    endPointConfig.generalEndpoint + "/getTrendingChannels",
+    userController.getRandom10Channels
+  );
 };

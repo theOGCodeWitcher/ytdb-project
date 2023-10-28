@@ -2,6 +2,7 @@ const models = require("../../models");
 const { logger } = require("../../config").loggerConfig;
 const { google } = require("googleapis");
 const channelModel = models.channelModel;
+const Cache = models.cacheModel;
 const process = require("process");
 const userService = require("../user-service/user.service");
 const youtube = google.youtube({
@@ -226,5 +227,78 @@ exports.searchByCriteria = async (key, value) => {
     };
   } catch (error) {
     console.error("Error in searchByCriteria:", error);
+  }
+};
+
+exports.getRandomChannels = async () => {
+  const currentTime = Date.now();
+  const apiCallName = "trendingChannels"; // A name to identify this cache
+
+  const cacheEntry = await Cache.findOne({ apiCall: apiCallName });
+
+  if (
+    cacheEntry &&
+    currentTime - cacheEntry.lastCallTimestamp < 24 * 60 * 60 * 1000
+  ) {
+    return cacheEntry.cachedRandomChannels;
+  }
+
+  const channelCount = await channelModel.countDocuments({
+    Rating: { $gt: 3 },
+  });
+
+  if (channelCount < 10) {
+    throw new Error("Not enough channels with a rating > 3 in the collection.");
+  }
+
+  const randomIndices = [];
+  while (randomIndices.length < 10) {
+    const randomIndex = Math.floor(Math.random() * channelCount);
+    if (!randomIndices.includes(randomIndex)) {
+      randomIndices.push(randomIndex);
+    }
+  }
+
+  const randomChannels = await channelModel
+    .find({ Rating: { $gt: 3 } })
+    .limit(10)
+    .skip(randomIndices[0])
+    .exec();
+
+  if (cacheEntry) {
+    cacheEntry.lastCallTimestamp = currentTime;
+    cacheEntry.cachedRandomChannels = randomChannels;
+    await cacheEntry.save();
+  } else {
+    await Cache.create({
+      apiCall: apiCallName,
+      lastCallTimestamp: currentTime,
+      cachedRandomChannels: randomChannels,
+    });
+  }
+
+  return randomChannels;
+};
+
+exports.tryToUpdateChannelsData = async () => {
+  const currentTime = Date.now();
+  const apiCallName = "updateChannelsData";
+
+  const cacheEntry = await Cache.findOne({ apiCall: apiCallName });
+
+  if (
+    !cacheEntry ||
+    currentTime - cacheEntry.lastCallTimestamp >= 24 * 60 * 60 * 1000
+  ) {
+    await userService.updateChannelsData();
+    if (cacheEntry) {
+      cacheEntry.lastCallTimestamp = currentTime;
+      await cacheEntry.save();
+    } else {
+      await Cache.create({
+        apiCall: apiCallName,
+        lastCallTimestamp: currentTime,
+      });
+    }
   }
 };
