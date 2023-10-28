@@ -1,6 +1,6 @@
 import "./App.css";
 import { Navbar } from "./components/Navbar";
-import { HomeBanner } from "./components/homeBanner";
+import { HomeBanner } from "./components/HomeBanner";
 
 function App() {
   return (
