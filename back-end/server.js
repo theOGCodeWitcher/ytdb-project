@@ -34,7 +34,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(auth(configAuth));
 
 app.get("/", function (req, res) {
-  console.log(req.oidc.isAuthenticated());
+  res.send("Server is up!");
 });
 
 app.listen(PORT, () => {
