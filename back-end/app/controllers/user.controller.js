@@ -46,3 +46,21 @@ exports.searchByCriteria = async (req, res) => {
     res.status(500).send("Failed to fetch results");
   }
 };
+
+exports.getRandom10Channels = async (req, res) => {
+  try {
+    const channels = await userService.getRandomChannels();
+    res.status(200).send(channels);
+  } catch (error) {
+    logger.error("Failed to fetch channels:", error);
+    res.status(500).send("Failed to fetch channels");
+  }
+};
+
+exports.updateChannelsData = async (req, res) => {
+  try {
+    await userService.tryToUpdateChannelsData();
+  } catch (error) {
+    logger.error("Failed to fetch result:", error);
+  }
+};
