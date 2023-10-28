@@ -51,10 +51,14 @@ exports.updateChannelsData = async () => {
         channel.TopicCategories = youtubeData.topicDetails.topicCategories;
       }
 
-      channel.Username = youtubeData.snippet.customUrl || null; // Assuming "customUrl" is a field in the API response
-      channel.uploads = parseInt(youtubeData.statistics.videoCount, 10) || 0; // Assuming "videoCount" is a field in the API response
-      channel.Subs = parseInt(youtubeData.statistics.subscriberCount, 10) || 0; // Assuming "subscriberCount" is a field in the API response
-      channel.VideoViews = parseInt(youtubeData.statistics.viewCount, 10) || 0; // Assuming "viewCount" is a field in the API response
+      channel.Username = youtubeData.snippet.customUrl || null;
+      channel.uploads = parseInt(youtubeData.statistics.videoCount, 10) || 0;
+      channel.Subs = parseInt(youtubeData.statistics.subscriberCount, 10) || 0;
+      channel.VideoViews = parseInt(youtubeData.statistics.viewCount, 10) || 0;
+      if (youtubeData.brandingSettings.image !== undefined) {
+        channel.BannerImage =
+          youtubeData.brandingSettings.image.bannerExternalUrl;
+      }
 
       await channel.save();
       console.log("Channel data updated successfully for", channelId, count++);
@@ -163,6 +167,10 @@ exports.getChannelDetailsAndInsertOrUpdate = async (channelId) => {
       existingChannel.uploads = youtubeData.statistics.videoCount;
       existingChannel.Subs = youtubeData.statistics.subscriberCount;
       existingChannel.VideoViews = youtubeData.statistics.viewCount;
+      if (youtubeData.brandingSettings.image !== undefined) {
+        existingChannel.BannerImage =
+          youtubeData.brandingSettings.image.bannerExternalUrl;
+      }
 
       await existingChannel.save();
       console.log(`Channel data updated for ${channelId}`);
@@ -181,7 +189,10 @@ exports.getChannelDetailsAndInsertOrUpdate = async (channelId) => {
         Subs: parseInt(youtubeData.statistics.subscriberCount, 10),
         VideoViews: parseInt(youtubeData.statistics.viewCount, 10),
       });
-
+      if (youtubeData.brandingSettings.image !== undefined) {
+        newChannel.BannerImage =
+          youtubeData.brandingSettings.image.bannerExternalUrl;
+      }
       for (const thumbnailType in youtubeData.snippet.thumbnails) {
         newChannel.Thumbnails.push(
           youtubeData.snippet.thumbnails[thumbnailType].url

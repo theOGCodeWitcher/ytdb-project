@@ -15,6 +15,7 @@ const channelSchema = new mongoose.Schema({
   PublishedAt: Date,
   TopicCategories: [String],
   Rating: String,
+  BannerImage: String,
 });
 
 const Channel = mongoose.model("Channel", channelSchema);
