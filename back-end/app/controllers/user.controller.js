@@ -33,3 +33,16 @@ exports.getChannelById = async (req, res) => {
     res.status(500).send("Failed to fetch results");
   }
 };
+
+exports.searchByCriteria = async (req, res) => {
+  try {
+    const results = await userService.searchByCriteria(
+      req.query.key,
+      req.query.value
+    );
+    res.status(200).send(results);
+  } catch (error) {
+    logger.error("Failed to fetch results:", error);
+    res.status(500).send("Failed to fetch results");
+  }
+};

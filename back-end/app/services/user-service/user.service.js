@@ -205,3 +205,26 @@ exports.getChannelDetailsAndInsertOrUpdate = async (channelId) => {
     );
   }
 };
+exports.searchByCriteria = async (key, value) => {
+  try {
+    const channels = await channelModel.find().exec();
+    const filteredChannels = channels.filter((channel) => {
+      if (Array.isArray(channel[key])) {
+        return channel[key].some((item) =>
+          item.toLowerCase().includes(value.toLowerCase())
+        );
+      } else if (typeof channel[key] === "string") {
+        return channel[key].toLowerCase().includes(value.toLowerCase());
+      }
+      return false;
+    });
+
+    const top10Channels = filteredChannels.slice(0, 10);
+
+    return {
+      channels: top10Channels,
+    };
+  } catch (error) {
+    console.error("Error in searchByCriteria:", error);
+  }
+};

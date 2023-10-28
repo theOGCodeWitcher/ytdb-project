@@ -17,4 +17,8 @@ module.exports = function (app) {
     endPointConfig.generalEndpoint + "/getChannelById",
     userController.getChannelById
   );
+  app.get(
+    endPointConfig.generalEndpoint + "/searchByCriteria",
+    userController.searchByCriteria
+  );
 };
