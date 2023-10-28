@@ -75,8 +75,7 @@ models.mongoose
 
 async function initial() {
   try {
-    const searchResult = await userService.searchYoutube("test");
-    console.log("searchResult:", searchResult);
+    //const searchResult = await userService.testing();
   } catch (err) {
     logger.error("Error searching YouTube", err);
   }
