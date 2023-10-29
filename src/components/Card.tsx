@@ -1,59 +1,75 @@
 import { useEffect, useState } from "react";
 import { RatingComp } from "./Rating";
+import clipDescription, { extractCategories } from "../lib/util";
+import { MdOutlinePeopleOutline } from "react-icons/md";
+import { BiSolidVideoPlus } from "react-icons/bi";
 
 type CardProps = {
-  imgSrc?: string;
-  imgAlt?: string;
-  title?: string;
-  description?: string;
-  Rating?: number;
-  TopicCategories?: string[];
+  data: {
+    Thumbnails?: string[];
+    imgAlt?: string;
+    Title?: string;
+    Description?: string;
+    Rating?: string;
+    TopicCategories?: string[];
+    BannerImage?: string;
+    Subs?: number;
+    uploads?: number;
+    Category?: string;
+  };
 };
 
-export default function Card({
-  imgSrc,
-  imgAlt,
-  title,
-  description,
-  Rating,
-  TopicCategories,
-}: CardProps) {
-  function clipDescription(description: string): string {
-    const index = description.indexOf(".");
-    if (index !== -1) {
-      return description.slice(0, index + 1);
-    }
-    return description;
-  }
-
-  function extractCategories(urls: string[]) {
-    return urls.map((url: string) => {
-      const parts = url.split("/");
-      return parts[parts.length - 1];
-    });
-  }
-
-  const [categories, setcategories] = useState<string[]>();
+export default function Card({ data }: CardProps) {
+  const [categories, setcategories] = useState<string[] | undefined>([]);
   useEffect(() => {
-    if (TopicCategories) {
-      const categories = extractCategories(TopicCategories);
+    if (data.TopicCategories) {
+      const categories = extractCategories(data.TopicCategories);
       setcategories(categories);
+    }
+    if (data.Category) {
+      setcategories((prevVal) => {
+        if (prevVal && data.Category) {
+          return [...prevVal, data.Category];
+        }
+        return prevVal || [];
+      });
+    }
+    if (data.Description) {
+      clipDescription(data.Description);
     }
   }, []);
 
   return (
-    <div className="card w-[18rem] bg-base-100 shadow-xl">
-      {imgSrc && (
-        <figure>
-          <img src={imgSrc} alt={imgAlt || "Image"} />
-        </figure>
-      )}
-      <div className="card-body ">
-        {title && <h2 className="card-title text-base">{title}</h2>}
-        {Rating && <RatingComp Rating={Rating} />}
-        {description && (
+    <div className="card h-[28rem] w-[16rem] md:w-[18rem] md:h-[32rem] bg-base-100 shadow-lg overflow-hidden cursor-pointer ">
+      <div className="relative hover:scale-[1.06] transition">
+        <div
+          className="h-[12rem] bg-center bg-no-repeat brightness-50 "
+          style={{
+            backgroundImage: data.BannerImage
+              ? `url(${data.BannerImage})`
+              : "none",
+          }}
+        ></div>
+        <div className="absolute inset-0 flex items-center justify-center ">
+          {data.Thumbnails && (
+            <figure className="h-[6rem] w-[6rem] rounded-full">
+              <img src={data.Thumbnails[1]} alt={data.imgAlt || "Image"} />
+            </figure>
+          )}
+        </div>
+      </div>
+
+      <div className="card-body p-[0.8rem]  ">
+        {data.Title && <h2 className="card-title text-base">{data.Title}</h2>}
+        {data.Rating && (
+          <div className="flex ">
+            <RatingComp Rating={Number(data.Rating)} />
+            <span className="text-xs mx-2 pt-1">{Number(data.Rating)}</span>
+          </div>
+        )}
+        {data.Description && (
           <p className="text-gray-500 text-xs">
-            {clipDescription(description)}
+            {clipDescription(data.Description)}
           </p>
         )}
         <div className="flex gap-1 flex-wrap">
@@ -63,6 +79,22 @@ export default function Card({
                 {item}
               </div>
             ))}
+        </div>
+        <div className="flex justify-between gap-1 m-2 px-2">
+          {data.Subs && (
+            <div className="flex align-center flex-col gap-1">
+              <MdOutlinePeopleOutline size={20} />
+              <span className="text-xs">Subscribers</span>
+              <span className="text-xs">{data.Subs}</span>
+            </div>
+          )}
+          {data.uploads && (
+            <div className="flex items-center flex-col gap-1 ">
+              <BiSolidVideoPlus size={20} />
+              <span className="text-xs">Uploads</span>
+              <span className="text-xs">{data.uploads}</span>
+            </div>
+          )}
         </div>
       </div>
     </div>
