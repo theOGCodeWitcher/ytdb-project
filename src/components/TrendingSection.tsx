@@ -12,8 +12,6 @@ export const TrendingSection = () => {
     async function loadData() {
       try {
         const result = await fetchTrending();
-        console.log(result);
-
         setData(result);
       } catch (err) {
         setError(err);

@@ -22,7 +22,7 @@ export const cardData = {
   ],
   Title: "The Tonight Show Starring Jimmy Fallon",
   __v: 13,
-  Rating: "0.7",
+  Rating: "3.4",
   TopicCategories: [
     "https://en.wikipedia.org/wiki/Television_program",
     "https://en.wikipedia.org/wiki/Entertainment",
