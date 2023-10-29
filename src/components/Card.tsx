@@ -40,7 +40,7 @@ export default function Card({ data }: CardProps) {
   }, []);
 
   return (
-    <div className="card h-[28rem] w-[16rem] md:w-[18rem] md:h-[32rem] bg-base-100 shadow-lg overflow-hidden cursor-pointer ">
+    <div className="card h-[32rem] w-[16rem] md:w-[18rem] md:h-[32rem] bg-base-100 shadow-lg overflow-hidden cursor-pointer ">
       <div className="relative hover:scale-[1.06] transition">
         <div
           className="h-[12rem] bg-center bg-no-repeat brightness-50 "
@@ -60,7 +60,7 @@ export default function Card({ data }: CardProps) {
       </div>
 
       <div className="card-body p-[0.8rem]  ">
-        {data.Title && <h2 className="card-title text-base">{data.Title}</h2>}
+        {data.Title && <h2 className="card-title text-sm">{data.Title}</h2>}
         {data.Rating && (
           <div className="flex ">
             <RatingComp Rating={Number(data.Rating)} />
@@ -82,7 +82,7 @@ export default function Card({ data }: CardProps) {
         </div>
         <div className="flex justify-between gap-1 m-2 px-2">
           {data.Subs && (
-            <div className="flex align-center flex-col gap-1">
+            <div className="flex align-center  flex-col gap-1">
               <MdOutlinePeopleOutline size={20} />
               <span className="text-xs">Subscribers</span>
               <span className="text-xs">{data.Subs}</span>
