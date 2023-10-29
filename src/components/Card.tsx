@@ -75,7 +75,7 @@ export default function Card({ data }: CardProps) {
         <div className="flex gap-1 flex-wrap">
           {categories &&
             categories.map((item, index) => (
-              <div key={index} className="badge p-2 text-xs">
+              <div key={index} className="badge p-2 text-xs capitalize">
                 {item}
               </div>
             ))}
