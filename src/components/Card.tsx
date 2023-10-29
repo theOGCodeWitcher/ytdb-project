@@ -8,7 +8,7 @@ type CardProps = {
   data: {
     Thumbnails?: string[];
     imgAlt?: string;
-    title?: string;
+    Title?: string;
     Description?: string;
     Rating?: string;
     TopicCategories?: string[];
@@ -40,26 +40,33 @@ export default function Card({ data }: CardProps) {
   }, []);
 
   return (
-    <div className="card w-[18rem] bg-base-100 shadow-xl overflow-hidden cursor-pointer ">
-      <div
-        className="h-[12rem] relative bg-center bg-no-repeat brightness-50 hover:scale-[1.06] transition"
-        style={{
-          backgroundImage: data.BannerImage
-            ? `url(${data.BannerImage})`
-            : "none",
-        }}
-      >
-        <div className="absolute inset-0 flex items-center justify-center    ">
+    <div className="card w-[18rem] h-[32rem] bg-base-100 shadow-lg overflow-hidden cursor-pointer ">
+      <div className="relative hover:scale-[1.06] transition">
+        <div
+          className="h-[12rem] bg-center bg-no-repeat brightness-50 "
+          style={{
+            backgroundImage: data.BannerImage
+              ? `url(${data.BannerImage})`
+              : "none",
+          }}
+        ></div>
+        <div className="absolute inset-0 flex items-center justify-center ">
           {data.Thumbnails && (
-            <figure className="h-[6rem] w-[6rem] rounded-full brightness-200">
+            <figure className="h-[6rem] w-[6rem] rounded-full">
               <img src={data.Thumbnails[1]} alt={data.imgAlt || "Image"} />
             </figure>
           )}
         </div>
       </div>
+
       <div className="card-body p-[0.8rem]  ">
-        {data.title && <h2 className="card-title text-base">{data.title}</h2>}
-        {data.Rating && <RatingComp Rating={Number(data.Rating)} />}
+        {data.Title && <h2 className="card-title text-base">{data.Title}</h2>}
+        {data.Rating && (
+          <div className="flex ">
+            <RatingComp Rating={Number(data.Rating)} />
+            <span className="text-xs mx-2 pt-1">{Number(data.Rating)}</span>
+          </div>
+        )}
         {data.Description && (
           <p className="text-gray-500 text-xs">
             {clipDescription(data.Description)}

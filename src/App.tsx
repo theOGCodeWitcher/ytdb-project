@@ -1,17 +1,14 @@
 import "./App.css";
 import { Navbar } from "./components/Navbar";
 import { HomeBanner } from "./components/HomeBanner";
-import Card from "./components/Card";
-import SectionHeading from "./components/SectionHeading";
-import { cardData } from "./lib/data";
+import { TrendingSection } from "./components/TrendingSection";
 
 function App() {
   return (
     <div className="">
       <Navbar />
       <HomeBanner />
-      <SectionHeading>Trending</SectionHeading>
-      <Card data={cardData} />
+      <TrendingSection />
     </div>
   );
 }
