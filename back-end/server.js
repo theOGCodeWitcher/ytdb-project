@@ -42,6 +42,12 @@ app.listen(PORT, () => {
   logger.info(`Server is running on port ${PORT}.`);
 });
 
+function logMessage() {
+  console.log(`Server is running trying to keep it active!`);
+}
+
+setInterval(logMessage, 14 * 60 * 1000); // 14 minutes in milliseconds
+
 app.use(async (req, res, next) => {
   try {
     await userController.updateChannelsData();
