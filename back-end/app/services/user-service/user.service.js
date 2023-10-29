@@ -255,7 +255,7 @@ exports.getRandomChannels = async () => {
   }
 
   const channelCount = await channelModel.countDocuments({
-    Rating: { $gt: 3 },
+    Rating: { $gt: 0 },
   });
 
   if (channelCount < 10) {
@@ -271,7 +271,7 @@ exports.getRandomChannels = async () => {
   }
 
   const randomChannels = await channelModel
-    .find({ Rating: { $gt: 3 } })
+    .find({ Rating: { $gt: 0 } })
     .limit(10)
     .skip(randomIndices[0])
     .exec();
