@@ -1,9 +1,10 @@
 import "./App.css";
 import { Navbar } from "./components/Navbar";
 import { HomeBanner } from "./components/HomeBanner";
-import Card from "./components/Card";
+// import Card from "./components/Card";
 // import SectionHeading from "./components/SectionHeading";
-import { cardData } from "./data";
+// import { cardData } from "./data";
+
 function App() {
   return (
     <div className="">
