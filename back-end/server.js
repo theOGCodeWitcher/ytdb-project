@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const { auth } = require("express-openid-connect");
 const process = require("process");
+const axios = require("axios");
+
 require("dotenv").config();
 
 const configAuth = {
@@ -46,7 +48,16 @@ function logMessage() {
   console.log(`Server is running trying to keep it active!`);
 }
 
-setInterval(logMessage, 14 * 60 * 1000); // 14 minutes in milliseconds
+setInterval(async () => {
+  logMessage();
+
+  try {
+    await axios.get(`https://ytdb-backend.onrender.com`); // Assuming the server is running locally
+    console.log("Self-triggered request sent.");
+  } catch (error) {
+    console.error("Error sending self-triggered request:", error);
+  }
+}, 14 * 60 * 1000);
 
 app.use(async (req, res, next) => {
   try {
