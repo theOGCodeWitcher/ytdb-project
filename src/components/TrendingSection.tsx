@@ -30,7 +30,7 @@ export const TrendingSection = () => {
   return (
     <div className="mb-16">
       <SectionHeading>Trending</SectionHeading>
-      <div className="flex mx-16 overflow-x-auto p-4 gap-4 no-scrollbar">
+      <div className="flex mx-4 md:mx-16 overflow-x-auto gap-3 md:p-4 md:gap-4 no-scrollbar">
         {data?.map((item, index) => (
           <div key={index} className="">
             <Card data={item} />

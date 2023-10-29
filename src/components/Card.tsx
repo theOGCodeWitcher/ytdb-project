@@ -40,7 +40,7 @@ export default function Card({ data }: CardProps) {
   }, []);
 
   return (
-    <div className="card w-[18rem] h-[32rem] bg-base-100 shadow-lg overflow-hidden cursor-pointer ">
+    <div className="card h-[28rem] w-[16rem] md:w-[18rem] md:h-[32rem] bg-base-100 shadow-lg overflow-hidden cursor-pointer ">
       <div className="relative hover:scale-[1.06] transition">
         <div
           className="h-[12rem] bg-center bg-no-repeat brightness-50 "
