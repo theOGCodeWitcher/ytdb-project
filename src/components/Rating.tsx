@@ -4,7 +4,6 @@ type RatingCompProps = {
 
 export function RatingComp({ Rating }: RatingCompProps) {
   const validRating = Math.max(1, Math.min(5, Rating));
-  console.log(typeof Rating);
   const random = Math.random();
 
   return (

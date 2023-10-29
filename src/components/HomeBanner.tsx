@@ -3,7 +3,7 @@ import bannerImage from "../assets/bannerImage.jpg";
 export const HomeBanner = () => {
   return (
     <section id="banner">
-      <div className=" w-full h-[16rem] md:h-[20rem] flex rounded-lg shadow-lg">
+      <div className=" w-full h-[17rem] md:h-[20rem] flex rounded-lg shadow-lg">
         <div className=" relative  w-full md:w-1/2 flex flex-col  md:gap-4  px-2 md:p-8  ">
           <div
             className="absolute inset-0 bg-bottom bg-contain bg-no-repeat md:hidden "
