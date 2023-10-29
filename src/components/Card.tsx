@@ -1,47 +1,41 @@
 import { useEffect, useState } from "react";
 import { RatingComp } from "./Rating";
-import clipDescription from "../lib/util";
+import clipDescription, { extractCategories } from "../lib/util";
 import { MdOutlinePeopleOutline } from "react-icons/md";
 import { BiSolidVideoPlus } from "react-icons/bi";
 
 type CardProps = {
-  imgSrc?: string;
-  imgAlt?: string;
-  title?: string;
-  description?: string;
-  Rating?: number;
-  TopicCategories?: string[];
-  bannerImage?: string;
-  Subs?: number;
-  uploads?: number;
+  data: {
+    Thumbnails?: string[];
+    imgAlt?: string;
+    title?: string;
+    Description?: string;
+    Rating?: string;
+    TopicCategories?: string[];
+    BannerImage?: string;
+    Subs?: number;
+    uploads?: number;
+    Category?: string;
+  };
 };
 
-export default function Card({
-  imgSrc,
-  imgAlt,
-  title,
-  description,
-  Rating,
-  TopicCategories,
-  bannerImage,
-  Subs,
-  uploads,
-}: CardProps) {
-  function extractCategories(urls: string[]) {
-    return urls.map((url: string) => {
-      const parts = url.split("/");
-      return parts[parts.length - 1];
-    });
-  }
-
-  const [categories, setcategories] = useState<string[]>();
+export default function Card({ data }: CardProps) {
+  const [categories, setcategories] = useState<string[] | undefined>([]);
   useEffect(() => {
-    if (TopicCategories) {
-      const categories = extractCategories(TopicCategories);
+    if (data.TopicCategories) {
+      const categories = extractCategories(data.TopicCategories);
       setcategories(categories);
     }
-    if (description) {
-      clipDescription(description);
+    if (data.Category) {
+      setcategories((prevVal) => {
+        if (prevVal && data.Category) {
+          return [...prevVal, data.Category];
+        }
+        return prevVal || [];
+      });
+    }
+    if (data.Description) {
+      clipDescription(data.Description);
     }
   }, []);
 
@@ -50,23 +44,25 @@ export default function Card({
       <div
         className="h-[12rem] relative bg-center bg-no-repeat brightness-50 hover:scale-[1.06] transition"
         style={{
-          backgroundImage: bannerImage ? `url(${bannerImage})` : "none",
+          backgroundImage: data.BannerImage
+            ? `url(${data.BannerImage})`
+            : "none",
         }}
       >
         <div className="absolute inset-0 flex items-center justify-center    ">
-          {imgSrc && (
+          {data.Thumbnails && (
             <figure className="h-[6rem] w-[6rem] rounded-full brightness-200">
-              <img src={imgSrc} alt={imgAlt || "Image"} />
+              <img src={data.Thumbnails[1]} alt={data.imgAlt || "Image"} />
             </figure>
           )}
         </div>
       </div>
       <div className="card-body p-[0.8rem]  ">
-        {title && <h2 className="card-title text-base">{title}</h2>}
-        {Rating && <RatingComp Rating={Rating} />}
-        {description && (
+        {data.title && <h2 className="card-title text-base">{data.title}</h2>}
+        {data.Rating && <RatingComp Rating={Number(data.Rating)} />}
+        {data.Description && (
           <p className="text-gray-500 text-xs">
-            {clipDescription(description)}
+            {clipDescription(data.Description)}
           </p>
         )}
         <div className="flex gap-1 flex-wrap">
@@ -78,18 +74,18 @@ export default function Card({
             ))}
         </div>
         <div className="flex justify-between gap-1 m-2 px-2">
-          {Subs && (
+          {data.Subs && (
             <div className="flex align-center flex-col gap-1">
               <MdOutlinePeopleOutline size={20} />
               <span className="text-xs">Subscribers</span>
-              <span className="text-xs">{Subs}</span>
+              <span className="text-xs">{data.Subs}</span>
             </div>
           )}
-          {uploads && (
+          {data.uploads && (
             <div className="flex items-center flex-col gap-1 ">
               <BiSolidVideoPlus size={20} />
               <span className="text-xs">Uploads</span>
-              <span className="text-xs">{uploads}</span>
+              <span className="text-xs">{data.uploads}</span>
             </div>
           )}
         </div>

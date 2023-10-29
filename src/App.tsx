@@ -11,17 +11,7 @@ function App() {
       <Navbar />
       <HomeBanner />
       <SectionHeading>Trending</SectionHeading>
-      <Card
-        imgSrc={cardData.Thumbnails ? cardData.Thumbnails[0] : undefined}
-        imgAlt={cardData.Title}
-        title={cardData.Title}
-        description={cardData.Description}
-        Rating={Number(cardData.Rating)}
-        TopicCategories={cardData.TopicCategories}
-        bannerImage={cardData.BannerImage}
-        Subs={cardData.Subs}
-        uploads={cardData.uploads}
-      />
+      <Card data={cardData} />
     </div>
   );
 }

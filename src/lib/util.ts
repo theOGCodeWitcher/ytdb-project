@@ -5,3 +5,10 @@ export default function clipDescription(description: string): string {
   }
   return description;
 }
+
+export function extractCategories(urls: string[]) {
+  return urls.map((url: string) => {
+    const parts = url.split("/");
+    return parts[parts.length - 1];
+  });
+}
