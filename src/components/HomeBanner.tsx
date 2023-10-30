@@ -27,7 +27,7 @@ export const HomeBanner = () => {
           <img
             src={bannerImage}
             alt="banner-image "
-            className="w-full h-full object-contain hover:scale-[1.03] transition "
+            className="w-full h-full object-contain transition "
           />
         </div>
       </div>

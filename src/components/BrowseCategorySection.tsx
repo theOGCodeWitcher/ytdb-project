@@ -25,19 +25,36 @@ const categoryImages = [
   travel,
 ];
 
+const categoryNames = [
+  "Animals",
+  "Comedy",
+  "Education",
+  "Recreation",
+  "Games",
+  "Music",
+  "News",
+  "Sports",
+  "Tech",
+  "Travel",
+];
+
 export const BrowseCategorySection = () => {
   return (
     <>
       <div className="flex flex-col mx-2 px-2 md:mx-8 md:px-8 items-center">
-        <div className="flex justify-start ">
+        <div className="flex justify-start mb-2">
           <SectionHeading>Explore Categories</SectionHeading>
-          <div className="pt-3">
-            <MdOutlineTravelExplore size={36} />
+          <div className="md:pt-5">
+            <MdOutlineTravelExplore size={30} />
           </div>
         </div>
-        <div className="flex gap-4">
+        <div className="flex gap-2 md:gap-4 mb-2 pb-2 flex-wrap">
           {categoryImages.map((imageUrl, index) => (
-            <CategoryTile key={index} imageUrl={imageUrl} />
+            <CategoryTile
+              key={index}
+              imageUrl={imageUrl}
+              name={categoryNames[index]}
+            />
           ))}
         </div>
       </div>

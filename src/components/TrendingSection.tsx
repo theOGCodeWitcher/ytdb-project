@@ -28,13 +28,13 @@ export const TrendingSection = () => {
 
   return (
     <div className="mb-4 pb-8 shadow-lg">
-      <div className="flex mx-2 px-2 md:mx-8 md:px-8 items-center">
+      <div className="flex mx-2 px-2 py-2 my-2 md:mx-8 md:px-8 items-center">
         <SectionHeading>Trending</SectionHeading>
-        <div className="pt-3">
-          <FaFireAlt size={32} />
+        <div className="md:pt-3">
+          <FaFireAlt size={26} />
         </div>
       </div>
-      <div className="flex mx-2 px-2  pb-8 md:mx-16 overflow-x-auto gap-3 md:p-4 md:gap-8 no-scrollbar">
+      <div className="flex mx-2 px-2 pb-2 md:pb-8 md:mx-16 overflow-x-auto gap-3 md:p-4 md:gap-8 no-scrollbar">
         {data?.map((item, index) => (
           <div key={index} className="">
             <Card data={item} />
