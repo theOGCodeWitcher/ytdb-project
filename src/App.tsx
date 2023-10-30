@@ -1,17 +1,19 @@
 import "./App.css";
+
+import { Route, Routes } from "react-router-dom";
+import Channel from "./pages/Channel";
+import Homepage from "./pages/Homepage";
 import { Navbar } from "./components/Navbar";
-import { HomeBanner } from "./components/HomeBanner";
-import { TrendingSection } from "./components/TrendingSection";
-import { BrowseCategorySection } from "./components/BrowseCategorySection";
 
 function App() {
   return (
-    <div className="">
+    <>
       <Navbar />
-      <HomeBanner />
-      <TrendingSection />
-      <BrowseCategorySection />
-    </div>
+      <Routes>
+        <Route path="/" element={<Homepage />} />
+        <Route path="/channel/:channelId" element={<Channel />} />
+      </Routes>
+    </>
   );
 }
 

@@ -121,6 +121,11 @@
     "@nodelib/fs.scandir" "2.1.5"
     "fastq" "^1.6.0"
 
+"@remix-run/router@1.10.0":
+  "integrity" "sha512-Lm+fYpMfZoEucJ7cMxgt4dYt8jLfbpwRCzAjm9UgSLOkmlqo9gupxt6YX3DY0Fk155NT9l17d/ydi+964uS9Lw=="
+  "resolved" "https://registry.npmjs.org/@remix-run/router/-/router-1.10.0.tgz"
+  "version" "1.10.0"
+
 "@swc/core-darwin-arm64@1.3.95":
   "integrity" "sha512-VAuBAP3MNetO/yBIBzvorUXq7lUBwhfpJxYViSxyluMwtoQDhE/XWN598TWMwMl1ZuImb56d7eUsuFdjgY7pJw=="
   "resolved" "https://registry.npmjs.org/@swc/core-darwin-arm64/-/core-darwin-arm64-1.3.95.tgz"
@@ -1286,7 +1291,7 @@
   "resolved" "https://registry.npmjs.org/queue-microtask/-/queue-microtask-1.2.3.tgz"
   "version" "1.2.3"
 
-"react-dom@^18.2.0", "react-dom@>=18.0.0":
+"react-dom@^18.2.0", "react-dom@>=16.8", "react-dom@>=18.0.0":
   "integrity" "sha512-6IMTriUmvsjHUjNtEDudZfuDQUoWXVxKHhlEGSk81n4YFS+r/Kl99wXiwlVXtPBtJenozv2P+hxDsw9eA7Xo6g=="
   "resolved" "https://registry.npmjs.org/react-dom/-/react-dom-18.2.0.tgz"
   "version" "18.2.0"
@@ -1299,12 +1304,27 @@
   "resolved" "https://registry.npmjs.org/react-icons/-/react-icons-4.11.0.tgz"
   "version" "4.11.0"
 
+"react-router-dom@^6.17.0":
+  "integrity" "sha512-qWHkkbXQX+6li0COUUPKAUkxjNNqPJuiBd27dVwQGDNsuFBdMbrS6UZ0CLYc4CsbdLYTckn4oB4tGDuPZpPhaQ=="
+  "resolved" "https://registry.npmjs.org/react-router-dom/-/react-router-dom-6.17.0.tgz"
+  "version" "6.17.0"
+  dependencies:
+    "@remix-run/router" "1.10.0"
+    "react-router" "6.17.0"
+
+"react-router@6.17.0":
+  "integrity" "sha512-YJR3OTJzi3zhqeJYADHANCGPUu9J+6fT5GLv82UWRGSxu6oJYCKVmxUcaBQuGm9udpWmPsvpme/CdHumqgsoaA=="
+  "resolved" "https://registry.npmjs.org/react-router/-/react-router-6.17.0.tgz"
+  "version" "6.17.0"
+  dependencies:
+    "@remix-run/router" "1.10.0"
+
 "react-simple-star-rating@^5.1.7":
   "integrity" "sha512-NTFkW8W3uwvI82Fv7JW5i7gmDjEZKxJmj+Z9vn+BjYIXT6ILdnU9qnSUP2cWrWN/WAUlue81f9SgM4CQcenltQ=="
   "resolved" "https://registry.npmjs.org/react-simple-star-rating/-/react-simple-star-rating-5.1.7.tgz"
   "version" "5.1.7"
 
-"react@*", "react@^18.2.0", "react@>=18.0.0":
+"react@*", "react@^18.2.0", "react@>=16.8", "react@>=18.0.0":
   "integrity" "sha512-/3IjMdb2L9QbBdWiW5e3P2/npwMBaU9mHCSCUzNln0ZCYbcfTsGbTJrU/kGemdH2IWmB2ioZ+zkxtmq6g09fGQ=="
   "resolved" "https://registry.npmjs.org/react/-/react-18.2.0.tgz"
   "version" "18.2.0"

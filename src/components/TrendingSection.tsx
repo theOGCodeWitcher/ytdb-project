@@ -1,7 +1,7 @@
 import SectionHeading from "./SectionHeading";
 import CardCollection from "./CardCollection";
 import { useEffect, useState } from "react";
-import { fetchTrending } from "../api/homePage";
+import { fetchTrending } from "../api/homePageApi";
 import { ChannelCollectionResponse } from "../types/type";
 import { FaFireAlt } from "react-icons/fa";
 
@@ -21,7 +21,6 @@ export const TrendingSection = () => {
 
     loadData();
   }, []);
-  console.log(data);
 
   if (error) {
     return <div>Error loading trending data.</div>;

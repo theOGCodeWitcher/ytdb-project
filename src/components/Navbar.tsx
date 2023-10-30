@@ -1,11 +1,14 @@
 import avatar from "../assets/profile.jpg";
+import { Link } from "react-router-dom";
 
 export const Navbar = () => {
   return (
     <>
       <div className="navbar bg-base-100  shadow-md px-3">
         <div className="flex-1">
-          <a className="btn btn-ghost normal-case text-xl">YTDB</a>
+          <Link to="/">
+            <a className="btn btn-ghost normal-case text-xl">YTDB</a>
+          </Link>
         </div>
         <div className="flex-none gap-2">
           <div className="form-control">

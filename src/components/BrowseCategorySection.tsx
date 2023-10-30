@@ -11,7 +11,7 @@ import news from "../assets/category/news.jpg";
 import sports from "../assets/category/sports.jpg";
 import tech from "../assets/category/tech.jpg";
 import travel from "../assets/category/travel.jpg";
-import { fetchAccToCategory } from "../api/homePage";
+import { fetchAccToCategory } from "../api/homePageApi";
 import { ChannelCollectionResponse } from "../types/type";
 import { useEffect, useState } from "react";
 import CardCollection from "./CardCollection";
