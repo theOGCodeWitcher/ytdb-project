@@ -233,9 +233,7 @@ exports.searchByCriteria = async (key, value) => {
 
     const top10Channels = filteredChannels.slice(0, 10);
 
-    return {
-      channels: top10Channels,
-    };
+    return top10Channels;
   } catch (error) {
     console.error("Error in searchByCriteria:", error);
   }
