@@ -1,13 +1,15 @@
+const MAX_LENGTH = 200; // Set your desired maximum length here
+
 export default function clipDescription(description: string): string {
-  const index = description.indexOf(".");
-  if (index !== -1) {
-    return description.slice(0, index + 1);
+  if (description.length > MAX_LENGTH) {
+    return description.substring(0, MAX_LENGTH - 3) + "...";
   }
   return description;
 }
 
 export function extractCategories(urls: string[]) {
   const results: string[] = [];
+  const maxCategories = 5;
 
   urls.forEach((url: string) => {
     const parts = url.split("/");
@@ -19,7 +21,11 @@ export function extractCategories(urls: string[]) {
     } else {
       results.push(lastPart);
     }
+
+    if (results.length >= maxCategories) {
+      return results.slice(0, maxCategories);
+    }
   });
 
-  return results;
+  return results.slice(0, maxCategories);
 }
