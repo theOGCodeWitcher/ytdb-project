@@ -3,6 +3,7 @@ import Card from "./Card";
 import { useEffect, useState } from "react";
 import fetchTrending from "../api/homePage";
 import { TrendingResponse } from "../types/type";
+import { BiTrendingUp } from "react-icons/bi";
 
 export const TrendingSection = () => {
   const [data, setData] = useState<TrendingResponse>();
@@ -26,9 +27,14 @@ export const TrendingSection = () => {
   }
 
   return (
-    <div className="mb-16">
-      <SectionHeading>Trending</SectionHeading>
-      <div className="flex mx-2 px-2 pb-8 md:mx-16 overflow-x-auto gap-3 md:p-4 md:gap-4 no-scrollbar">
+    <div className="mb-4 pb-4 shadow-lg">
+      <div className="flex mx-2 px-2 md:mx-8 md:px-8 items-center">
+        <SectionHeading>Trending</SectionHeading>
+        <div className="pt-3">
+          <BiTrendingUp size={40} />
+        </div>
+      </div>
+      <div className="flex mx-2 px-2  pb-8 md:mx-16 overflow-x-auto gap-3 md:p-4 md:gap-4 no-scrollbar">
         {data?.map((item, index) => (
           <div key={index} className="">
             <Card data={item} />
