@@ -27,7 +27,7 @@ export const TrendingSection = () => {
   }
 
   return (
-    <div className="mb-4 pb-4 shadow-lg">
+    <div className="mb-4 pb-8 shadow-lg">
       <div className="flex mx-2 px-2 md:mx-8 md:px-8 items-center">
         <SectionHeading>Trending</SectionHeading>
         <div className="pt-3">
