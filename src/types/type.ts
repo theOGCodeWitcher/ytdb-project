@@ -1,4 +1,4 @@
-export type TrendingItem = {
+export type ChannelItem = {
   _id?: string;
   Rank?: string;
   Grade?: string;
@@ -18,4 +18,4 @@ export type TrendingItem = {
   BannerImage?: string;
 };
 
-export type TrendingResponse = TrendingItem[];
+export type ChannelCollectionResponse = ChannelItem[];

@@ -21,6 +21,7 @@ type CardProps = {
 
 export default function Card({ data }: CardProps) {
   const [categories, setcategories] = useState<string[] | undefined>([]);
+
   useEffect(() => {
     if (data.TopicCategories) {
       const categories = extractCategories(data.TopicCategories);
@@ -42,18 +43,24 @@ export default function Card({ data }: CardProps) {
   return (
     <div className="card h-[32rem] w-[16rem] md:w-[18rem] md:h-[32rem] bg-base-100 shadow-2xl overflow-hidden cursor-pointer hover:scale-[1.04]   transition">
       <div className="relative  transition">
-        <div
-          className="h-[12rem] bg-center bg-no-repeat brightness-50 "
-          style={{
-            backgroundImage: data.BannerImage
-              ? `url(${data.BannerImage})`
-              : "none",
-          }}
-        ></div>
+        {data.BannerImage && (
+          <div
+            className="h-[12rem] bg-center bg-no-repeat brightness-50 "
+            style={{
+              backgroundImage: data.BannerImage
+                ? `url(${data.BannerImage || ""})`
+                : "none",
+            }}
+          ></div>
+        )}
         <div className="absolute inset-0 flex items-center justify-center ">
           {data.Thumbnails && (
             <figure className="h-[6rem] w-[6rem] rounded-full">
-              <img src={data.Thumbnails[1]} alt={data.imgAlt || "Image"} />
+              <img
+                src={data.Thumbnails[1] || ""}
+                alt={data.imgAlt || "Image"}
+                loading="lazy"
+              />
             </figure>
           )}
         </div>

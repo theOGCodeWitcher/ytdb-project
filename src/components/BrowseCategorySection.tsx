@@ -11,6 +11,10 @@ import news from "../assets/category/news.jpg";
 import sports from "../assets/category/sports.jpg";
 import tech from "../assets/category/tech.jpg";
 import travel from "../assets/category/travel.jpg";
+import { fetchAccToCategory } from "../api/homePage";
+import { ChannelCollectionResponse } from "../types/type";
+import { useEffect, useState } from "react";
+import CardCollection from "./CardCollection";
 
 const categoryImages = [
   animal,
@@ -26,8 +30,8 @@ const categoryImages = [
 ];
 
 const categoryNames = [
-  "Animals",
   "Comedy",
+  "Animals",
   "Education",
   "Recreation",
   "Games",
@@ -39,6 +43,38 @@ const categoryNames = [
 ];
 
 export const BrowseCategorySection = () => {
+  const [selectedCategoryResponse, setselectedCategoryResponse] =
+    useState<ChannelCollectionResponse>([]);
+
+  const [selectedCategory, setselectedCategory] = useState<string>("");
+
+  const handleTileClick = async (categoryName: string) => {
+    try {
+      if (categoryName == "recreation") {
+        categoryName = "entertainment";
+      }
+      setselectedCategory(categoryName);
+      const response = await fetchAccToCategory(categoryName);
+      setselectedCategoryResponse(response);
+    } catch (error) {
+      console.error("Error fetching data for category:", categoryName, error);
+    }
+  };
+
+  useEffect(() => {
+    async function fetchInitial() {
+      try {
+        setselectedCategory("comedy");
+        const response = await fetchAccToCategory("comedy");
+        setselectedCategoryResponse(response);
+      } catch (error) {
+        console.error("Error fetching data for category:", error);
+      }
+    }
+
+    fetchInitial();
+  }, []);
+
   return (
     <>
       <div className="flex flex-col mx-2 px-2 md:mx-8 md:px-8 items-center">
@@ -48,16 +84,21 @@ export const BrowseCategorySection = () => {
             <MdOutlineTravelExplore size={30} />
           </div>
         </div>
-        <div className="flex gap-2 md:gap-4 mb-2 pb-2 flex-wrap">
+        <div className="flex gap-2 px-3 md:gap-4 mb-2 pb-2 flex-wrap">
           {categoryImages.map((imageUrl, index) => (
             <CategoryTile
               key={index}
               imageUrl={imageUrl}
+              selectedCategory={selectedCategory}
               name={categoryNames[index]}
+              onClick={() =>
+                handleTileClick(categoryNames[index].toLowerCase())
+              }
             />
           ))}
         </div>
       </div>
+      <CardCollection data={selectedCategoryResponse} />
     </>
   );
 };
