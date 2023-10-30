@@ -3,7 +3,7 @@ import Card from "./Card";
 import { useEffect, useState } from "react";
 import fetchTrending from "../api/homePage";
 import { TrendingResponse } from "../types/type";
-import { BiTrendingUp } from "react-icons/bi";
+import { FaFireAlt } from "react-icons/fa";
 
 export const TrendingSection = () => {
   const [data, setData] = useState<TrendingResponse>();
@@ -31,10 +31,10 @@ export const TrendingSection = () => {
       <div className="flex mx-2 px-2 md:mx-8 md:px-8 items-center">
         <SectionHeading>Trending</SectionHeading>
         <div className="pt-3">
-          <BiTrendingUp size={40} />
+          <FaFireAlt size={32} />
         </div>
       </div>
-      <div className="flex mx-2 px-2  pb-8 md:mx-16 overflow-x-auto gap-3 md:p-4 md:gap-4 no-scrollbar">
+      <div className="flex mx-2 px-2  pb-8 md:mx-16 overflow-x-auto gap-3 md:p-4 md:gap-8 no-scrollbar">
         {data?.map((item, index) => (
           <div key={index} className="">
             <Card data={item} />
