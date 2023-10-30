@@ -71,38 +71,81 @@ exports.updateChannelsData = async () => {
   }
 };
 
+// exports.calculateAndUpdateRatings = async () => {
+//   try {
+//     const channels = await channelModel.find().exec();
+
+//     let totalSubscribers = 252000000;
+//     let totalAgeInDays = 6437;
+//     let totalViews = 236294326678;
+//     let totalVideos = 19727;
+
+//     for (const channel of channels) {
+//       const subscribersRating = (channel.Subs / totalSubscribers) * 5;
+//       const currentTimestamp = new Date();
+//       const channelTimestamp = new Date(channel.PublishedAt);
+//       const ageInMilliseconds = currentTimestamp - channelTimestamp;
+//       const ageInDays = ageInMilliseconds / (1000 * 60 * 60 * 24); // Convert to days
+
+//       const ageRating =
+//         totalAgeInDays === 0 ? 0 : (ageInDays / totalAgeInDays) * 5;
+//       const viewsRating = (channel.VideoViews / totalViews) * 5;
+//       const videosRating =
+//         totalVideos === 0 ? 0 : (channel.uploads / totalVideos) * 5;
+
+//       const s1 = subscribersRating / ageRating;
+//       const s2 = viewsRating / videosRating;
+
+//       const overallRating = ((s1 + s2) / 2) * 5;
+//       if (overallRating > 5) {
+//         channel.Rating = 5;
+//       } else {
+//         channel.Rating = parseFloat(overallRating.toFixed(1));
+//       }
+
+//       await channel.save();
+//     }
+
+//     console.log("Ratings updated successfully.");
+//   } catch (error) {
+//     console.error("Error updating ratings:", error);
+//   }
+// };
 exports.calculateAndUpdateRatings = async () => {
   try {
     const channels = await channelModel.find().exec();
 
-    let totalSubscribers = 252000000;
-    let totalAgeInDays = 6437;
-    let totalViews = 236294326678;
-    let totalVideos = 19727;
+    const totalSubscribers = 252000000;
+    const totalAgeInDays = 6437;
+    const totalViews = 236294326678;
+    const totalVideos = 19727;
 
     for (const channel of channels) {
-      const subscribersRating = (channel.Subs / totalSubscribers) * 5;
-      const currentTimestamp = new Date();
-      const channelTimestamp = new Date(channel.PublishedAt);
-      const ageInMilliseconds = currentTimestamp - channelTimestamp;
-      const ageInDays = ageInMilliseconds / (1000 * 60 * 60 * 24); // Convert to days
+      const subscribersWeight = 0.3; // Weight for subscribers
+      const ageWeight = 0.2; // Weight for channel age
+      const viewsWeight = 0.4; // Weight for video views
+      const videosWeight = 0.1; // Weight for number of videos
 
+      const subscribersRating = (channel.Subs / totalSubscribers) * 5;
+      const ageInDays = calculateAgeInDays(channel.PublishedAt, new Date());
       const ageRating =
         totalAgeInDays === 0 ? 0 : (ageInDays / totalAgeInDays) * 5;
       const viewsRating = (channel.VideoViews / totalViews) * 5;
       const videosRating =
         totalVideos === 0 ? 0 : (channel.uploads / totalVideos) * 5;
 
-      const s1 = subscribersRating / ageRating;
-      const s2 = viewsRating / videosRating;
+      const overallRating = calculateWeightedRating(
+        subscribersRating,
+        ageRating,
+        viewsRating,
+        videosRating,
+        subscribersWeight,
+        ageWeight,
+        viewsWeight,
+        videosWeight
+      );
 
-      const overallRating = ((s1 + s2) / 2) * 5;
-      if (overallRating > 5) {
-        channel.Rating = 5;
-      } else {
-        channel.Rating = parseFloat(overallRating.toFixed(1));
-      }
-
+      channel.Rating = parseFloat(overallRating.toFixed(1));
       await channel.save();
     }
 
@@ -111,6 +154,30 @@ exports.calculateAndUpdateRatings = async () => {
     console.error("Error updating ratings:", error);
   }
 };
+
+function calculateAgeInDays(publishedAt, currentDate) {
+  const ageInMilliseconds = currentDate - publishedAt;
+  return ageInMilliseconds / (1000 * 60 * 60 * 24); // Convert to days
+}
+
+function calculateWeightedRating(
+  subscribersRating,
+  ageRating,
+  viewsRating,
+  videosRating,
+  subscribersWeight,
+  ageWeight,
+  viewsWeight,
+  videosWeight
+) {
+  const weightedSum =
+    subscribersRating * subscribersWeight +
+    ageRating * ageWeight +
+    viewsRating * viewsWeight +
+    videosRating * videosWeight;
+  const overallRating = weightedSum * 5;
+  return Math.min(5, overallRating); // Cap the rating at 5
+}
 
 exports.search = async (query) => {
   try {
