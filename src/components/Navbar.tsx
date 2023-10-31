@@ -3,6 +3,7 @@ import avatar from "../assets/profile.jpg";
 import { Link } from "react-router-dom";
 import { search } from "../api/homePageApi";
 import { ChannelItem } from "../types/type";
+import placeholder from "../assets/placeholder.jpg";
 
 export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -65,7 +66,7 @@ export const Navbar = () => {
             <div className="form-control pt-2 relative">
               <input
                 type="text"
-                placeholder="Search"
+                placeholder="Search Channel"
                 className="input input-bordered md:w-[22rem] w-[12rem] h-9"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -86,8 +87,26 @@ export const Navbar = () => {
                         to={`/channel/${result.ChannelId}`}
                         className=""
                         onClick={() => setIsDropdownOpen(false)}
+                        key={result._id + "ddwd"}
                       >
-                        {result.Title}
+                        <div className="flex gap-4">
+                          <div className="flex items-center justify-center  ">
+                            {result?.Thumbnails && (
+                              <figure className="h-[2rem] w-[2rem] ">
+                                <img
+                                  src={result?.Thumbnails[1] || placeholder}
+                                  alt={""}
+                                  loading="lazy"
+                                  className=""
+                                  key={result._id + "fnjd"}
+                                />
+                              </figure>
+                            )}
+                          </div>
+                          <span className="flex items-center">
+                            {result.Title}
+                          </span>
+                        </div>
                       </Link>
                     </li>
                   ))}
@@ -108,16 +127,16 @@ export const Navbar = () => {
               tabIndex={0}
               className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
             >
-              <li>
+              <li key={1}>
                 <a className="justify-between">
                   Profile
                   <span className="badge">New</span>
                 </a>
               </li>
-              <li>
+              <li key={2}>
                 <a>Settings</a>
               </li>
-              <li>
+              <li key={3}>
                 <a>Logout</a>
               </li>
             </ul>

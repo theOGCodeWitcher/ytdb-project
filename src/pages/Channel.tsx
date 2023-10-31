@@ -58,6 +58,7 @@ export default function Channel() {
             <img
               src={channelData?.BannerImage}
               loading="lazy"
+              key={channelData?.ChannelId}
               className="rounded-sm"
             ></img>
             <div className="flex flex-col gap-2 my-2 px-2">
@@ -84,23 +85,38 @@ export default function Channel() {
                   {channelData?.Title}
                 </h2>
               )}
-              <button className="btn btn-secondary btn-outline btn-sm md:btn-base">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-6 w-6"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                  />
-                </svg>
-                Add to Favourite
-              </button>
+              <div className="flex items-center justify-center  ">
+                {channelData?.Thumbnails && (
+                  <figure className="h-[6rem] w-[6rem] ">
+                    <img
+                      src={channelData?.Thumbnails[1] || ""}
+                      alt={"Thumbnail"}
+                      loading="lazy"
+                      className="rounded-full"
+                      key={channelData?.ChannelId}
+                    />
+                  </figure>
+                )}
+              </div>
+              <div className="flex items-center">
+                <button className="btn btn-secondary btn-outline  btn-sm md:btn-base">
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="h-6 w-6"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
+                    />
+                  </svg>
+                  Add to Favourite
+                </button>
+              </div>
             </div>
             {channelData?.Rating && (
               <div className="flex px-2 mx-2 ">
