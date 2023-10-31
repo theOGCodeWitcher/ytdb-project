@@ -113,6 +113,36 @@ exports.calculateAndUpdateRatings = async () => {
     console.error("Error updating ratings:", error);
   }
 };
+
+function calculateOverallRating(subsAge, viewsVideos, viewsAge, subsVideos) {
+  const overallRating =
+    ((subsAge + viewsVideos + viewsAge + subsVideos) / 4) * 5;
+  return Math.min(5, overallRating); // Cap the rating at 5
+}
+
+function calculateAgeInDays(publishedAt, currentDate) {
+  const ageInMilliseconds = currentDate - publishedAt;
+  return ageInMilliseconds / (1000 * 60 * 60 * 24); // Convert to days
+}
+function calculateWeightedRating(
+  subscribersRating,
+  ageRating,
+  viewsRating,
+  videosRating,
+  subscribersWeight,
+  ageWeight,
+  viewsWeight,
+  videosWeight
+) {
+  const weightedSum =
+    subscribersRating * subscribersWeight +
+    ageRating * ageWeight +
+    viewsRating * viewsWeight +
+    videosRating * videosWeight;
+  const overallRating = weightedSum * 5;
+  return Math.min(5, overallRating); // Cap the rating at 5
+}
+
 async function createChannel(channelData) {
   try {
     const newChannel = new channelModel({
