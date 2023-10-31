@@ -52,7 +52,7 @@ setInterval(async () => {
   logMessage();
 
   try {
-    await axios.get(`https://ytdb-backend.onrender.com`); // Assuming the server is running locally
+    await axios.get(`https://ytdb-backend.onrender.com`);
     console.log("Self-triggered request sent.");
   } catch (error) {
     console.error("Error sending self-triggered request:", error);
@@ -94,7 +94,7 @@ models.mongoose
 
 async function initial() {
   try {
-    //const searchResult = await userService.testing();
+    //const searchResult = await userService.calculateAndUpdateRatings();
   } catch (err) {
     logger.error("Error searching YouTube", err);
   }

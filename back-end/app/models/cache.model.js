@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const cacheSchema = new mongoose.Schema({
   apiCall: String,
   lastCallTimestamp: Date,
-  cachedRandomChannels: Array,
+  cachedData: Array,
 });
 
 const Cache = mongoose.model("Cache", cacheSchema);

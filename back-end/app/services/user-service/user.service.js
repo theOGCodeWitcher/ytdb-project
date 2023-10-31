@@ -70,45 +70,38 @@ exports.updateChannelsData = async () => {
     console.error("Error updating channels data:", error);
   }
 };
-
 exports.calculateAndUpdateRatings = async () => {
   try {
     const channels = await channelModel.find().exec();
 
-    const maxMetrics = await channelModel
-      .findOne()
-      .sort({
-        $max: {
-          subsAge: "$Subs" / { $divide: [new Date(), "$PublishedAt"] },
-          viewsVideos: "$VideoViews" / "$uploads",
-          viewsAge: "$VideoViews" / { $divide: [new Date(), "$PublishedAt"] },
-          subsVideos: "$Subs" / "$uploads",
-        },
-      })
-      .exec();
+    let totalSubscribers = 252000000;
+    let totalAgeInDays = 6437;
+    let totalViews = 236294326678;
+    let totalVideos = 19727;
 
     for (const channel of channels) {
-      const subsAgeMetric =
-        channel.Subs / calculateAgeInDays(channel.PublishedAt, new Date());
-      const viewsVideosMetric = channel.VideoViews / channel.uploads;
-      const viewsAgeMetric =
-        channel.VideoViews /
-        calculateAgeInDays(channel.PublishedAt, new Date());
-      const subsVideosMetric = channel.Subs / channel.uploads;
+      const subscribersRating = (channel.Subs / totalSubscribers) * 5;
+      const currentTimestamp = new Date();
+      const channelTimestamp = new Date(channel.PublishedAt);
+      const ageInMilliseconds = currentTimestamp - channelTimestamp;
+      const ageInDays = ageInMilliseconds / (1000 * 60 * 60 * 24); // Convert to days
 
-      const normalizedSubsAge = subsAgeMetric / maxMetrics.subsAge;
-      const normalizedViewsVideos = viewsVideosMetric / maxMetrics.viewsVideos;
-      const normalizedViewsAge = viewsAgeMetric / maxMetrics.viewsAge;
-      const normalizedSubsVideos = subsVideosMetric / maxMetrics.subsVideos;
+      const ageRating =
+        totalAgeInDays === 0 ? 0 : (ageInDays / totalAgeInDays) * 5;
+      const viewsRating = (channel.VideoViews / totalViews) * 5;
+      const videosRating =
+        totalVideos === 0 ? 0 : (channel.uploads / totalVideos) * 5;
 
-      const overallRating = calculateOverallRating(
-        normalizedSubsAge,
-        normalizedViewsVideos,
-        normalizedViewsAge,
-        normalizedSubsVideos
-      );
+      const s1 = subscribersRating / ageRating;
+      const s2 = viewsRating / videosRating;
 
-      channel.Rating = parseFloat(overallRating.toFixed(1));
+      const overallRating = ((s1 + s2) / 2) * 5;
+      if (overallRating > 5) {
+        channel.Rating = 5;
+      } else {
+        channel.Rating = parseFloat(overallRating.toFixed(1));
+      }
+
       await channel.save();
     }
 
@@ -118,47 +111,46 @@ exports.calculateAndUpdateRatings = async () => {
   }
 };
 
-function calculateOverallRating(subsAge, viewsVideos, viewsAge, subsVideos) {
-  const overallRating =
-    ((subsAge + viewsVideos + viewsAge + subsVideos) / 4) * 5;
-  return Math.min(5, overallRating); // Cap the rating at 5
-}
-
-function calculateAgeInDays(publishedAt, currentDate) {
-  const ageInMilliseconds = currentDate - publishedAt;
-  return ageInMilliseconds / (1000 * 60 * 60 * 24); // Convert to days
-}
-
-exports.search = async (query) => {
+async function createChannel(channelData) {
   try {
-    const response = await youtube.search.list({
-      part: "snippet",
-      q: query,
-      maxResults: 10,
-      type: "channel",
+    const newChannel = new channelModel({
+      ChannelId: channelData.channelId,
+      Title: channelData.title,
+      Description: channelData.description,
+      Thumbnails: [],
+      PublishedAt: new Date(channelData.publishedAt),
+      TopicCategories: [],
+      Username: channelData.customUrl || null,
+      uploads: parseInt(channelData.videoCount, 10),
+      Subs: parseInt(channelData.subscriberCount, 10),
+      VideoViews: parseInt(channelData.viewCount, 10),
     });
 
-    const channelResults = response.data.items;
+    if (channelData.brandingSettings.image !== undefined) {
+      newChannel.BannerImage =
+        channelData.brandingSettings.image.bannerExternalUrl;
+    }
 
-    const channels = channelResults.map((result) => {
-      const channelId = result.id.channelId;
-      const title = result.snippet.title;
-      const thumbnail = result.snippet.thumbnails.default.url;
-      const channelURL = `https://www.youtube.com/channel/${channelId}`;
+    for (const thumbnailType in channelData.thumbnails) {
+      newChannel.Thumbnails.push(channelData.thumbnails[thumbnailType].url);
+    }
 
-      return {
-        id: channelId,
-        title: title,
-        url: channelURL,
-        thumbnail: thumbnail,
-      };
-    });
+    if (channelData.topicDetails !== undefined) {
+      for (const tType in channelData.topicDetails.topicCategories) {
+        newChannel.TopicCategories.push(
+          channelData.topicDetails.topicCategories[tType]
+        );
+      }
+    }
 
-    return channels;
+    await channelModel.create(newChannel);
+    console.log(`New channel inserted for ${channelData.channelId}`);
+    await userService.calculateAndUpdateRatings();
+    return newChannel;
   } catch (error) {
-    console.error("Error performing YouTube channel search:", error);
+    console.error(`Error inserting channel data: ${error}`);
   }
-};
+}
 
 exports.getChannelDetailsAndInsertOrUpdate = async (channelId) => {
   try {
@@ -194,39 +186,19 @@ exports.getChannelDetailsAndInsertOrUpdate = async (channelId) => {
       await userService.calculateAndUpdateRatings();
       return existingChannel;
     } else {
-      const newChannel = new channelModel({
-        ChannelId: channelId,
-        Title: youtubeData.snippet.title,
-        Description: youtubeData.snippet.description,
-        Thumbnails: [],
-        PublishedAt: new Date(youtubeData.snippet.publishedAt),
-        TopicCategories: [],
-        Username: youtubeData.snippet.customUrl || null,
-        uploads: parseInt(youtubeData.statistics.videoCount, 10),
-        Subs: parseInt(youtubeData.statistics.subscriberCount, 10),
-        VideoViews: parseInt(youtubeData.statistics.viewCount, 10),
+      return createChannel({
+        channelId: channelId,
+        title: youtubeData.snippet.title,
+        description: youtubeData.snippet.description,
+        thumbnails: youtubeData.snippet.thumbnails,
+        publishedAt: youtubeData.snippet.publishedAt,
+        customUrl: youtubeData.snippet.customUrl,
+        videoCount: youtubeData.statistics.videoCount,
+        subscriberCount: youtubeData.statistics.subscriberCount,
+        viewCount: youtubeData.statistics.viewCount,
+        brandingSettings: youtubeData.brandingSettings,
+        topicDetails: youtubeData.topicDetails,
       });
-      if (youtubeData.brandingSettings.image !== undefined) {
-        newChannel.BannerImage =
-          youtubeData.brandingSettings.image.bannerExternalUrl;
-      }
-      for (const thumbnailType in youtubeData.snippet.thumbnails) {
-        newChannel.Thumbnails.push(
-          youtubeData.snippet.thumbnails[thumbnailType].url
-        );
-      }
-
-      if (youtubeData.topicDetails !== undefined) {
-        for (const tType in youtubeData.topicDetails.topicCategories) {
-          newChannel.TopicCategories.push(
-            youtubeData.topicDetails.topicCategories[tType]
-          );
-        }
-      }
-      await channelModel.create(newChannel);
-      console.log(`New channel inserted for ${channelId}`);
-      await userService.calculateAndUpdateRatings();
-      return newChannel;
     }
   } catch (error) {
     console.error(
@@ -234,6 +206,7 @@ exports.getChannelDetailsAndInsertOrUpdate = async (channelId) => {
     );
   }
 };
+
 exports.searchByCriteria = async (key, value) => {
   try {
     const channels = await channelModel.find().exec();
@@ -258,7 +231,7 @@ exports.searchByCriteria = async (key, value) => {
 
 exports.getRandomChannels = async () => {
   const currentTime = Date.now();
-  const apiCallName = "trendingChannels"; // A name to identify this cache
+  const apiCallName = "trendingChannels";
 
   const cacheEntry = await Cache.findOne({ apiCall: apiCallName });
 
@@ -266,7 +239,7 @@ exports.getRandomChannels = async () => {
     cacheEntry &&
     currentTime - cacheEntry.lastCallTimestamp < 24 * 60 * 60 * 1000
   ) {
-    return cacheEntry.cachedRandomChannels;
+    return cacheEntry.cachedData;
   }
 
   const channelCount = await channelModel.countDocuments({
@@ -293,13 +266,13 @@ exports.getRandomChannels = async () => {
 
   if (cacheEntry) {
     cacheEntry.lastCallTimestamp = currentTime;
-    cacheEntry.cachedRandomChannels = randomChannels;
+    cacheEntry.cachedData = randomChannels;
     await cacheEntry.save();
   } else {
     await Cache.create({
       apiCall: apiCallName,
       lastCallTimestamp: currentTime,
-      cachedRandomChannels: randomChannels,
+      cachedData: randomChannels,
     });
   }
 
@@ -326,5 +299,98 @@ exports.tryToUpdateChannelsData = async () => {
         lastCallTimestamp: currentTime,
       });
     }
+  }
+};
+
+exports.search = async (query) => {
+  try {
+    // Step 1: Check if the query is in badSearches
+    const badSearchesCache = await Cache.findOne({
+      apiCall: "badSearches",
+    }).exec();
+
+    if (badSearchesCache) {
+      const now = new Date();
+      const lastCallTimestamp = badSearchesCache.lastCallTimestamp;
+
+      // Check if it's been more than 24 hours (86400000 milliseconds) since the last call
+      if (now - lastCallTimestamp >= 86400000) {
+        // Clear the cachedData list
+        badSearchesCache.cachedData = [];
+        badSearchesCache.lastCallTimestamp = now;
+        await badSearchesCache.save();
+        console.log("Cleared bad searches cache.");
+      }
+
+      if (
+        badSearchesCache.cachedData.includes(query) ||
+        badSearchesCache.cachedData.some((badQuery) =>
+          query.startsWith(badQuery)
+        )
+      ) {
+        console.log(
+          "Query found in bad searches cache. Returning 'No results found!'"
+        );
+        return "No results found!";
+      }
+    }
+
+    // Step 2: Search for the channel in the database using the title
+    const channelsFromDB = await channelModel
+      .find({
+        $or: [
+          { Title: { $regex: query, $options: "i" } },
+          { Username: { $regex: query, $options: "i" } },
+        ],
+      })
+      .exec();
+
+    if (channelsFromDB.length > 0) {
+      console.log("Found results in the database.");
+      return channelsFromDB.slice(0, 5);
+    }
+
+    // Step 3: Search for the channel using the YouTube API
+    const response = await youtube.search.list({
+      part: "snippet",
+      q: query,
+      maxResults: 5,
+      type: "channel",
+    });
+
+    const channelResults = response.data.items;
+
+    if (channelResults.length > 0) {
+      const modifiedResults = [];
+
+      for (const channel of channelResults) {
+        const channelId = channel.id.channelId;
+        await userService.getChannelDetailsAndInsertOrUpdate(channelId);
+        console.log(`Found channel in youtubeApi for ${channelId}`);
+
+        // Create the modified object and push it to the modifiedResults array
+        const modifiedChannel = {
+          ChannelId: channelId,
+          Title: channel.snippet.title,
+          Thumbnails: channel.snippet.thumbnails.default.url,
+        };
+        modifiedResults.push(modifiedChannel);
+      }
+
+      // Finally, return the modified results from the YouTube API.
+      console.log("Returning modified results from the YouTube API.");
+      return modifiedResults;
+    } else {
+      // If no results found from YouTube API, add the query to badSearches
+      badSearchesCache.cachedData.push(query);
+      await badSearchesCache.save();
+      console.log(
+        "Query added to bad searches cache. Returning 'No results found!'"
+      );
+      return "No results found!";
+    }
+  } catch (error) {
+    console.error("Error performing YouTube channel search:", error);
+    return "An error occurred while searching.";
   }
 };
