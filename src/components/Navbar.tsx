@@ -1,21 +1,86 @@
+import { useEffect, useState, useRef } from "react";
 import avatar from "../assets/profile.jpg";
 import { Link } from "react-router-dom";
+import { search } from "../api/homePageApi";
+import { ChannelItem } from "../types/type";
 
 export const Navbar = () => {
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [searchResults, setSearchResults] = useState<ChannelItem[]>([]);
+  const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+  const dropdownRef = useRef<HTMLUListElement | null>(null);
+
+  const performSearch = async () => {
+    try {
+      const results = await search(searchQuery);
+      setSearchResults(results);
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (searchQuery.trim() !== "") {
+      const timeoutId = setTimeout(() => {
+        performSearch();
+      }, 1000);
+
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    }
+  }, [searchQuery]);
+
+  useEffect(() => {
+    const handleClickOutside = (event: globalThis.MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
+        setIsDropdownOpen(false);
+      }
+    };
+    document.addEventListener("click", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("click", handleClickOutside);
+    };
+  }, []);
+
   return (
     <>
-      <div className="navbar bg-base-100  shadow-md px-3">
+      <div className="navbar  shadow-md px-3 relative">
         <div className="flex-1">
           <div className="flex justify-between w-4/5 md:w-2/3">
             <Link to="/">
-              <a className="btn btn-ghost normal-case text-xl">YTDB</a>
+              <p className="btn btn-ghost normal-case text-xl">YTDB</p>
             </Link>
-            <div className="form-control pt-2">
+            <div className="form-control pt-2 relative">
               <input
                 type="text"
                 placeholder="Search"
-                className="input input-bordered  md:w-[22rem] w-[10rem] h-9"
+                className="input input-bordered md:w-[22rem] w-[10rem] h-9"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onClick={() => setIsDropdownOpen(true)}
               />
+              {isDropdownOpen && searchResults.length > 0 && (
+                <ul
+                  ref={dropdownRef}
+                  className="search-dropdown bg-white border border-gray-300 rounded-md shadow-md mt-9 absolute left-0  z-[999]"
+                >
+                  {searchResults.map((result) => (
+                    <li
+                      key={result._id}
+                      className="px-4 py-2 hover:bg-gray-100 transition duration-150 ease-in-out"
+                    >
+                      <Link to={`/channel/${result.ChannelId}`} className="">
+                        {result.Title}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </div>
           </div>
         </div>
@@ -24,7 +89,7 @@ export const Navbar = () => {
           <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
-                <img src={avatar} />
+                <img src={avatar} alt="User Avatar" />
               </div>
             </label>
             <ul

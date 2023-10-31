@@ -24,7 +24,7 @@ export default function CategoryTile({
       <img
         src={imageUrl}
         alt="Tile"
-        className=" w-3/5 h-3/5 scale-[1.2] rounded-full object-contain"
+        className=" w-3/5 h-3/5 scale-[1.2] rounded-full object-cover"
         onClick={onClick}
       />
       <p className="text-xs md:text-base">{name}</p>

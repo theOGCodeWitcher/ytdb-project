@@ -9,7 +9,7 @@ export default function Footer() {
       </span>
       <small>in India</small>
       <small className="mb-2 block text-xs">
-        &copy; 2030 YTDB. All rights reserved.
+        &copy; 2023 YTDB. All rights reserved.
       </small>
       <p className="text-xs">
         <span className="font-semibold">About this website:</span> built with

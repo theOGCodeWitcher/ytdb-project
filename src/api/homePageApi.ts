@@ -25,3 +25,17 @@ export async function fetchAccToCategory(
     throw error;
   }
 }
+
+export async function search(
+  input: string
+): Promise<ChannelCollectionResponse> {
+  try {
+    const response: AxiosResponse<ChannelCollectionResponse> = await axios.get(
+      `https://ytdb-backend.onrender.com/api/general/search?keyword=${input}`
+    );
+
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
