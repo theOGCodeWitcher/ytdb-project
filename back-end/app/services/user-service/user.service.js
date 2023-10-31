@@ -184,59 +184,116 @@ async function createChannel(channelData) {
   }
 }
 
-exports.getChannelDetailsAndInsertOrUpdate = async (channelId) => {
-  try {
-    const response = await youtube.channels.list({
+// exports.getChannelDetailsAndInsertOrUpdate = async (channelId) => {
+//   try {
+//     const response = await youtube.channels.list({
+//       part: "snippet,statistics,brandingSettings,topicDetails",
+//       id: channelId,
+//     });
+
+//     const youtubeData = response.data.items[0];
+
+//     if (!youtubeData) {
+//       console.log(`Channel with ID ${channelId} not found.`);
+//       return;
+//     }
+
+//     const existingChannel = await channelModel
+//       .findOne({
+//         ChannelId: channelId,
+//       })
+//       .exec();
+
+//     if (existingChannel) {
+//       existingChannel.uploads = youtubeData.statistics.videoCount;
+//       existingChannel.Subs = youtubeData.statistics.subscriberCount;
+//       existingChannel.VideoViews = youtubeData.statistics.viewCount;
+//       if (youtubeData.brandingSettings.image !== undefined) {
+//         existingChannel.BannerImage =
+//           youtubeData.brandingSettings.image.bannerExternalUrl;
+//       }
+
+//       await existingChannel.save();
+//       console.log(`Channel data updated for ${channelId}`);
+//       await userService.calculateAndUpdateRatings();
+//       return existingChannel;
+//     } else {
+//       return createChannel({
+//         channelId: channelId,
+//         title: youtubeData.snippet.title,
+//         description: youtubeData.snippet.description,
+//         thumbnails: youtubeData.snippet.thumbnails,
+//         publishedAt: youtubeData.snippet.publishedAt,
+//         customUrl: youtubeData.snippet.customUrl,
+//         videoCount: youtubeData.statistics.videoCount,
+//         subscriberCount: youtubeData.statistics.subscriberCount,
+//         viewCount: youtubeData.statistics.viewCount,
+//         brandingSettings: youtubeData.brandingSettings,
+//         topicDetails: youtubeData.topicDetails,
+//       });
+//     }
+//   } catch (error) {
+//     console.error(
+//       `Error updating/inserting channel data for ${channelId}: ${error}`
+//     );
+//   }
+// };
+exports.getChannelDetailsAndInsertOrUpdate = (channelId) => {
+  let youtubeData; // Declare youtubeData in a higher scope
+
+  youtube.channels
+    .list({
       part: "snippet,statistics,brandingSettings,topicDetails",
       id: channelId,
-    });
+    })
+    .then((response) => {
+      youtubeData = response.data.items[0]; // Assign the value to youtubeData
 
-    const youtubeData = response.data.items[0];
-
-    if (!youtubeData) {
-      console.log(`Channel with ID ${channelId} not found.`);
-      return;
-    }
-
-    const existingChannel = await channelModel
-      .findOne({
-        ChannelId: channelId,
-      })
-      .exec();
-
-    if (existingChannel) {
-      existingChannel.uploads = youtubeData.statistics.videoCount;
-      existingChannel.Subs = youtubeData.statistics.subscriberCount;
-      existingChannel.VideoViews = youtubeData.statistics.viewCount;
-      if (youtubeData.brandingSettings.image !== undefined) {
-        existingChannel.BannerImage =
-          youtubeData.brandingSettings.image.bannerExternalUrl;
+      if (!youtubeData) {
+        console.log(`Channel with ID ${channelId} not found.`);
+        return Promise.resolve();
       }
 
-      await existingChannel.save();
+      return channelModel.findOne({ ChannelId: channelId }).exec();
+    })
+    .then((existingChannel) => {
+      if (existingChannel) {
+        // Update existing channel
+        existingChannel.uploads = youtubeData.statistics.videoCount;
+        existingChannel.Subs = youtubeData.statistics.subscriberCount;
+        existingChannel.VideoViews = youtubeData.statistics.viewCount;
+        if (youtubeData.brandingSettings.image !== undefined) {
+          existingChannel.BannerImage =
+            youtubeData.brandingSettings.image.bannerExternalUrl;
+        }
+
+        return existingChannel.save();
+      } else {
+        // Create a new channel
+        return createChannel({
+          channelId: channelId,
+          title: youtubeData.snippet.title,
+          description: youtubeData.snippet.description,
+          thumbnails: youtubeData.snippet.thumbnails,
+          publishedAt: youtubeData.snippet.publishedAt,
+          customUrl: youtubeData.snippet.customUrl,
+          videoCount: youtubeData.statistics.videoCount,
+          subscriberCount: youtubeData.statistics.subscriberCount,
+          viewCount: youtubeData.statistics.viewCount,
+          brandingSettings: youtubeData.brandingSettings,
+          topicDetails: youtubeData.topicDetails,
+        });
+      }
+    })
+    .then(() => {
       console.log(`Channel data updated for ${channelId}`);
-      await userService.calculateAndUpdateRatings();
-      return existingChannel;
-    } else {
-      return createChannel({
-        channelId: channelId,
-        title: youtubeData.snippet.title,
-        description: youtubeData.snippet.description,
-        thumbnails: youtubeData.snippet.thumbnails,
-        publishedAt: youtubeData.snippet.publishedAt,
-        customUrl: youtubeData.snippet.customUrl,
-        videoCount: youtubeData.statistics.videoCount,
-        subscriberCount: youtubeData.statistics.subscriberCount,
-        viewCount: youtubeData.statistics.viewCount,
-        brandingSettings: youtubeData.brandingSettings,
-        topicDetails: youtubeData.topicDetails,
-      });
-    }
-  } catch (error) {
-    console.error(
-      `Error updating/inserting channel data for ${channelId}: ${error}`
-    );
-  }
+      return userService.calculateAndUpdateRatings();
+    })
+    .catch((error) => {
+      console.error(
+        `Error updating/inserting channel data for ${channelId}: ${error}`
+      );
+    });
 };
 
 exports.searchByCriteria = async (key, value) => {
@@ -397,7 +454,7 @@ exports.search = async (query) => {
 
       for (const channel of channelResults) {
         const channelId = channel.id.channelId;
-        await userService.getChannelDetailsAndInsertOrUpdate(channelId);
+        userService.getChannelDetailsAndInsertOrUpdate(channelId);
         console.log(`Found channel in youtubeApi for ${channelId}`);
 
         // Create the modified object and push it to the modifiedResults array
