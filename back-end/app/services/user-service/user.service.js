@@ -186,18 +186,6 @@ async function createChannel(channelData) {
 
 exports.getChannelById = async (channelId) => {
   try {
-    const response = await youtube.channels.list({
-      part: "snippet,statistics,brandingSettings,topicDetails",
-      id: channelId,
-    });
-
-    const youtubeData = response.data.items[0];
-
-    if (!youtubeData) {
-      console.log(`Channel with ID ${channelId} not found.`);
-      return;
-    }
-
     const existingChannel = await channelModel
       .findOne({
         ChannelId: channelId,
@@ -205,19 +193,19 @@ exports.getChannelById = async (channelId) => {
       .exec();
 
     if (existingChannel) {
-      existingChannel.uploads = youtubeData.statistics.videoCount;
-      existingChannel.Subs = youtubeData.statistics.subscriberCount;
-      existingChannel.VideoViews = youtubeData.statistics.viewCount;
-      if (youtubeData.brandingSettings.image !== undefined) {
-        existingChannel.BannerImage =
-          youtubeData.brandingSettings.image.bannerExternalUrl;
-      }
-
-      await existingChannel.save();
-      console.log(`Channel data updated for ${channelId}`);
-      await userService.calculateAndUpdateRatings();
       return existingChannel;
     } else {
+      const response = await youtube.channels.list({
+        part: "snippet,statistics,brandingSettings,topicDetails",
+        id: channelId,
+      });
+
+      const youtubeData = response.data.items[0];
+
+      if (!youtubeData) {
+        console.log(`Channel with ID ${channelId} not found.`);
+        return;
+      }
       return createChannel({
         channelId: channelId,
         title: youtubeData.snippet.title,
