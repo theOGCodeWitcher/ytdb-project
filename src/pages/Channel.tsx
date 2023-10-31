@@ -80,26 +80,28 @@ export default function Channel() {
           </div>
           <div className=" flex flex-col gap-2 md:mx-4 md:px-4 md:w-1/2 ">
             <div className="flex md:justify-between flex-col md:flex-row p-2 m-2 gap-2">
-              {channelData?.Title && (
-                <h2 className="card-title text-xl md:text-2xl text-center">
-                  {channelData?.Title}
-                </h2>
-              )}
-              <div className="flex items-center justify-center  ">
-                {channelData?.Thumbnails && (
-                  <figure className="h-[6rem] w-[6rem] ">
-                    <img
-                      src={channelData?.Thumbnails[1] || ""}
-                      alt={"Thumbnail"}
-                      loading="lazy"
-                      className="rounded-full"
-                      key={channelData?.ChannelId}
-                    />
-                  </figure>
+              <div className="flex flex-row justify-between  gap-8 md:gap-32">
+                {channelData?.Title && (
+                  <h2 className="card-title text-xl md:text-2xl text-center">
+                    {channelData?.Title}
+                  </h2>
                 )}
+                <div className="flex items-center justify-center  ">
+                  {channelData?.Thumbnails && (
+                    <figure className="h-[4rem] w-[4rem]   md:h-[6rem] md:w-[6rem] ">
+                      <img
+                        src={channelData?.Thumbnails[1] || ""}
+                        alt={"Thumbnail"}
+                        loading="lazy"
+                        className="rounded-full"
+                        key={channelData?.ChannelId}
+                      />
+                    </figure>
+                  )}
+                </div>
               </div>
-              <div className="flex items-center">
-                <button className="btn btn-secondary btn-outline  btn-sm md:btn-base">
+              <div className="flex items-center ">
+                <button className="btn btn-secondary btn-outline  btn-sm md:btn-bas w-full">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-6 w-6"
