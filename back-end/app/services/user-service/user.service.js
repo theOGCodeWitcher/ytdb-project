@@ -527,7 +527,9 @@ exports.search = async (query) => {
         const modifiedChannel = {
           ChannelId: channelId,
           Title: channel.snippet.title,
-          Thumbnails: channel.snippet.thumbnails.default.url,
+          Thumbnails: Object.values(channel.snippet.thumbnails).map(
+            (thumbnail) => thumbnail.url
+          ),
         };
         modifiedResults.push(modifiedChannel);
       }
