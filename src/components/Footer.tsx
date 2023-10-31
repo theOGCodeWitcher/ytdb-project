@@ -2,7 +2,7 @@ import { AiTwotoneHeart } from "react-icons/ai";
 
 export default function Footer() {
   return (
-    <footer className="mb-10 px-4 items-center text-gray-500 py-4 my-4 flex flex-col ">
+    <footer className="mb-10 px-4 items-center text-gray-500 py-4 my-4 flex flex-col border-t border-black-100 ">
       <small className=" pt-4 text-xs ">Made with </small>
       <span className="px-4 py-2">
         {<AiTwotoneHeart size={24} color="red" />}
