@@ -1,21 +1,22 @@
 const mongoose = require("mongoose");
 
 const channelSchema = new mongoose.Schema({
-  Rank: String,
-  Grade: String,
+  ChannelId: String,
   Username: String,
+  Title: String,
   uploads: Number,
   Subs: Number,
   VideoViews: Number,
-  Category: String,
-  ChannelId: String,
-  Title: String,
-  Description: String,
-  Thumbnails: [String],
-  PublishedAt: Date,
-  TopicCategories: [String],
   Rating: String,
+  Category: String,
+  TopicCategories: [String],
+  ExtractedCategories: [String],
+  Description: String,
+  PublishedAt: Date,
+  Thumbnails: [String],
   BannerImage: String,
+  Rank: String,
+  Grade: String,
 });
 
 const Channel = mongoose.model("Channel", channelSchema);
