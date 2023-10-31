@@ -94,7 +94,7 @@ models.mongoose
 
 async function initial() {
   try {
-    //const searchResult = await userService.calculateAndUpdateRatings();
+    const searchResult = await userService.calculateAndUpdateRatings();
   } catch (err) {
     logger.error("Error searching YouTube", err);
   }
