@@ -80,7 +80,7 @@ export default function Channel() {
           </div>
           <div className=" flex flex-col gap-2 md:mx-4 md:px-4 md:w-1/2 ">
             <div className="flex md:justify-between flex-col md:flex-row p-2 m-2 gap-2">
-              <div className="flex flex-row justify-between  gap-8 md:gap-32">
+              <div className="flex flex-row justify-between  gap-8 ">
                 {channelData?.Title && (
                   <h2 className="card-title text-xl md:text-2xl text-center">
                     {channelData?.Title}
@@ -100,8 +100,8 @@ export default function Channel() {
                   )}
                 </div>
               </div>
-              <div className="flex items-center ">
-                <button className="btn btn-secondary btn-outline  btn-sm md:btn-bas w-full">
+              <div className="flex items-center flex-shrink-0 ">
+                <button className="btn btn-secondary btn-outline   btn-sm md:btn-bas w-full">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-6 w-6"

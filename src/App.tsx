@@ -5,7 +5,6 @@ import Channel from "./pages/Channel";
 import Homepage from "./pages/Homepage";
 import { Navbar } from "./components/Navbar";
 import Footer from "./components/Footer";
-import Test from "./components/test";
 
 function App() {
   return (
@@ -15,7 +14,6 @@ function App() {
         <Routes>
           <Route path="/" element={<Homepage />} />
           <Route path="/channel/:channelId" element={<Channel />} />
-          <Route path="/staticFile" element={<Test />} />
         </Routes>
       </div>
       <Footer />
