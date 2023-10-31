@@ -24,9 +24,7 @@ exports.getSearchResults = async (req, res) => {
 
 exports.getChannelById = async (req, res) => {
   try {
-    const results = await userService.getChannelDetailsAndInsertOrUpdate(
-      req.query.channelId
-    );
+    const results = await userService.getChannelById(req.query.channelId);
     res.status(200).send(results);
   } catch (error) {
     logger.error("Failed to fetch results:", error);
