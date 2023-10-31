@@ -18,6 +18,8 @@ export default function Channel() {
 
   useEffect(() => {
     async function fetchchannelData() {
+      console.log(channelId);
+
       if (channelId) {
         try {
           setIsLoading(true);
