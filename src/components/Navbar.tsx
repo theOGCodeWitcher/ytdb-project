@@ -12,6 +12,7 @@ export const Navbar = () => {
 
   const performSearch = async () => {
     try {
+      setIsDropdownOpen(true);
       const results = await search(searchQuery);
       setSearchResults(results);
     } catch (error) {
@@ -23,7 +24,7 @@ export const Navbar = () => {
     if (searchQuery.trim() !== "") {
       const timeoutId = setTimeout(() => {
         performSearch();
-      }, 1000);
+      }, 1500);
 
       return () => {
         clearTimeout(timeoutId);
@@ -47,6 +48,12 @@ export const Navbar = () => {
     };
   }, []);
 
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Enter") {
+      performSearch();
+    }
+  };
+
   return (
     <>
       <div className="navbar  shadow-md px-3 relative">
@@ -59,22 +66,27 @@ export const Navbar = () => {
               <input
                 type="text"
                 placeholder="Search"
-                className="input input-bordered md:w-[22rem] w-[10rem] h-9"
+                className="input input-bordered md:w-[22rem] w-[12rem] h-9"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onClick={() => setIsDropdownOpen(true)}
+                onKeyDown={(e) => handleKeyDown(e)}
               />
               {isDropdownOpen && searchResults.length > 0 && (
                 <ul
                   ref={dropdownRef}
-                  className="search-dropdown bg-white border border-gray-300 rounded-md shadow-md mt-9 absolute left-0  z-[999]"
+                  className="search-dropdown bg-white border border-gray-300 rounded-md shadow-md mt-9 absolute left-0 w-[12rem] md:w-[22rem]   z-[99]"
                 >
                   {searchResults.map((result) => (
                     <li
                       key={result._id}
-                      className="px-4 py-2 hover:bg-gray-100 transition duration-150 ease-in-out"
+                      className="px-2 py-2 hover:bg-gray-100 transition duration-150 ease-in-out"
                     >
-                      <Link to={`/channel/${result.ChannelId}`} className="">
+                      <Link
+                        to={`/channel/${result.ChannelId}`}
+                        className=""
+                        onClick={() => setIsDropdownOpen(false)}
+                      >
                         {result.Title}
                       </Link>
                     </li>
@@ -85,7 +97,7 @@ export const Navbar = () => {
           </div>
         </div>
         <div className="flex-none gap-2">
-          <button className="btn btn-sm btn-outline btn-primary">Login</button>
+          {/* <button className="btn btn-sm btn-outline btn-primary">Login</button> */}
           <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">

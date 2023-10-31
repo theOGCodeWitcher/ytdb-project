@@ -16,8 +16,6 @@ export default function Channel() {
   const [categories, setcategories] = useState<string[] | undefined>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
-  console.log(channelData);
-
   useEffect(() => {
     async function fetchchannelData() {
       if (channelId) {

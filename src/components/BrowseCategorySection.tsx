@@ -89,7 +89,7 @@ export const BrowseCategorySection = () => {
             <MdOutlineTravelExplore size={30} />
           </div>
         </div>
-        <div className="flex gap-2 px-3 md:gap-4 mb-2 pb-2 flex-wrap">
+        <div className="flex gap-1 px-2 justify-center mx-auto md:gap-4 mb-2 pb-2 flex-wrap">
           {categoryImages.map((imageUrl, index) => (
             <CategoryTile
               key={index}
