@@ -15,6 +15,7 @@ import { fetchAccToCategory } from "../api/homePageApi";
 import { ChannelCollectionResponse } from "../types/type";
 import { useEffect, useState } from "react";
 import CardCollection from "./CardCollection";
+import Loading from "./Loading";
 
 const categoryImages = [
   animal,
@@ -47,6 +48,7 @@ export const BrowseCategorySection = () => {
     useState<ChannelCollectionResponse>([]);
 
   const [selectedCategory, setselectedCategory] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const handleTileClick = async (categoryName: string) => {
     try {
@@ -65,10 +67,13 @@ export const BrowseCategorySection = () => {
     async function fetchInitial() {
       try {
         setselectedCategory("comedy");
+        setIsLoading(true);
         const response = await fetchAccToCategory("comedy");
         setselectedCategoryResponse(response);
+        setIsLoading(false);
       } catch (error) {
         console.error("Error fetching data for category:", error);
+        setIsLoading(false);
       }
     }
 
@@ -98,7 +103,11 @@ export const BrowseCategorySection = () => {
           ))}
         </div>
       </div>
-      <CardCollection data={selectedCategoryResponse} />
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <CardCollection data={selectedCategoryResponse} />
+      )}
     </>
   );
 };

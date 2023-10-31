@@ -8,18 +8,22 @@ import { MdOutlinePeopleOutline } from "react-icons/md";
 import { BiSolidVideoPlus } from "react-icons/bi";
 import { IoPeopleCircleSharp } from "react-icons/io5";
 import Youtubelogo from "../assets/youtube.jpg";
+import Loading from "../components/Loading";
 
 export default function Channel() {
   const { channelId } = useParams<string>();
-  const [channelData, setChannelData] = useState<ChannelItem | undefined>();
+  const [channelData, setchannelData] = useState<ChannelItem>();
   const [categories, setcategories] = useState<string[] | undefined>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    async function fetchChannelData() {
+    async function fetchchannelData() {
       if (channelId) {
         try {
+          setIsLoading(true);
           const data = await fetchChannelById(channelId);
-          setChannelData(data);
+          setchannelData(data);
+          setIsLoading(false);
           if (data.TopicCategories) {
             const categories = extractCategories(data.TopicCategories);
             setcategories(categories);
@@ -34,20 +38,23 @@ export default function Channel() {
           }
         } catch (error) {
           console.error("Error fetching channel data:", error);
+          setIsLoading(false);
         }
       }
     }
 
-    fetchChannelData();
+    fetchchannelData();
   }, [channelId]);
 
   return (
     <>
-      {channelData && (
+      {isLoading ? (
+        <Loading />
+      ) : (
         <div className="flex flex-col md:flex-row  md:px-8 md:mx-8  md:py-4 md:my-4 ">
           <div className="flex flex-col  px-2 my-2 overflow-hidden md:w-1/2">
             <img
-              src={channelData.BannerImage}
+              src={channelData?.BannerImage}
               loading="lazy"
               className="rounded-sm"
             ></img>
@@ -70,9 +77,9 @@ export default function Channel() {
           </div>
           <div className=" flex flex-col gap-2 md:mx-4 md:px-4 md:w-1/2 ">
             <div className="flex md:justify-between flex-col md:flex-row p-2 m-2 gap-2">
-              {channelData.Title && (
+              {channelData?.Title && (
                 <h2 className="card-title text-xl md:text-2xl text-center">
-                  {channelData.Title}
+                  {channelData?.Title}
                 </h2>
               )}
               <button className="btn btn-secondary btn-outline btn-sm md:btn-base">
@@ -93,51 +100,51 @@ export default function Channel() {
                 Add to Favourite
               </button>
             </div>
-            {channelData.Rating && (
+            {channelData?.Rating && (
               <div className="flex px-2 mx-2 ">
                 <p className="font-semibold text-xl mr-2">Rating</p>
-                <RatingComp Rating={Number(channelData.Rating)} />
+                <RatingComp Rating={Number(channelData?.Rating)} />
                 <span className="text-xs md:text-base mx-2 pt-1">
-                  {Number(channelData.Rating)}
+                  {Number(channelData?.Rating)}
                 </span>
               </div>
             )}
             <div className="flex flex-col p-2 m-2 gap-4">
               <h6 className="text-xl font-semibold">Description</h6>
-              <p className="text-sm">{channelData.Description}</p>
+              <p className="text-sm">{channelData?.Description}</p>
               <div className="flex justify-between gap-1  px-4 py-2 rounded-lg border border-black">
-                {channelData.Subs && (
+                {channelData?.Subs && (
                   <div className="flex align-center  flex-col gap-1">
                     <MdOutlinePeopleOutline size={36} />
                     <span className="text-xs">Total Subscribers</span>
-                    <span className="text-xs">{channelData.Subs}</span>
+                    <span className="text-xs">{channelData?.Subs}</span>
                   </div>
                 )}
-                {channelData.uploads && (
+                {channelData?.uploads && (
                   <div className="flex items-center flex-col gap-1 ">
                     <BiSolidVideoPlus size={36} />
                     <span className="text-xs">Uploads Till Date</span>
-                    <span className="text-xs">{channelData.uploads}</span>
+                    <span className="text-xs">{channelData?.uploads}</span>
                   </div>
                 )}
-                {channelData.VideoViews && (
+                {channelData?.VideoViews && (
                   <div className="flex items-center flex-col gap-1 ">
                     <IoPeopleCircleSharp size={32} />
                     <span className="text-xs">Total Video Views</span>
-                    <span className="text-xs">{channelData.VideoViews}</span>
+                    <span className="text-xs">{channelData?.VideoViews}</span>
                   </div>
                 )}
               </div>
               <div>
                 <a
-                  href={`https://www.youtube.com/${channelData.Username}`}
+                  href={`https://www.youtube.com/${channelData?.Username}`}
                   target="_blank"
                   rel="noopener noreferrer"
                 >
                   <img
                     src={Youtubelogo}
                     loading="lazy"
-                    className="h-[4rem] w-[6rem] md:h-[6rem] md:w-[10rem] cursor-pointer hover:scale-[1.1] transition-all"
+                    className="h-[4rem] w-[6rem] md:h-[6rem] md:w-[10rem] cursor-pointer hover:scale-[1.1] transition-all dark:bg-white rounded-lg"
                   ></img>
                 </a>
               </div>
