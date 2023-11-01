@@ -253,7 +253,7 @@ async function createChannel(channelData) {
   }
 }
 
-exports.getChannelById1 = async (channelId) => {
+exports.getChannelById = async (channelId) => {
   try {
     const existingChannel = await channelModel
       .findOne({
