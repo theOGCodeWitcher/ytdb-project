@@ -17,6 +17,28 @@ const channelSchema = new mongoose.Schema({
   BannerImage: String,
   Rank: String,
   Grade: String,
+  RecentVideos: [
+    {
+      title: String,
+      videoId: String,
+      publishedAt: Date,
+      publishedAtRelative: String,
+      viewCount: Number,
+      likeCount: Number,
+      commentCount: Number,
+    },
+  ],
+  PopularVideos: [
+    {
+      title: String,
+      videoId: String,
+      publishedAt: Date,
+      publishedAtRelative: String,
+      viewCount: Number,
+      likeCount: Number,
+      commentCount: Number,
+    },
+  ],
 });
 
 const Channel = mongoose.model("Channel", channelSchema);

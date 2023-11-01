@@ -5,6 +5,7 @@ const channelModel = models.channelModel;
 const Cache = models.cacheModel;
 const process = require("process");
 const userService = require("../user-service/user.service");
+const moment = require("moment");
 const youtube = google.youtube({
   version: "v3",
   auth: process.env.YOUTUBE_API_KEY,
@@ -252,7 +253,7 @@ async function createChannel(channelData) {
   }
 }
 
-exports.getChannelById = async (channelId) => {
+exports.getChannelById1 = async (channelId) => {
   try {
     const existingChannel = await channelModel
       .findOne({
@@ -594,46 +595,170 @@ exports.search = async (query) => {
 //   }
 // };
 
-exports.test = async () => {
+// exports.test1 = async () => {
+//   try {
+//     const channels = await channelModel.find({});
+
+//     for (const channel of channels) {
+//       if (
+//         !channel.ExtractedCategories ||
+//         channel.ExtractedCategories.length === 0
+//       ) {
+//         const ExtractedCategories = new Set(); // Use a Set to store unique categories
+
+//         let hasMatchedCategory = false; // Track if at least one category is matched
+
+//         for (const topicCategory of channel.TopicCategories) {
+//           const topicMatch = topicCategory.match(/\/wiki\/(.+)$/);
+//           if (topicMatch && topicMatch[1]) {
+//             const topic = topicMatch[1];
+
+//             const category = topicToCategory[topic];
+//             if (category) {
+//               ExtractedCategories.add(category); // Add to the Set to ensure uniqueness
+//               hasMatchedCategory = true; // Set the flag to true if a category is matched
+//             }
+//           }
+//         }
+
+//         if (hasMatchedCategory) {
+//           // Convert the Set to an array before updating the "ExtractedCategories" property
+//           channel.ExtractedCategories = Array.from(ExtractedCategories);
+
+//           // Save the updated channel document
+//           await channel.save();
+//         }
+//       }
+//     }
+
+//     console.log(
+//       "Categories updated for channels with empty or missing ExtractedCategories."
+//     );
+//   } catch (err) {
+//     console.error("Error updating categories:", err);
+//   }
+// };
+exports.getRecentVideosByChannelId = async (channelId) => {
   try {
-    const channels = await channelModel.find({});
+    const existingChannel = await channelModel
+      .findOne({ ChannelId: channelId })
+      .exec();
 
-    for (const channel of channels) {
-      if (
-        !channel.ExtractedCategories ||
-        channel.ExtractedCategories.length === 0
-      ) {
-        const ExtractedCategories = new Set(); // Use a Set to store unique categories
+    const response = await youtube.channels.list({
+      part: "snippet,statistics,brandingSettings,topicDetails,contentDetails",
+      id: channelId,
+    });
 
-        let hasMatchedCategory = false; // Track if at least one category is matched
+    const youtubeData = response.data.items[0];
 
-        for (const topicCategory of channel.TopicCategories) {
-          const topicMatch = topicCategory.match(/\/wiki\/(.+)$/);
-          if (topicMatch && topicMatch[1]) {
-            const topic = topicMatch[1];
-
-            const category = topicToCategory[topic];
-            if (category) {
-              ExtractedCategories.add(category); // Add to the Set to ensure uniqueness
-              hasMatchedCategory = true; // Set the flag to true if a category is matched
-            }
-          }
-        }
-
-        if (hasMatchedCategory) {
-          // Convert the Set to an array before updating the "ExtractedCategories" property
-          channel.ExtractedCategories = Array.from(ExtractedCategories);
-
-          // Save the updated channel document
-          await channel.save();
-        }
-      }
+    if (!youtubeData) {
+      console.log(`Channel with ID ${channelId} not found.`);
+      return null;
     }
 
-    console.log(
-      "Categories updated for channels with empty or missing ExtractedCategories."
+    const uploadsPlaylistId =
+      youtubeData.contentDetails.relatedPlaylists.uploads;
+
+    const recentVideosResponse = await youtube.playlistItems.list({
+      part: "snippet",
+      playlistId: uploadsPlaylistId,
+      maxResults: 3,
+    });
+
+    const recentVideosData = recentVideosResponse.data.items.map((video) => ({
+      title: video.snippet.title,
+      videoId: video.snippet.resourceId.videoId,
+      publishedAt: new Date(video.snippet.publishedAt),
+      publishedAtRelative: moment(video.snippet.publishedAt).fromNow(),
+    }));
+
+    for (const video of recentVideosData) {
+      const videoStatsResponse = await youtube.videos.list({
+        part: "statistics",
+        id: video.videoId,
+      });
+      const videoStats = videoStatsResponse.data.items[0].statistics;
+      video.viewCount = videoStats.viewCount;
+      video.likeCount = videoStats.likeCount;
+      video.commentCount = videoStats.commentCount;
+    }
+
+    existingChannel.RecentVideos = recentVideosData;
+
+    await existingChannel.save();
+
+    return recentVideosData;
+  } catch (error) {
+    console.error(
+      `Error updating/inserting channel data for ${channelId}: ${error}`
     );
-  } catch (err) {
-    console.error("Error updating categories:", err);
+    return null;
+  }
+};
+
+exports.getPopularVideosByChannelId = async (channelId) => {
+  try {
+    const existingChannel = await channelModel
+      .findOne({ ChannelId: channelId })
+      .exec();
+
+    if (
+      existingChannel &&
+      Array.isArray(existingChannel.PopularVideos) &&
+      existingChannel.PopularVideos.length > 0
+    ) {
+      return existingChannel.PopularVideos;
+    }
+    const response = await youtube.channels.list({
+      part: "snippet,statistics,brandingSettings,topicDetails,contentDetails",
+      id: channelId,
+    });
+
+    const youtubeData = response.data.items[0];
+
+    if (!youtubeData) {
+      console.log(`Channel with ID ${channelId} not found.`);
+      return null;
+    }
+
+    const uploadsPlaylistId =
+      youtubeData.contentDetails.relatedPlaylists.uploads;
+
+    // Use the "search" endpoint to get popular videos
+    const popularVideosResponse = await youtube.search.list({
+      part: "snippet",
+      channelId: channelId,
+      order: "viewCount", // Sort by view count (popular videos)
+      maxResults: 3, // You can change this number as needed
+    });
+
+    const popularVideosData = popularVideosResponse.data.items.map((video) => ({
+      title: video.snippet.title,
+      videoId: video.id.videoId,
+      publishedAt: new Date(video.snippet.publishedAt),
+      publishedAtRelative: moment(video.snippet.publishedAt).fromNow(),
+    }));
+
+    for (const video of popularVideosData) {
+      const videoStatsResponse = await youtube.videos.list({
+        part: "statistics",
+        id: video.videoId,
+      });
+      const videoStats = videoStatsResponse.data.items[0].statistics;
+      video.viewCount = videoStats.viewCount;
+      video.likeCount = videoStats.likeCount;
+      video.commentCount = videoStats.commentCount;
+    }
+
+    existingChannel.PopularVideos = popularVideosData;
+
+    await existingChannel.save();
+
+    return popularVideosData;
+  } catch (error) {
+    console.error(
+      `Error updating/inserting channel data for ${channelId}: ${error}`
+    );
+    return null;
   }
 };
