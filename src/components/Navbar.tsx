@@ -4,12 +4,16 @@ import { Link } from "react-router-dom";
 import { search } from "../api/homePageApi";
 import { ChannelItem } from "../types/type";
 import placeholder from "../assets/placeholder.jpg";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<ChannelItem[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLUListElement | null>(null);
+  const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
+  console.log(isAuthenticated);
+  console.log(JSON.stringify(user));
 
   const performSearch = async () => {
     try {
@@ -116,11 +120,14 @@ export const Navbar = () => {
           </div>
         </div>
         <div className="flex-none gap-2">
-          {/* <Link to="https://ytdb-backend.onrender.com/login">
-            <button className="btn btn-sm btn-outline btn-primary">
+          {!isAuthenticated && (
+            <button
+              className="btn btn-sm btn-outline btn-primary"
+              onClick={() => loginWithRedirect()}
+            >
               Login
             </button>
-          </Link> */}
+          )}
           <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
@@ -140,9 +147,11 @@ export const Navbar = () => {
               <li key={2}>
                 <a>Settings</a>
               </li>
-              <li key={3}>
-                <a>Logout</a>
-              </li>
+              {
+                <li key={3}>
+                  <a onClick={() => logout()}>Logout</a>
+                </li>
+              }
             </ul>
           </div>
         </div>

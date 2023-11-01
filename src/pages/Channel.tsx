@@ -87,7 +87,7 @@ export default function Channel() {
             </div>
             <div className=" flex flex-col gap-2 md:mx-4 md:px-4 md:w-1/2 ">
               <div className="flex md:justify-between flex-col md:flex-row px-2 mx-2 gap-2">
-                <div className="flex flex-row justify-between pt-4 mt-4 gap-8 ">
+                <div className="flex flex-row justify-between md:pt-4 md:mt-4 gap-8 ">
                   {channelData?.Title && (
                     <h2 className="card-title text-xl md:text-2xl text-center">
                       {channelData?.Title}
