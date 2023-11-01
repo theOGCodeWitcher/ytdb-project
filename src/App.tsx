@@ -13,6 +13,7 @@ function App() {
       <div className="flex-grow">
         <Routes>
           <Route path="/" element={<Homepage />} />
+          <Route path="/homePage" element={<Homepage />} />
           <Route path="/channel/:channelId" element={<Channel />} />
         </Routes>
       </div>
