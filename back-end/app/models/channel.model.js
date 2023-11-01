@@ -13,6 +13,7 @@ const channelSchema = new mongoose.Schema({
   ExtractedCategories: [String],
   Description: String,
   PublishedAt: Date,
+  lastUpdated: Date,
   Thumbnails: [String],
   BannerImage: String,
   Rank: String,

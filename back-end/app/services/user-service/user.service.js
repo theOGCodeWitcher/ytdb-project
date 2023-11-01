@@ -11,407 +11,36 @@ const youtube = google.youtube({
   auth: process.env.YOUTUBE_API_KEY,
 });
 
-exports.updateChannelsData = async () => {
+exports.getTrendingChannels = async () => {
   try {
-    const channels = await channelModel.find().exec();
-    let count = 1;
-    for (const channel of channels) {
-      const channelId = channel.ChannelId;
-
-      if (!channelId) {
-        console.log(
-          `ChannelId missing for document ${channel._id}. Skipping...`
-        );
-        continue;
-      }
-
-      const response = await youtube.channels.list({
-        part: "snippet,statistics,brandingSettings,topicDetails",
-        id: channelId,
-      });
-      console.log("Trying to update:", channelId);
-      const youtubeData = response.data.items[0];
-
-      channel.Title = youtubeData.snippet.title;
-      channel.Description = youtubeData.snippet.description;
-      const thumbnails = [];
-
-      for (const thumbnailType in youtubeData.snippet.thumbnails) {
-        thumbnails.push(youtubeData.snippet.thumbnails[thumbnailType].url);
-      }
-
-      channel.Thumbnails = thumbnails;
-
-      channel.PublishedAt = new Date(youtubeData.snippet.publishedAt);
-      if (youtubeData.topicDetails !== undefined) {
-        channel.TopicCategories = youtubeData.topicDetails.topicCategories;
-      }
-
-      channel.Username = youtubeData.snippet.customUrl || null;
-      channel.uploads = parseInt(youtubeData.statistics.videoCount, 10) || 0;
-      channel.Subs = parseInt(youtubeData.statistics.subscriberCount, 10) || 0;
-      channel.VideoViews = parseInt(youtubeData.statistics.viewCount, 10) || 0;
-      if (youtubeData.brandingSettings.image !== undefined) {
-        channel.BannerImage =
-          youtubeData.brandingSettings.image.bannerExternalUrl;
-      }
-
-      await channel.save();
-      console.log("Channel data updated successfully for", channelId, count++);
-    }
-
-    console.log("Channels data updated successfully.");
-    await userService.calculateAndUpdateRatings();
+    const results = await fetchPopularVideosAndChannels("");
+    return results;
   } catch (error) {
-    console.error("Error updating channels data:", error);
+    console.error(`Error fetching popular videos and channels: ${error}`);
+    return null;
   }
 };
 
-// tries to update all the channels data on every request if the last update was more than 24 hours ago
-exports.tryToUpdateChannelsData = async () => {
+exports.searchByCriteria = async (key, videoCategory) => {
+  try {
+    const categoryID = categoryMap[videoCategory.toLowerCase()];
+
+    if (!categoryID) {
+      console.error("Invalid video category.");
+      return null;
+    }
+
+    const results = await fetchPopularVideosAndChannels(categoryID);
+    return results;
+  } catch (error) {
+    console.error(`Error fetching popular videos and channels: ${error}`);
+    return null;
+  }
+};
+
+async function fetchPopularVideosAndChannels(videoCategoryId) {
   const currentTime = Date.now();
-  const apiCallName = "updateChannelsData";
-
-  const cacheEntry = await Cache.findOne({ apiCall: apiCallName });
-
-  if (
-    !cacheEntry ||
-    currentTime - cacheEntry.lastCallTimestamp >= 24 * 60 * 60 * 1000
-  ) {
-    await userService.updateChannelsData();
-    if (cacheEntry) {
-      cacheEntry.lastCallTimestamp = currentTime;
-      await cacheEntry.save();
-    } else {
-      await Cache.create({
-        apiCall: apiCallName,
-        lastCallTimestamp: currentTime,
-      });
-    }
-  }
-};
-
-exports.calculateAndUpdateRatings = async () => {
-  try {
-    const channels = await channelModel.find().exec();
-
-    const totalSubscribers = 252000000;
-    const totalAgeInDays = 6437;
-    const totalViews = 236294326678;
-    const totalVideos = 19727;
-
-    for (const channel of channels) {
-      const subscribersWeight = 0.3; // Weight for subscribers
-      const ageWeight = 0.2; // Weight for channel age
-      const viewsWeight = 0.4; // Weight for video views
-      const videosWeight = 0.1; // Weight for number of videos
-
-      const subscribersRating = (channel.Subs / totalSubscribers) * 5;
-      const ageInDays = calculateAgeInDays(channel.PublishedAt, new Date());
-      const ageRating =
-        totalAgeInDays === 0 ? 0 : (ageInDays / totalAgeInDays) * 5;
-      const viewsRating = (channel.VideoViews / totalViews) * 5;
-      const videosRating =
-        totalVideos === 0 ? 0 : (channel.uploads / totalVideos) * 5;
-
-      const overallRating = calculateWeightedRating(
-        subscribersRating,
-        ageRating,
-        viewsRating,
-        videosRating,
-        subscribersWeight,
-        ageWeight,
-        viewsWeight,
-        videosWeight
-      );
-
-      channel.Rating = parseFloat(overallRating.toFixed(1));
-      await channel.save();
-    }
-
-    console.log("Ratings updated successfully.");
-  } catch (error) {
-    console.error("Error updating ratings:", error);
-  }
-};
-
-exports.updateMyRating = async (subs, publishedAt, views, uploads) => {
-  try {
-    const totalSubscribers = 252000000;
-    const totalAgeInDays = 6437;
-    const totalViews = 236294326678;
-    const totalVideos = 19727;
-
-    const subscribersWeight = 0.3; // Weight for subscribers
-    const ageWeight = 0.2; // Weight for channel age
-    const viewsWeight = 0.4; // Weight for video views
-    const videosWeight = 0.1; // Weight for number of videos
-
-    const subscribersRating = (subs / totalSubscribers) * 5;
-    const ageInDays = calculateAgeInDays(publishedAt, new Date());
-    const ageRating =
-      totalAgeInDays === 0 ? 0 : (ageInDays / totalAgeInDays) * 5;
-    const viewsRating = (views / totalViews) * 5;
-    const videosRating = totalVideos === 0 ? 0 : (uploads / totalVideos) * 5;
-
-    const overallRating = calculateWeightedRating(
-      subscribersRating,
-      ageRating,
-      viewsRating,
-      videosRating,
-      subscribersWeight,
-      ageWeight,
-      viewsWeight,
-      videosWeight
-    );
-
-    let Rating = parseFloat(overallRating.toFixed(1));
-    return Rating;
-  } catch (error) {
-    console.error("Error updating ratings:", error);
-  }
-};
-
-function calculateOverallRating(subsAge, viewsVideos, viewsAge, subsVideos) {
-  const overallRating =
-    ((subsAge + viewsVideos + viewsAge + subsVideos) / 4) * 5;
-  return Math.min(5, overallRating); // Cap the rating at 5
-}
-
-function calculateAgeInDays(publishedAt, currentDate) {
-  const ageInMilliseconds = currentDate - publishedAt;
-  return ageInMilliseconds / (1000 * 60 * 60 * 24); // Convert to days
-}
-function calculateWeightedRating(
-  subscribersRating,
-  ageRating,
-  viewsRating,
-  videosRating,
-  subscribersWeight,
-  ageWeight,
-  viewsWeight,
-  videosWeight
-) {
-  const weightedSum =
-    subscribersRating * subscribersWeight +
-    ageRating * ageWeight +
-    viewsRating * viewsWeight +
-    videosRating * videosWeight;
-  const overallRating = weightedSum * 5;
-  return Math.min(5, overallRating); // Cap the rating at 5
-}
-
-async function createChannel(channelData) {
-  try {
-    const newChannel = new channelModel({
-      ChannelId: channelData.channelId,
-      Title: channelData.title,
-      Description: channelData.description,
-      Thumbnails: [],
-      PublishedAt: new Date(channelData.publishedAt),
-      TopicCategories: [],
-      Username: channelData.customUrl || null,
-      uploads: parseInt(channelData.videoCount, 10),
-      Subs: parseInt(channelData.subscriberCount, 10),
-      VideoViews: parseInt(channelData.viewCount, 10),
-      Rating: await userService.updateMyRating(
-        parseInt(channelData.subscriberCount, 10),
-        new Date(channelData.publishedAt),
-        parseInt(channelData.viewCount, 10),
-        parseInt(channelData.videoCount, 10)
-      ),
-    });
-
-    if (channelData.brandingSettings.image !== undefined) {
-      newChannel.BannerImage =
-        channelData.brandingSettings.image.bannerExternalUrl;
-    }
-
-    for (const thumbnailType in channelData.thumbnails) {
-      newChannel.Thumbnails.push(channelData.thumbnails[thumbnailType].url);
-    }
-
-    if (channelData.topicDetails !== undefined) {
-      for (const tType in channelData.topicDetails.topicCategories) {
-        newChannel.TopicCategories.push(
-          channelData.topicDetails.topicCategories[tType]
-        );
-      }
-    }
-    newChannel.Rating = await userService.updateMyRating(
-      newChannel.Subs,
-      newChannel.PublishedAt,
-      newChannel.VideoViews,
-      newChannel.uploads
-    );
-
-    await channelModel.create(newChannel);
-    console.log(`New channel inserted for ${channelData.channelId}`);
-    return newChannel;
-  } catch (error) {
-    console.error(`Error inserting channel data: ${error}`);
-  }
-}
-
-exports.getChannelById = async (channelId) => {
-  try {
-    const existingChannel = await channelModel
-      .findOne({
-        ChannelId: channelId,
-      })
-      .exec();
-
-    if (existingChannel) {
-      return existingChannel;
-    } else {
-      const response = await youtube.channels.list({
-        part: "snippet,statistics,brandingSettings,topicDetails",
-        id: channelId,
-      });
-
-      const youtubeData = response.data.items[0];
-
-      if (!youtubeData) {
-        console.log(`Channel with ID ${channelId} not found.`);
-        return;
-      }
-      return createChannel({
-        channelId: channelId,
-        title: youtubeData.snippet.title,
-        description: youtubeData.snippet.description,
-        thumbnails: youtubeData.snippet.thumbnails,
-        publishedAt: youtubeData.snippet.publishedAt,
-        customUrl: youtubeData.snippet.customUrl,
-        videoCount: youtubeData.statistics.videoCount,
-        subscriberCount: youtubeData.statistics.subscriberCount,
-        viewCount: youtubeData.statistics.viewCount,
-        brandingSettings: youtubeData.brandingSettings,
-        topicDetails: youtubeData.topicDetails,
-      });
-    }
-  } catch (error) {
-    console.error(
-      `Error updating/inserting channel data for ${channelId}: ${error}`
-    );
-  }
-};
-exports.getChannelDetailsAndInsertOrUpdate = (channelId) => {
-  let youtubeData; // Declare youtubeData in a higher scope
-
-  youtube.channels
-    .list({
-      part: "snippet,statistics,brandingSettings,topicDetails",
-      id: channelId,
-    })
-    .then((response) => {
-      youtubeData = response.data.items[0]; // Assign the value to youtubeData
-
-      if (!youtubeData) {
-        console.log(`Channel with ID ${channelId} not found.`);
-        return Promise.resolve();
-      }
-
-      return channelModel.findOne({ ChannelId: channelId }).exec();
-    })
-    .then((existingChannel) => {
-      if (existingChannel) {
-        // Update existing channel
-        // existingChannel.uploads = youtubeData.statistics.videoCount;
-        // existingChannel.Subs = youtubeData.statistics.subscriberCount;
-        // existingChannel.VideoViews = youtubeData.statistics.viewCount;
-        // if (youtubeData.brandingSettings.image !== undefined) {
-        //   existingChannel.BannerImage =
-        //     youtubeData.brandingSettings.image.bannerExternalUrl;
-        // }
-        // return existingChannel.save();
-      } else {
-        // Create a new channel
-        return createChannel({
-          channelId: channelId,
-          title: youtubeData.snippet.title,
-          description: youtubeData.snippet.description,
-          thumbnails: youtubeData.snippet.thumbnails,
-          publishedAt: youtubeData.snippet.publishedAt,
-          customUrl: youtubeData.snippet.customUrl,
-          videoCount: youtubeData.statistics.videoCount,
-          subscriberCount: youtubeData.statistics.subscriberCount,
-          viewCount: youtubeData.statistics.viewCount,
-          brandingSettings: youtubeData.brandingSettings,
-          topicDetails: youtubeData.topicDetails,
-        });
-      }
-    })
-    .then(() => {
-      console.log(`Channel data updated for ${channelId}`);
-      //return userService.calculateAndUpdateRatings();
-    })
-    .catch((error) => {
-      console.error(
-        `Error updating/inserting channel data for ${channelId}: ${error}`
-      );
-    });
-};
-
-// exports.searchByCriteria = async (key, value) => {
-//   try {
-//     const channels = await channelModel.find().exec();
-//     const filteredChannels = channels.filter((channel) => {
-//       if (Array.isArray(channel[key])) {
-//         return channel[key].some((item) =>
-//           item.toLowerCase().includes(value.toLowerCase())
-//         );
-//       } else if (typeof channel[key] === "string") {
-//         return channel[key].toLowerCase().includes(value.toLowerCase());
-//       }
-//       return false;
-//     });
-
-//     const top10Channels = filteredChannels.slice(0, 10);
-
-//     return top10Channels;
-//   } catch (error) {
-//     console.error("Error in searchByCriteria:", error);
-//   }
-// };
-// exports.searchByCriteria = async (key, value) => {
-//   try {
-//     const channels = await channelModel.find().exec();
-
-//     const matchingChannels = channels.filter((channel) => {
-//       const categories = channel.ExtractedCategories || []; // Assuming "extractedCategories" is the array of categories within a channel
-//       const categoryMatches = categories.some((category) =>
-//         category.toLowerCase().includes(value.toLowerCase())
-//       );
-
-//       if (Array.isArray(channel[key])) {
-//         return (
-//           channel[key].some((item) =>
-//             item.toLowerCase().includes(value.toLowerCase())
-//           ) || categoryMatches
-//         );
-//       } else if (typeof channel[key] === "string") {
-//         return (
-//           channel[key].toLowerCase().includes(value.toLowerCase()) ||
-//           categoryMatches
-//         );
-//       }
-
-//       return false;
-//     });
-
-//     const top10Channels = matchingChannels.slice(0, 10);
-
-//     return top10Channels;
-//   } catch (error) {
-//     console.error("Error in searchByCriteria:", error);
-//     return [];
-//   }
-// };
-
-exports.getRandomChannels1 = async () => {
-  const currentTime = Date.now();
-  const apiCallName = "trendingChannels";
-
+  const apiCallName = `trendingChannels_${videoCategoryId}`;
   const cacheEntry = await Cache.findOne({ apiCall: apiCallName });
 
   if (
@@ -421,42 +50,45 @@ exports.getRandomChannels1 = async () => {
     return cacheEntry.cachedData;
   }
 
-  const channelCount = await channelModel.countDocuments({
-    Rating: { $gt: 0 },
+  const processedChannels = new Set();
+  const results = [];
+  //console.log(`Fetching popular videos for category ${videoCategoryId}`);
+  const videoCategoryIdParam = videoCategoryId ? { videoCategoryId } : {};
+
+  const popularVideosResponse = await youtube.videos.list({
+    part: "snippet,statistics",
+    chart: "mostPopular",
+    maxResults: 15,
+    ...videoCategoryIdParam,
   });
 
-  if (channelCount < 10) {
-    throw new Error("Not enough channels with a rating > 3 in the collection.");
-  }
+  const popularVideos = popularVideosResponse.data.items;
 
-  const randomIndices = [];
-  while (randomIndices.length < 10) {
-    const randomIndex = Math.floor(Math.random() * channelCount);
-    if (!randomIndices.includes(randomIndex)) {
-      randomIndices.push(randomIndex);
+  for (const video of popularVideos) {
+    const channelId = video.snippet.channelId;
+
+    if (!processedChannels.has(channelId)) {
+      const channel = await userService.getChannelById(channelId);
+      //console.log("channel*******************", channel);
+      results.push(channel);
+      processedChannels.add(channelId);
     }
   }
 
-  const randomChannels = await channelModel
-    .find({ Rating: { $gt: 0 } })
-    .limit(10)
-    .skip(randomIndices[0])
-    .exec();
-
   if (cacheEntry) {
     cacheEntry.lastCallTimestamp = currentTime;
-    cacheEntry.cachedData = randomChannels;
+    cacheEntry.cachedData = results;
     await cacheEntry.save();
   } else {
     await Cache.create({
       apiCall: apiCallName,
       lastCallTimestamp: currentTime,
-      cachedData: randomChannels,
+      cachedData: results,
     });
   }
 
-  return randomChannels;
-};
+  return results;
+}
 
 exports.search = async (query) => {
   try {
@@ -521,7 +153,7 @@ exports.search = async (query) => {
 
       for (const channel of channelResults) {
         const channelId = channel.id.channelId;
-        userService.getChannelDetailsAndInsertOrUpdate(channelId);
+        await fetchAndCreateOrUpdateChannelAsync(channelId);
         console.log(`Found channel in youtubeApi for ${channelId}`);
 
         // Create the modified object and push it to the modifiedResults array
@@ -552,92 +184,213 @@ exports.search = async (query) => {
     return "An error occurred while searching.";
   }
 };
-// exports.test = async () => {
-//   try {
-//     const documents = await c.find({}); // Fetch documents using Mongoose
 
-//     // Create an object to store unique topics and their counts
-//     const topicCounts = {};
+exports.getChannelById = async (channelId) => {
+  try {
+    const existingChannel = await channelModel
+      .findOne({
+        ChannelId: channelId,
+      })
+      .exec();
+    if (!existingChannel) {
+      console.log(`Channel with ID ${channelId} not found.`);
+      return await fetchAndCreateOrUpdateChannelAsync(
+        channelId,
+        existingChannel
+      );
+    }
+    if (existingChannel && existingChannel.lastUpdated) {
+      const currentTime = Date.now();
+      const lastUpdatedTime = existingChannel.lastUpdated.getTime();
+      const cacheTimeout = 24 * 60 * 60 * 1000;
 
-//     // Iterate over the documents and extract topics
-//     documents.forEach((channelData) => {
-//       const topics = channelData.TopicCategories.map((category) => {
-//         const topicMatch = category.match(/\/wiki\/(.+)$/);
-//         if (topicMatch && topicMatch[1]) {
-//           return topicMatch[1];
-//         } else {
-//           return category;
-//         }
-//       });
+      if (currentTime - lastUpdatedTime >= cacheTimeout) {
+        return await fetchAndCreateOrUpdateChannelAsync(
+          channelId,
+          existingChannel
+        );
+      } else {
+        return existingChannel;
+      }
+    } else {
+      return await fetchAndCreateOrUpdateChannelAsync(
+        channelId,
+        existingChannel
+      );
+    }
+  } catch (error) {
+    console.error(`Error getting channel data for ${channelId}: ${error}`);
+  }
+};
 
-//       // Count the occurrence of each topic
-//       topics.forEach((topic) => {
-//         if (topicCounts[topic]) {
-//           topicCounts[topic]++;
-//         } else {
-//           topicCounts[topic] = 1;
-//         }
-//       });
+async function fetchAndCreateOrUpdateChannelCommon(channelId) {
+  const response = await youtube.channels.list({
+    part: "snippet,statistics,brandingSettings,topicDetails",
+    id: channelId,
+  });
 
-//       console.log("Channel ID:", channelData.ChannelId);
-//       console.log("Extracted Topics:", topics);
-//     });
+  const youtubeData = response.data.items[0];
 
-//     // Sort the topics alphabetically
-//     const sortedTopics = Object.keys(topicCounts).sort();
+  if (!youtubeData) {
+    console.log(`Channel with ID ${channelId} not found.`);
+    return null;
+  }
 
-//     // Output the counts of each topic
-//     sortedTopics.forEach((topic) => {
-//       console.log(`Topic: ${topic}, Count: ${topicCounts[topic]}`);
-//     });
-//   } catch (err) {
-//     console.error("Error fetching documents:", err);
-//   }
-// };
+  const newChannelData = {
+    channelId: channelId,
+    title: youtubeData.snippet.title,
+    description: youtubeData.snippet.description,
+    thumbnails: [],
+    publishedAt: new Date(youtubeData.snippet.publishedAt),
+    customUrl: youtubeData.snippet.customUrl || null,
+    videoCount: parseInt(youtubeData.statistics.videoCount, 10),
+    subscriberCount: parseInt(youtubeData.statistics.subscriberCount, 10),
+    viewCount: parseInt(youtubeData.statistics.viewCount, 10),
+    ExtractedCategories: [],
+  };
 
-// exports.test1 = async () => {
-//   try {
-//     const channels = await channelModel.find({});
+  if (youtubeData.brandingSettings.image !== undefined) {
+    newChannelData.bannerImage =
+      youtubeData.brandingSettings.image.bannerExternalUrl;
+  }
 
-//     for (const channel of channels) {
-//       if (
-//         !channel.ExtractedCategories ||
-//         channel.ExtractedCategories.length === 0
-//       ) {
-//         const ExtractedCategories = new Set(); // Use a Set to store unique categories
+  for (const thumbnailType in youtubeData.snippet.thumbnails) {
+    newChannelData.thumbnails.push(
+      youtubeData.snippet.thumbnails[thumbnailType].url
+    );
+  }
 
-//         let hasMatchedCategory = false; // Track if at least one category is matched
+  if (youtubeData.topicDetails !== undefined) {
+    newChannelData.topicCategories = youtubeData.topicDetails.topicCategories;
+    const ExtractedCategories = new Set();
 
-//         for (const topicCategory of channel.TopicCategories) {
-//           const topicMatch = topicCategory.match(/\/wiki\/(.+)$/);
-//           if (topicMatch && topicMatch[1]) {
-//             const topic = topicMatch[1];
+    for (const topicCategory of youtubeData.topicDetails.topicCategories) {
+      const topicMatch = topicCategory.match(/\/wiki\/(.+)$/);
+      if (topicMatch && topicMatch[1]) {
+        const topic = topicMatch[1];
+        const category = topicToCategory[topic];
+        if (category) {
+          ExtractedCategories.add(category);
+        }
+      }
+    }
 
-//             const category = topicToCategory[topic];
-//             if (category) {
-//               ExtractedCategories.add(category); // Add to the Set to ensure uniqueness
-//               hasMatchedCategory = true; // Set the flag to true if a category is matched
-//             }
-//           }
-//         }
+    newChannelData.ExtractedCategories = Array.from(ExtractedCategories);
+  }
 
-//         if (hasMatchedCategory) {
-//           // Convert the Set to an array before updating the "ExtractedCategories" property
-//           channel.ExtractedCategories = Array.from(ExtractedCategories);
+  newChannelData.rating = await userService.updateMyRating(
+    newChannelData.subscriberCount,
+    newChannelData.publishedAt,
+    newChannelData.viewCount,
+    newChannelData.videoCount
+  );
+  newChannelData.lastUpdated = new Date();
+  return newChannelData;
+}
 
-//           // Save the updated channel document
-//           await channel.save();
-//         }
-//       }
-//     }
+exports.fetchAndCreateOrUpdateChannelSync = (channelId) => {
+  const newChannelData = fetchAndCreateOrUpdateChannelCommon(channelId);
 
-//     console.log(
-//       "Categories updated for channels with empty or missing ExtractedCategories."
-//     );
-//   } catch (err) {
-//     console.error("Error updating categories:", err);
-//   }
-// };
+  if (newChannelData) {
+    const existingChannel = channelModel
+      .findOne({ ChannelId: channelId })
+      .exec();
+
+    if (existingChannel) {
+      console.log("newChannelData", newChannelData);
+      existingChannel.set(newChannelData);
+      existingChannel.save();
+      console.log(`Channel updated for ${channelId}`);
+      return existingChannel;
+    } else {
+      const newChannel = createChannel(newChannelData);
+      console.log(`New channel inserted for ${channelId}`);
+      return newChannel;
+    }
+  }
+};
+
+async function fetchAndCreateOrUpdateChannelAsync(channelId, existingChannel) {
+  const newChannelData = await fetchAndCreateOrUpdateChannelCommon(channelId);
+
+  if (newChannelData) {
+    const existingChannel = await channelModel
+      .findOne({ ChannelId: channelId })
+      .exec();
+
+    if (existingChannel) {
+      existingChannel.set(newChannelData);
+      await existingChannel.save();
+      console.log(`Channel updated for ${channelId}`);
+      return existingChannel;
+    } else {
+      const newChannel = createChannel(newChannelData);
+      console.log(`New channel inserted for ${channelId}`);
+      return newChannel;
+    }
+  }
+}
+
+exports.updateMyRating = async (subs, publishedAt, views, uploads) => {
+  try {
+    const totalSubscribers = 252000000;
+    const totalAgeInDays = 6437;
+    const totalViews = 236294326678;
+    const totalVideos = 19727;
+
+    const subscribersWeight = 0.3; // Weight for subscribers
+    const ageWeight = 0.2; // Weight for channel age
+    const viewsWeight = 0.4; // Weight for video views
+    const videosWeight = 0.1; // Weight for number of videos
+
+    const subscribersRating = (subs / totalSubscribers) * 5;
+    const ageInDays = calculateAgeInDays(publishedAt, new Date());
+    const ageRating =
+      totalAgeInDays === 0 ? 0 : (ageInDays / totalAgeInDays) * 5;
+    const viewsRating = (views / totalViews) * 5;
+    const videosRating = totalVideos === 0 ? 0 : (uploads / totalVideos) * 5;
+
+    const overallRating = calculateWeightedRating(
+      subscribersRating,
+      ageRating,
+      viewsRating,
+      videosRating,
+      subscribersWeight,
+      ageWeight,
+      viewsWeight,
+      videosWeight
+    );
+
+    let Rating = parseFloat(overallRating.toFixed(1));
+    return Rating;
+  } catch (error) {
+    console.error("Error updating ratings:", error);
+  }
+};
+
+function calculateAgeInDays(publishedAt, currentDate) {
+  const ageInMilliseconds = currentDate - publishedAt;
+  return ageInMilliseconds / (1000 * 60 * 60 * 24); // Convert to days
+}
+function calculateWeightedRating(
+  subscribersRating,
+  ageRating,
+  viewsRating,
+  videosRating,
+  subscribersWeight,
+  ageWeight,
+  viewsWeight,
+  videosWeight
+) {
+  const weightedSum =
+    subscribersRating * subscribersWeight +
+    ageRating * ageWeight +
+    viewsRating * viewsWeight +
+    videosRating * videosWeight;
+  const overallRating = weightedSum * 5;
+  return Math.min(5, overallRating); // Cap the rating at 5
+}
+
 exports.getRecentVideosByChannelId = async (channelId) => {
   try {
     const existingChannel = await channelModel
@@ -763,130 +516,33 @@ exports.getPopularVideosByChannelId = async (channelId) => {
   }
 };
 
-exports.getTrendingChannels = async () => {
+function createChannel(channelData) {
   try {
-    const currentTime = Date.now();
-    const apiCallName = "trendingChannels";
-
-    const cacheEntry = await Cache.findOne({ apiCall: apiCallName });
-
-    if (
-      cacheEntry &&
-      currentTime - cacheEntry.lastCallTimestamp < 24 * 60 * 60 * 1000
-    ) {
-      return cacheEntry.cachedData;
-    }
-    const processedChannels = new Set();
-    const results = [];
-
-    // Step 1: Get 10 most popular videos using the videos list
-    const popularVideosResponse = await youtube.videos.list({
-      part: "snippet,statistics",
-      chart: "mostPopular",
-      maxResults: 15,
+    const newChannel = new channelModel({
+      ChannelId: channelData.channelId,
+      Title: channelData.title,
+      Description: channelData.description,
+      Thumbnails: channelData.thumbnails,
+      PublishedAt: channelData.publishedAt,
+      TopicCategories: channelData.topicCategories,
+      Username: channelData.customUrl || null,
+      uploads: channelData.videoCount,
+      Subs: channelData.subscriberCount,
+      VideoViews: channelData.viewCount,
+      ExtractedCategories: channelData.ExtractedCategories,
+      Rating: channelData.rating,
+      lastUpdated: channelData.lastUpdated,
     });
 
-    const popularVideos = popularVideosResponse.data.items;
-
-    // Step 2: For each video, get its corresponding channelId and call getChannelById
-    for (const video of popularVideos) {
-      const channelId = video.snippet.channelId;
-
-      // Check if the channel has already been processed
-      if (!processedChannels.has(channelId)) {
-        const channel = await userService.getChannelById(channelId);
-
-        // Append the channel to the results
-        results.push(channel);
-
-        // Add the channelId to the set to mark it as processed
-        processedChannels.add(channelId);
-      }
+    if (channelData.bannerImage) {
+      newChannel.BannerImage = channelData.bannerImage;
     }
 
-    // Step 3: Return the array of unique channel data
-    if (cacheEntry) {
-      cacheEntry.lastCallTimestamp = currentTime;
-      cacheEntry.cachedData = results;
-      await cacheEntry.save();
-    } else {
-      await Cache.create({
-        apiCall: apiCallName,
-        lastCallTimestamp: currentTime,
-        cachedData: results,
-      });
-    }
-    return results;
+    newChannel.save();
+    console.log(`New channel inserted for ${channelData.channelId}`);
+    return newChannel;
   } catch (error) {
-    console.error(`Error fetching popular videos and channels: ${error}`);
+    console.error(`Error inserting channel data: ${error}`);
     return null;
   }
-};
-
-exports.searchByCriteria = async (key, videoCategory) => {
-  try {
-    console.log("videoCategory", videoCategory);
-    console.log(categoryMap);
-    const categoryID = categoryMap[videoCategory.toLowerCase()];
-    if (!categoryID) {
-      console.error("Invalid video category.");
-      return null;
-    }
-    const currentTime = Date.now();
-    const apiCallName = `trendingChannels_${categoryID}`;
-
-    const cacheEntry = await Cache.findOne({ apiCall: apiCallName });
-
-    if (
-      cacheEntry &&
-      currentTime - cacheEntry.lastCallTimestamp < 24 * 60 * 60 * 1000
-    ) {
-      return cacheEntry.cachedData;
-    }
-    const processedChannels = new Set();
-    const results = [];
-    console.log("categoryID", categoryID);
-    // Step 1: Get 10 most popular videos using the videos list for the specified video category
-    const popularVideosResponse = await youtube.videos.list({
-      part: "snippet,statistics",
-      chart: "mostPopular",
-      maxResults: 15,
-      videoCategoryId: categoryID, // Add the video category parameter
-    });
-
-    const popularVideos = popularVideosResponse.data.items;
-
-    // Step 2: For each video, get its corresponding channelId and call getChannelById
-    for (const video of popularVideos) {
-      const channelId = video.snippet.channelId;
-
-      // Check if the channel has already been processed
-      if (!processedChannels.has(channelId)) {
-        const channel = await userService.getChannelById(channelId);
-
-        // Append the channel to the results
-        results.push(channel);
-
-        // Add the channelId to the set to mark it as processed
-        processedChannels.add(channelId);
-      }
-    }
-
-    // Step 3: Return the array of unique channel data
-    if (cacheEntry) {
-      cacheEntry.lastCallTimestamp = currentTime;
-      cacheEntry.cachedData = results;
-      await cacheEntry.save();
-    } else {
-      await Cache.create({
-        apiCall: apiCallName,
-        lastCallTimestamp: currentTime,
-        cachedData: results,
-      });
-    }
-    return results;
-  } catch (error) {
-    console.error(`Error fetching popular videos and channels: ${error}`);
-    return null;
-  }
-};
+}

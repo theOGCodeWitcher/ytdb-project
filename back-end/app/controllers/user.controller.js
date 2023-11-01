@@ -79,7 +79,7 @@ exports.getTrendingChannels = async (req, res) => {
   }
 };
 
-exports.updateChannelsData = async (req, res) => {
+exports.tryToUpdateChannelsData = async (req, res) => {
   try {
     await userService.tryToUpdateChannelsData();
   } catch (error) {
