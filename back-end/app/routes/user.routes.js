@@ -25,4 +25,12 @@ module.exports = function (app) {
     endPointConfig.generalEndpoint + "/getTrendingChannels",
     userController.getRandom10Channels
   );
+  app.get(
+    endPointConfig.generalEndpoint + "/getRecentVideosByChannelId",
+    userController.getRecentVideosByChannelId
+  );
+  app.get(
+    endPointConfig.generalEndpoint + "/getPopularVideosByChannelId",
+    userController.getPopularVideosByChannelId
+  );
 };

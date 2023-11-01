@@ -32,6 +32,30 @@ exports.getChannelById = async (req, res) => {
   }
 };
 
+exports.getRecentVideosByChannelId = async (req, res) => {
+  try {
+    const results = await userService.getRecentVideosByChannelId(
+      req.query.channelId
+    );
+    res.status(200).send(results);
+  } catch (error) {
+    logger.error("Failed to fetch results:", error);
+    res.status(500).send("Failed to fetch results");
+  }
+};
+
+exports.getPopularVideosByChannelId = async (req, res) => {
+  try {
+    const results = await userService.getPopularVideosByChannelId(
+      req.query.channelId
+    );
+    res.status(200).send(results);
+  } catch (error) {
+    logger.error("Failed to fetch results:", error);
+    res.status(500).send("Failed to fetch results");
+  }
+};
+
 exports.searchByCriteria = async (req, res) => {
   try {
     const results = await userService.searchByCriteria(
