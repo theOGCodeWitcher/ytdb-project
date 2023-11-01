@@ -23,7 +23,7 @@ module.exports = function (app) {
   );
   app.get(
     endPointConfig.generalEndpoint + "/getTrendingChannels",
-    userController.getRandom10Channels
+    userController.getTrendingChannels
   );
   app.get(
     endPointConfig.generalEndpoint + "/getRecentVideosByChannelId",

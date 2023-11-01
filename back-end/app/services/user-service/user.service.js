@@ -408,7 +408,7 @@ exports.searchByCriteria = async (key, value) => {
   }
 };
 
-exports.getRandomChannels = async () => {
+exports.getRandomChannels1 = async () => {
   const currentTime = Date.now();
   const apiCallName = "trendingChannels";
 
@@ -759,6 +759,66 @@ exports.getPopularVideosByChannelId = async (channelId) => {
     console.error(
       `Error updating/inserting channel data for ${channelId}: ${error}`
     );
+    return null;
+  }
+};
+
+exports.getTrendingChannels = async () => {
+  try {
+    const currentTime = Date.now();
+    const apiCallName = "trendingChannels";
+
+    const cacheEntry = await Cache.findOne({ apiCall: apiCallName });
+
+    if (
+      cacheEntry &&
+      currentTime - cacheEntry.lastCallTimestamp < 24 * 60 * 60 * 1000
+    ) {
+      return cacheEntry.cachedData;
+    }
+    const processedChannels = new Set();
+    const results = [];
+
+    // Step 1: Get 10 most popular videos using the videos list
+    const popularVideosResponse = await youtube.videos.list({
+      part: "snippet,statistics",
+      chart: "mostPopular",
+      maxResults: 15,
+    });
+
+    const popularVideos = popularVideosResponse.data.items;
+
+    // Step 2: For each video, get its corresponding channelId and call getChannelById
+    for (const video of popularVideos) {
+      const channelId = video.snippet.channelId;
+
+      // Check if the channel has already been processed
+      if (!processedChannels.has(channelId)) {
+        const channel = await userService.getChannelById(channelId);
+
+        // Append the channel to the results
+        results.push(channel);
+
+        // Add the channelId to the set to mark it as processed
+        processedChannels.add(channelId);
+      }
+    }
+
+    // Step 3: Return the array of unique channel data
+    if (cacheEntry) {
+      cacheEntry.lastCallTimestamp = currentTime;
+      cacheEntry.cachedData = results;
+      await cacheEntry.save();
+    } else {
+      await Cache.create({
+        apiCall: apiCallName,
+        lastCallTimestamp: currentTime,
+        cachedData: results,
+      });
+    }
+    return results;
+  } catch (error) {
+    console.error(`Error fetching popular videos and channels: ${error}`);
     return null;
   }
 };
