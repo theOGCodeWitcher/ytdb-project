@@ -86,8 +86,8 @@ export default function Channel() {
               </div>
             </div>
             <div className=" flex flex-col gap-2 md:mx-4 md:px-4 md:w-1/2 ">
-              <div className="flex md:justify-between flex-col md:flex-row p-2 m-2 gap-2">
-                <div className="flex flex-row justify-between  gap-8 ">
+              <div className="flex md:justify-between flex-col md:flex-row px-2 mx-2 gap-2">
+                <div className="flex flex-row justify-between pt-4 mt-4 gap-8 ">
                   {channelData?.Title && (
                     <h2 className="card-title text-xl md:text-2xl text-center">
                       {channelData?.Title}
@@ -107,7 +107,7 @@ export default function Channel() {
                     )}
                   </div>
                 </div>
-                <div className="flex items-center flex-shrink-0 ">
+                <div className="flex flex-col gap-4 md:gap-8 items-center flex-shrink-0 ">
                   <button className="btn btn-secondary btn-outline   btn-sm md:btn-bas w-full">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
@@ -125,6 +125,19 @@ export default function Channel() {
                     </svg>
                     Add to Favourite
                   </button>
+                  <div className="pb-4">
+                    <a
+                      href={`https://www.youtube.com/${channelData?.Username}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      <img
+                        src={Youtubelogo}
+                        loading="lazy"
+                        className="h-[3rem] w-[5.5rem] md:h-[4rem] md:w-[7rem] cursor-pointer hover:scale-[1.1] transition-all dark:bg-white rounded-xl border border-black"
+                      ></img>
+                    </a>
+                  </div>
                 </div>
               </div>
               {channelData?.Rating && (
@@ -165,19 +178,6 @@ export default function Channel() {
                       </span>
                     </div>
                   )}
-                </div>
-                <div className="">
-                  <a
-                    href={`https://www.youtube.com/${channelData?.Username}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                  >
-                    <img
-                      src={Youtubelogo}
-                      loading="lazy"
-                      className="h-[4rem] w-[7rem] md:h-[6rem] md:w-[10rem] cursor-pointer hover:scale-[1.1] transition-all dark:bg-white rounded-xl border border-black"
-                    ></img>
-                  </a>
                 </div>
               </div>
             </div>

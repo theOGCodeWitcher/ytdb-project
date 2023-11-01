@@ -67,7 +67,7 @@ export const Navbar = () => {
               <input
                 type="text"
                 placeholder="Search Channel"
-                className="input input-bordered md:w-[22rem] w-[12rem] h-9"
+                className="input input-bordered md:w-[22rem] w-[12rem] h-9 text-xs"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onClick={() => setIsDropdownOpen(true)}
@@ -116,7 +116,11 @@ export const Navbar = () => {
           </div>
         </div>
         <div className="flex-none gap-2">
-          {/* <button className="btn btn-sm btn-outline btn-primary">Login</button> */}
+          <Link to="https://ytdb-backend.onrender.com/login">
+            <button className="btn btn-sm btn-outline btn-primary">
+              Login
+            </button>
+          </Link>
           <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
