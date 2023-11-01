@@ -1,6 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import avatar from "../assets/profile.jpg";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import { search } from "../api/homePageApi";
 import { ChannelItem } from "../types/type";
 import placeholder from "../assets/placeholder.jpg";
@@ -12,7 +12,7 @@ export const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLUListElement | null>(null);
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
-  console.log(isAuthenticated);
+  const location = useLocation();
   console.log(JSON.stringify(user));
 
   const performSearch = async () => {
@@ -123,7 +123,13 @@ export const Navbar = () => {
           {!isAuthenticated && (
             <button
               className="btn btn-sm btn-outline btn-primary"
-              onClick={() => loginWithRedirect()}
+              onClick={() =>
+                loginWithRedirect({
+                  appState: {
+                    returnTo: location.pathname,
+                  },
+                })
+              }
             >
               Login
             </button>
