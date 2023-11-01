@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { RatingComp } from "./Rating";
-import clipDescription, { extractCategories } from "../lib/util";
+import clipDescription, { extractCategories, formatCount } from "../lib/util";
 import { MdOutlinePeopleOutline } from "react-icons/md";
 import { BiSolidVideoPlus } from "react-icons/bi";
 import { Link } from "react-router-dom";
@@ -45,7 +45,7 @@ export default function Card({ data }: CardProps) {
   return (
     <>
       <Link to={`/channel/${data.ChannelId}`}>
-        <div className="card h-[32rem] w-[16rem] md:w-[18rem] md:h-[32rem] bg-base-100 shadow-2xl overflow-hidden cursor-pointer hover:scale-[1.04]   transition">
+        <div className="card h-[32rem] w-[16rem] md:w-[18rem] md:h-[32rem] dark:bg-gray-800 shadow-2xl overflow-hidden cursor-pointer hover:scale-[1.04]   transition">
           <div className="relative  transition">
             {data.BannerImage && (
               <div
@@ -78,15 +78,19 @@ export default function Card({ data }: CardProps) {
                 <span className="text-xs mx-2 pt-1">{Number(data.Rating)}</span>
               </div>
             )}
-            {data.Description && (
-              <p className="text-gray-500 text-xs">
-                {clipDescription(data.Description)}
+            {
+              <p className=" text-xs h-[6rem]">
+                {(data.Description && clipDescription(data.Description)) ||
+                  "No description Available for this channel on Youtube"}
               </p>
-            )}
+            }
             <div className="flex gap-1 flex-wrap">
               {categories &&
                 categories.map((item, index) => (
-                  <div key={index} className="badge p-2 text-xs capitalize">
+                  <div
+                    key={index}
+                    className="badge p-2 text-xs capitalize border-gray-200"
+                  >
                     {item}
                   </div>
                 ))}
@@ -96,7 +100,7 @@ export default function Card({ data }: CardProps) {
                 <div className="flex align-center  flex-col gap-1">
                   <MdOutlinePeopleOutline size={20} />
                   <span className="text-xs">Subscribers</span>
-                  <span className="text-xs">{data.Subs}</span>
+                  <span className="text-xs">{formatCount(data.Subs)}</span>
                 </div>
               )}
               {data.uploads && (

@@ -17,8 +17,8 @@ export function extractCategories(urls: string[]) {
 
     if (/[^a-zA-Z0-9 ]/.test(lastPart)) {
       const furtherParts = lastPart.split(/[^a-zA-Z0-9 ]+/);
-      results.push(...furtherParts);
-    } else {
+      results.push(...furtherParts.filter((part) => part.length > 0));
+    } else if (lastPart.length > 0) {
       results.push(lastPart);
     }
 
@@ -28,4 +28,14 @@ export function extractCategories(urls: string[]) {
   });
 
   return results.slice(0, maxCategories);
+}
+
+export function formatCount(count: number): string {
+  if (count >= 1_000_000) {
+    return `${(count / 1_000_000).toFixed(1)}M`;
+  }
+  if (count >= 1_000) {
+    return `${(count / 1_000).toFixed(1)}K`;
+  }
+  return count.toString();
 }

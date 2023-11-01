@@ -19,3 +19,11 @@ export type ChannelItem = {
 };
 
 export type ChannelCollectionResponse = ChannelItem[];
+
+export type ReviewFormProps = {
+  onSubmit: (formData: {
+    rating: number;
+    comment: string;
+    attributes: string[];
+  }) => void;
+};

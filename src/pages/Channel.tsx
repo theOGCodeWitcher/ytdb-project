@@ -3,13 +3,14 @@ import { fetchChannelById } from "../api/channelPageApi";
 import { useParams } from "react-router-dom";
 import { ChannelItem } from "../types/type";
 import { RatingComp } from "../components/Rating";
-import { extractCategories } from "../lib/util";
+import { extractCategories, formatCount } from "../lib/util";
 import { MdOutlinePeopleOutline } from "react-icons/md";
 import { BiSolidVideoPlus } from "react-icons/bi";
 import { IoPeopleCircleSharp } from "react-icons/io5";
 import Youtubelogo from "../assets/youtube.jpg";
 import Loading from "../components/Loading";
 import VideoCompWrapper from "../components/VideoCompWrapper";
+import ReviewForm from "../components/ReviewForm";
 
 export default function Channel() {
   const { channelId } = useParams<string>();
@@ -47,6 +48,14 @@ export default function Channel() {
     fetchchannelData();
   }, [channelId]);
 
+  const handleFormSubmission = (formData: {
+    rating: number;
+    attributes: string[];
+    comment: string;
+  }) => {
+    console.log("Data from form:", formData);
+  };
+
   return (
     <>
       {isLoading ? (
@@ -68,10 +77,7 @@ export default function Channel() {
                 <div className="flex gap-1 flex-wrap">
                   {categories &&
                     categories.map((item, index) => (
-                      <div
-                        key={index}
-                        className="badge badge-neutral  p-4 cursor-pointer"
-                      >
+                      <div key={index} className="badge   p-4 cursor-pointer">
                         {item}
                       </div>
                     ))}
@@ -137,7 +143,9 @@ export default function Channel() {
                     <div className="flex align-center  flex-col gap-1">
                       <MdOutlinePeopleOutline size={36} />
                       <span className="text-xs">Total Subscribers</span>
-                      <span className="text-xs">{channelData?.Subs}</span>
+                      <span className="text-xs">
+                        {formatCount(channelData?.Subs)}
+                      </span>
                     </div>
                   )}
                   {channelData?.uploads && (
@@ -151,7 +159,9 @@ export default function Channel() {
                     <div className="flex items-center flex-col gap-1 ">
                       <IoPeopleCircleSharp size={32} />
                       <span className="text-xs">Total Video Views</span>
-                      <span className="text-xs">{channelData?.VideoViews}</span>
+                      <span className="text-xs">
+                        {formatCount(channelData?.VideoViews)}
+                      </span>
                     </div>
                   )}
                 </div>
@@ -172,6 +182,7 @@ export default function Channel() {
             </div>
           </div>
           <VideoCompWrapper />
+          <ReviewForm onSubmit={handleFormSubmission} />
         </>
       )}
     </>
