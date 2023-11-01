@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { ReviewFormProps } from "../types/type";
 import SectionHeading from "./SectionHeading";
-import { FaSlash } from "react-icons/fa";
 import MessageComponent from "./MessageComponent";
 
 export default function ReviewForm({ onSubmit }: ReviewFormProps) {
@@ -31,28 +30,30 @@ export default function ReviewForm({ onSubmit }: ReviewFormProps) {
   };
 
   return (
-    <div className="border-black border-2 w-1/2 rounded-lg px-4 mx-8">
+    <div className=" w-full md:w-1/2 rounded-lg px-4 md:mx-8">
       <SectionHeading>Add Your Review</SectionHeading>
       {showMessage && <MessageComponent>{Message}</MessageComponent>}
       <form onSubmit={handleSubmit} className="p-4 space-y-4">
-        <div>
-          <p className="mb-2 text-xl font-semibold">Overall Rating</p>
-          {[...Array(5)].map((_, idx) => (
-            <button
-              key={idx}
-              type="button"
-              onClick={() => {
-                setshowMessage(false);
-                setRating(idx + 1);
-              }}
-              className={`mr-1 ${
-                rating > idx ? "text-yellow-400" : "text-gray-400 "
-              }`}
-              style={{ fontSize: "24px" }}
-            >
-              ★
-            </button>
-          ))}
+        <div className="flex flex-row gap-16 md:gap-2 md:flex-col">
+          <p className="mb-2 text-xl pt-1">Overall Rating</p>
+          <div>
+            {[...Array(5)].map((_, idx) => (
+              <button
+                key={idx}
+                type="button"
+                onClick={() => {
+                  setshowMessage(false);
+                  setRating(idx + 1);
+                }}
+                className={`mr-1 ${
+                  rating > idx ? "text-yellow-400" : "text-gray-400 "
+                }`}
+                style={{ fontSize: "24px" }}
+              >
+                ★
+              </button>
+            ))}
+          </div>
         </div>
 
         <div>

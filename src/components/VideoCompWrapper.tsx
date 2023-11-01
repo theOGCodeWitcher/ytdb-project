@@ -1,20 +1,50 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import VideoContainer from "./VideoContainer";
 import SectionHeading from "./SectionHeading";
-
-const MOST_RECENT_VIDEO_IDS = ["wZ0edJjBXvA", "wZ0edJjBXvA", "wZ0edJjBXvA"];
-const MOST_POPULAR_VIDEO_IDS = ["wZ0edJjBXvA", "wZ0edJjBXvA", "wZ0edJjBXvA"];
+import { fetchPopularVideos, fetchRecentVideos } from "../api/VideoApi";
+import { useParams } from "react-router-dom";
+import { VideoItemResponse } from "../types/type";
+import Loading from "./Loading";
 
 export default function VideoCompWrapper() {
-  const [currentVideos, setCurrentVideos] = useState(MOST_RECENT_VIDEO_IDS);
+  const [currentVideos, setCurrentVideos] = useState<VideoItemResponse>();
+  const { channelId } = useParams<string>();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const showMostRecent = () => {
-    setCurrentVideos(MOST_RECENT_VIDEO_IDS);
+    if (channelId) {
+      fetchVideos(channelId, "recent");
+    }
   };
 
   const showMostPopular = () => {
-    setCurrentVideos(MOST_POPULAR_VIDEO_IDS);
+    if (channelId) {
+      fetchVideos(channelId, "popular");
+    }
   };
+
+  async function fetchVideos(channelId: string, type: string) {
+    try {
+      let response;
+      setIsLoading(true);
+      if (type == "popular") {
+        response = await fetchPopularVideos(channelId);
+      } else {
+        response = await fetchRecentVideos(channelId);
+      }
+      setIsLoading(false);
+      setCurrentVideos(response);
+    } catch (error) {
+      console.error("Error fetching Video data:", error);
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    if (channelId) {
+      fetchVideos(channelId, "recent");
+    }
+  }, []);
 
   return (
     <div>
@@ -35,7 +65,11 @@ export default function VideoCompWrapper() {
           </div>
         </div>
       </div>
-      <VideoContainer videoIds={currentVideos} />
+      {isLoading ? (
+        <Loading />
+      ) : (
+        currentVideos && <VideoContainer videos={currentVideos} />
+      )}
     </div>
   );
 }

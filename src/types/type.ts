@@ -27,3 +27,15 @@ export type ReviewFormProps = {
     attributes: string[];
   }) => void;
 };
+
+export type VideoItem = {
+  title: string;
+  videoId: string;
+  publishedAt: string;
+  publishedAtRelative: string;
+  viewCount: string;
+  likeCount: string;
+  commentCount: string;
+};
+
+export type VideoItemResponse = VideoItem[];

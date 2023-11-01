@@ -11,6 +11,7 @@ import Youtubelogo from "../assets/youtube.jpg";
 import Loading from "../components/Loading";
 import VideoCompWrapper from "../components/VideoCompWrapper";
 import ReviewForm from "../components/ReviewForm";
+import HorizontalDivider from "../components/HorizontalDivider";
 
 export default function Channel() {
   const { channelId } = useParams<string>();
@@ -174,7 +175,7 @@ export default function Channel() {
                     <img
                       src={Youtubelogo}
                       loading="lazy"
-                      className="h-[4rem] w-[6rem] md:h-[6rem] md:w-[10rem] cursor-pointer hover:scale-[1.1] transition-all dark:bg-white rounded-xl border border-black"
+                      className="h-[4rem] w-[7rem] md:h-[6rem] md:w-[10rem] cursor-pointer hover:scale-[1.1] transition-all dark:bg-white rounded-xl border border-black"
                     ></img>
                   </a>
                 </div>
@@ -182,6 +183,7 @@ export default function Channel() {
             </div>
           </div>
           <VideoCompWrapper />
+          <HorizontalDivider />
           <ReviewForm onSubmit={handleFormSubmission} />
         </>
       )}
