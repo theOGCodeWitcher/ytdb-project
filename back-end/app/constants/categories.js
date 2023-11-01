@@ -41,4 +41,36 @@ const topicToCategory = {
   Vehicle: "automobiles",
   Video_game_culture: "games",
 };
-module.exports = { topicToCategory };
+const categoryMap = {
+  "film & animation": "1",
+  "autos & vehicles": "2",
+  music: "10",
+  animals: "15",
+  sports: "17",
+  travel: "19",
+  games: "20",
+  "people & blogs": "22",
+  comedy: "23",
+  entertainment: "24",
+  news: "25",
+  "howto & style": "26",
+  education: "27",
+  tech: "28",
+  "nonprofits & activism": "29",
+  movies: "30",
+  "anime/animation": "31",
+  "action/adventure": "32",
+  classics: "33",
+  documentary: "35",
+  drama: "36",
+  family: "37",
+  foreign: "38",
+  horror: "39",
+  "sci-fi/fantasy": "40",
+  thriller: "41",
+  shorts: "42",
+  shows: "43",
+  trailers: "44",
+};
+
+module.exports = { topicToCategory, categoryMap };
