@@ -116,11 +116,11 @@ export const Navbar = () => {
           </div>
         </div>
         <div className="flex-none gap-2">
-          <Link to="https://ytdb-backend.onrender.com/login">
+          {/* <Link to="https://ytdb-backend.onrender.com/login">
             <button className="btn btn-sm btn-outline btn-primary">
               Login
             </button>
-          </Link>
+          </Link> */}
           <div className="dropdown dropdown-end">
             <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
               <div className="w-10 rounded-full">
