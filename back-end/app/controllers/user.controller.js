@@ -69,9 +69,9 @@ exports.searchByCriteria = async (req, res) => {
   }
 };
 
-exports.getRandom10Channels = async (req, res) => {
+exports.getTrendingChannels = async (req, res) => {
   try {
-    const channels = await userService.getRandomChannels();
+    const channels = await userService.getTrendingChannels();
     res.status(200).send(channels);
   } catch (error) {
     logger.error("Failed to fetch channels:", error);
