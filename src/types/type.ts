@@ -39,3 +39,12 @@ export type VideoItem = {
 };
 
 export type VideoItemResponse = VideoItem[];
+
+export type ProfileProps = {
+  name?: string;
+  picture?: string;
+  email?: string;
+  bio?: string;
+  age?: number;
+  country?: string;
+};

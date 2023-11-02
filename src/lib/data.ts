@@ -31,3 +31,13 @@ export const cardData = {
   BannerImage:
     "https://yt3.googleusercontent.com/kFMQa0O62RzXuynxGSUUhyJTqnRUBNOSqFxacjikuFzF9P8Z2DTBf_BwM0If-cAv3sUJ-drv",
 };
+
+export const userDataObj = {
+  name: "Rahul Singh",
+  picture:
+    "https://lh3.googleusercontent.com/a/ACg8ocIaFg8q1wSSQUa8ZD_D744LDlJiR_kfAO-zGUkkZ9hB0A=s96-c",
+  email: "irahulsingh04r@gmail.com",
+  bio: "A passionate developer.",
+  age: 28,
+  country: "India",
+};

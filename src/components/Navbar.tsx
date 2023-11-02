@@ -5,19 +5,19 @@ import { search } from "../api/homePageApi";
 import { ChannelItem } from "../types/type";
 import placeholder from "../assets/placeholder.jpg";
 import { useAuth0 } from "@auth0/auth0-react";
+import SearchResultsSkeleton from "./SearchResultsSkeleton";
 
 export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [searchResults, setSearchResults] = useState<ChannelItem[]>([]);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+
   const dropdownRef = useRef<HTMLUListElement | null>(null);
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
   const location = useLocation();
-  console.log(JSON.stringify(user));
 
   const performSearch = async () => {
     try {
-      setIsDropdownOpen(true);
       const results = await search(searchQuery);
       setSearchResults(results);
     } catch (error) {
@@ -29,7 +29,7 @@ export const Navbar = () => {
     if (searchQuery.trim() !== "") {
       const timeoutId = setTimeout(() => {
         performSearch();
-      }, 1500);
+      }, 300);
 
       return () => {
         clearTimeout(timeoutId);
@@ -44,6 +44,7 @@ export const Navbar = () => {
         !dropdownRef.current.contains(event.target as Node)
       ) {
         setIsDropdownOpen(false);
+        setSearchResults([]);
       }
     };
     document.addEventListener("click", handleClickOutside);
@@ -59,6 +60,18 @@ export const Navbar = () => {
     }
   };
 
+  function handleChange(e: any) {
+    setIsDropdownOpen(true);
+    setSearchQuery(e.target.value);
+  }
+
+  useEffect(() => {
+    if (searchQuery.length == 0) {
+      setIsDropdownOpen(false);
+      setSearchResults([]);
+    }
+  }, [searchQuery]);
+
   return (
     <>
       <div className="navbar  shadow-md px-3 relative">
@@ -71,49 +84,58 @@ export const Navbar = () => {
               <input
                 type="text"
                 placeholder="Search Channel"
-                className="input input-bordered md:w-[22rem] w-[12rem] h-9 text-xs"
+                className="input input-bordered md:w-[22rem] w-[12rem] h-9 text-xs focus:outline-none"
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onClick={() => setIsDropdownOpen(true)}
-                onKeyDown={(e) => handleKeyDown(e)}
+                onChange={(e) => {
+                  handleChange(e);
+                }}
+                onKeyDown={(e) => {
+                  handleKeyDown(e);
+                }}
               />
-              {isDropdownOpen && searchResults.length > 0 && (
+              {isDropdownOpen && (
                 <ul
                   ref={dropdownRef}
-                  className="search-dropdown bg-white border border-gray-300 rounded-md shadow-md mt-9 absolute left-0 w-[12rem] md:w-[22rem]   z-[99]"
+                  className="search-dropdown  z-[99] bg-white  dark:bg-gray-800  rounded-md shadow-lg mt-10 absolute left-0 w-[12rem] md:w-[22rem] h-fit   "
                 >
-                  {searchResults.map((result) => (
-                    <li
-                      key={result._id}
-                      className="px-2 py-2 hover:bg-gray-100 transition duration-150 ease-in-out"
-                    >
-                      <Link
-                        to={`/channel/${result.ChannelId}`}
-                        className=""
-                        onClick={() => setIsDropdownOpen(false)}
-                        key={result._id + "ddwd"}
+                  {searchResults.length === 0 ? (
+                    <div>
+                      <SearchResultsSkeleton />
+                    </div>
+                  ) : (
+                    searchResults.map((result) => (
+                      <li
+                        key={result._id}
+                        className="px-2 py-2 dark:hover:bg-gray-900 hover:bg-gray-200 transition duration-150 ease-in-out overflow-hidden"
                       >
-                        <div className="flex gap-4">
-                          <div className="flex items-center justify-center  ">
-                            {result?.Thumbnails && (
-                              <figure className="h-[2rem] w-[2rem] ">
-                                <img
-                                  src={result?.Thumbnails[1] || placeholder}
-                                  alt={""}
-                                  loading="lazy"
-                                  className=""
-                                  key={result._id + "fnjd"}
-                                />
-                              </figure>
-                            )}
+                        <Link
+                          to={`/channel/${result.ChannelId}`}
+                          onClick={() => {
+                            setSearchQuery("");
+                            setIsDropdownOpen(false);
+                          }}
+                        >
+                          <div className="flex gap-4">
+                            <div className="flex items-center justify-center">
+                              {result?.Thumbnails && (
+                                <figure className="h-[2rem] w-[2rem]">
+                                  <img
+                                    src={result?.Thumbnails[1] || placeholder}
+                                    alt=""
+                                    loading="lazy"
+                                    className="rounded-full"
+                                  />
+                                </figure>
+                              )}
+                            </div>
+                            <span className="flex items-center">
+                              {result.Title}
+                            </span>
                           </div>
-                          <span className="flex items-center">
-                            {result.Title}
-                          </span>
-                        </div>
-                      </Link>
-                    </li>
-                  ))}
+                        </Link>
+                      </li>
+                    ))
+                  )}
                 </ul>
               )}
             </div>
@@ -134,32 +156,33 @@ export const Navbar = () => {
               Login
             </button>
           )}
-          <div className="dropdown dropdown-end">
-            <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
-              <div className="w-10 rounded-full">
-                <img src={avatar} alt="User Avatar" />
-              </div>
-            </label>
-            <ul
-              tabIndex={0}
-              className="mt-3 z-[1] p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
-            >
-              <li key={1}>
-                <a className="justify-between">
-                  Profile
-                  <span className="badge">New</span>
-                </a>
-              </li>
-              <li key={2}>
-                <a>Settings</a>
-              </li>
-              {
-                <li key={3}>
-                  <a onClick={() => logout()}>Logout</a>
-                </li>
-              }
-            </ul>
-          </div>
+          {isAuthenticated && (
+            <div className="dropdown dropdown-end">
+              <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
+                <div className="w-10 rounded-full">
+                  <img src={avatar} alt="User Avatar" />
+                </div>
+              </label>
+              <ul
+                tabIndex={0}
+                className="mt-3  p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
+              >
+                <Link to="/profile">
+                  <li key={Math.random() * 10}>
+                    <a className="justify-between">Profile</a>
+                  </li>
+                </Link>
+                {/* <li key={Math.random() * 10}>
+                  <a>Settings</a>
+                </li> */}
+                {
+                  <li key={Math.random() * 10}>
+                    <a onClick={() => logout()}>Logout</a>
+                  </li>
+                }
+              </ul>
+            </div>
+          )}
         </div>
       </div>
     </>
