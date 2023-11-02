@@ -6,7 +6,6 @@ import { ChannelItem } from "../types/type";
 import placeholder from "../assets/placeholder.jpg";
 import { useAuth0 } from "@auth0/auth0-react";
 import SearchResultsSkeleton from "./SearchResultsSkeleton";
-// import { toast } from "react-hot-toast";
 
 export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -73,10 +72,6 @@ export const Navbar = () => {
       setIsDropdownOpen(false);
       setSearchResults([]);
     }
-
-    // if (searchResults == "No results found!") {
-    //   toast.error("No results found!");
-    // }
   }, [searchQuery]);
 
   return (
