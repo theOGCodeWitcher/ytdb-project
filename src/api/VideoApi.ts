@@ -6,8 +6,16 @@ export async function fetchRecentVideos(
 ): Promise<VideoItemResponse> {
   try {
     const response: AxiosResponse<VideoItemResponse> = await axios.get(
-      `https://ytdb-backend.onrender.com/api/general/getRecentVideosByChannelId?channelId=${ChannelId}`
+      `${
+        import.meta.env.VITE_APP_CHANNEL_ENDPOINT
+      }getRecentVideosByChannelId?channelId=${ChannelId}`
     );
+    console.log(
+      `${
+        import.meta.env.VITE_APP_CHANNEL_ENDPOINT
+      }getRecentVideosByChannelId?channelId=`
+    );
+
     return response.data;
   } catch (error) {
     throw error;
@@ -19,7 +27,9 @@ export async function fetchPopularVideos(
 ): Promise<VideoItemResponse> {
   try {
     const response: AxiosResponse<VideoItemResponse> = await axios.get(
-      `https://ytdb-backend.onrender.com/api/general/getPopularVideosByChannelId?channelId=${ChannelId}`
+      `${
+        import.meta.env.VITE_APP_CHANNEL_ENDPOINT
+      }getPopularVideosByChannelId?channelId=${ChannelId}`
     );
     return response.data;
   } catch (error) {
