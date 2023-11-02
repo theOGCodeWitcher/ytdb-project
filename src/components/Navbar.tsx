@@ -7,7 +7,6 @@ import placeholder from "../assets/placeholder.jpg";
 import { useAuth0 } from "@auth0/auth0-react";
 import SearchResultsSkeleton from "./SearchResultsSkeleton";
 import UserContext from "../context/userContext";
-import { getUserData } from "../context/customHooks";
 import { fetchUserWithId } from "../api/UserApi";
 
 export const Navbar = () => {
