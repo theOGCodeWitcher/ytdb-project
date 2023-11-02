@@ -103,6 +103,7 @@ export const Navbar = () => {
                       <SearchResultsSkeleton />
                     </div>
                   ) : (
+                    Array.isArray("searchResults") &&
                     searchResults.map((result) => (
                       <li
                         key={result._id}
