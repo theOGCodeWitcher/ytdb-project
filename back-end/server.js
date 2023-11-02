@@ -16,19 +16,19 @@ const configAuth = {
 };
 
 const config = require("./app/config/");
+
 const logger = config.loggerConfig.logger;
 
 const models = require("./app/models/");
 
 var corsOptions = {
-  origin: [process.env.CORS_ORIGIN_1, process.env.CORS_ORIGIN_2],
+  origin: process.env.CORS_ORIGIN,
 };
 
-app.use(cors(corsOptions));
 const PORT = process.env.SERVER_PORT || 8090;
 
 const app = express();
-
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -91,7 +91,6 @@ models.mongoose
 
 async function initial() {
   try {
-    //const searchResult = await userService.calculateAndUpdateRatings();
   } catch (err) {
     logger.error("Error searching YouTube", err);
   }
