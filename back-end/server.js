@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const { auth } = require("express-openid-connect");
 const process = require("process");
+const axios = require("axios");
+
 require("dotenv").config();
 
 const configAuth = {
@@ -14,32 +16,46 @@ const configAuth = {
 };
 
 const config = require("./app/config/");
-const serverConfig = config.serverConfig;
 const logger = config.loggerConfig.logger;
 
 const models = require("./app/models/");
-const { userService } = require("./app/services");
 
 var corsOptions = {
-  origin: process.env.CORS_ORIGIN,
+  origin: [process.env.CORS_ORIGIN_1, process.env.CORS_ORIGIN_2],
 };
 
+app.use(cors(corsOptions));
 const PORT = process.env.SERVER_PORT || 8090;
 
 const app = express();
-app.use(cors(corsOptions));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(auth(configAuth));
 
 app.get("/", function (req, res) {
-  console.log(req.oidc.isAuthenticated());
+  res.send("Server is up!");
 });
 
 app.listen(PORT, () => {
   logger.info(`Server is running on port ${PORT}.`);
 });
+
+function logMessage() {
+  console.log(`Server is running trying to keep it active!`);
+}
+
+setInterval(async () => {
+  logMessage();
+
+  try {
+    await axios.get(`https://ytdb-backend.onrender.com`);
+    console.log("Self-triggered request sent.");
+  } catch (error) {
+    console.error("Error sending self-triggered request:", error);
+  }
+}, 14 * 60 * 1000);
 
 app.use(async (req, res, next) => {
   try {
@@ -75,13 +91,13 @@ models.mongoose
 
 async function initial() {
   try {
-    const searchResult = await userService.searchYoutube("test");
-    console.log("searchResult:", searchResult);
+    //const searchResult = await userService.calculateAndUpdateRatings();
   } catch (err) {
     logger.error("Error searching YouTube", err);
   }
 }
 
 require("./app/routes/user.routes")(app);
+require("./app/routes/channel.routes")(app);
 
 module.exports = app;

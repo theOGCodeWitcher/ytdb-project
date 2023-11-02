@@ -1,30 +1,108 @@
 const models = require("../../models");
-const { logger } = require("../../config").loggerConfig;
-const { google } = require("googleapis");
-const mongoose = models.mongoose;
-const channelModel = models.channelModel;
-const process = require("process");
+const userModel = models.userModel;
+const reviewModel = models.reviewModel;
+const userService = require("./user.service");
 
-const youtube = google.youtube({
-  version: "v3",
-  auth: process.env.YOUTUBE_API_KEY,
-});
-
-exports.searchYoutube = async (searchQuery) => {
+exports.login = async (userData) => {
   try {
-    console.log("searchQuery:", searchQuery);
-    const response = await youtube.search.list({
-      part: "snippet",
-      q: searchQuery,
-    });
+    const existingUser = await userModel
+      .findOne({ email: userData.email })
+      .exec();
 
-    if (response.data.items) {
-      return response.data.items;
+    if (existingUser) {
+      return existingUser;
     } else {
-      throw new Error("No items found in YouTube search response.");
+      const user = new userModel(userData);
+      const savedUser = await user.save();
+      return savedUser;
     }
-  } catch (err) {
-    logger.error("Error while searching YouTube:", err);
-    throw err;
+  } catch (error) {
+    console.error(`Error creating a user: ${error}`);
+    return null;
   }
+};
+
+exports.getUserProfile = async (userId) => {
+  try {
+    console.log(`Fetching user profile for ID: ${userId}`);
+    const user = await userModel.findById(userId).exec();
+
+    if (user) {
+      return user;
+    } else {
+      console.log(`User not found for ID: ${userId}`);
+      return null;
+    }
+  } catch (error) {
+    console.error(`Error fetching user profile: ${error}`);
+    return null;
+  }
+};
+
+exports.updateUserProfile = async (userId, updatedUserData) => {
+  try {
+    const updatedUser = await userModel
+      .findOneAndUpdate({ _id: userId }, updatedUserData, { new: true })
+      .exec();
+
+    if (updatedUser) {
+      return updatedUser;
+    } else {
+      console.log(`User not found for ID: ${userId}`);
+      return null;
+    }
+  } catch (error) {
+    console.error(`Error updating user profile: ${error}`);
+    return null;
+  }
+};
+
+exports.deleteUserProfile = async (userId) => {
+  try {
+    const deletedUser = await userModel
+      .findOneAndRemove({ _id: userId })
+      .exec();
+
+    if (deletedUser) {
+      return deletedUser;
+    } else {
+      console.log(`User not found for ID: ${userId}`);
+      return null;
+    }
+  } catch (error) {
+    console.error(`Error deleting user profile: ${error}`);
+    return null;
+  }
+};
+
+exports.createReview = async (channelId, userId, rating, review, tags) => {
+  const userReview = {
+    channelId: channelId,
+    userId: userId,
+    rating: rating,
+    review: review,
+    tags: tags,
+  };
+  return reviewModel.create(userReview);
+};
+
+exports.updateReview = async (reviewId, rating, tags, review) => {
+  const updatedReview = {
+    rating: rating,
+    review: review,
+    tags: tags,
+  };
+  return reviewModel.findByIdAndUpdate(reviewId, updatedReview, { new: true });
+};
+
+exports.deleteReview = async (reviewId) => {
+  return reviewModel.findByIdAndDelete(reviewId);
+};
+
+exports.getReviewsByUserId = async (userId) => {
+  return reviewModel.find({ userId: userId });
+};
+
+exports.getReviewsByChannelAndUser = async (channelId, userId) => {
+  return reviewModel.findOne({ channelId: channelId, userId: userId });
 };
