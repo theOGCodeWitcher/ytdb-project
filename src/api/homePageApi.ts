@@ -4,7 +4,7 @@ import { ChannelCollectionResponse } from "../types/type";
 export async function fetchTrending(): Promise<ChannelCollectionResponse> {
   try {
     const response: AxiosResponse<ChannelCollectionResponse> = await axios.get(
-      "https://ytdb-backend.onrender.com/api/general/getTrendingChannels"
+      `${import.meta.env.VITE_APP_CHANNEL_ENDPOINT}getTrendingChannels`
     );
     return response.data;
   } catch (error) {
@@ -17,7 +17,9 @@ export async function fetchAccToCategory(
 ): Promise<ChannelCollectionResponse> {
   try {
     const response: AxiosResponse<ChannelCollectionResponse> = await axios.get(
-      `https://ytdb-backend.onrender.com/api/general/searchByCriteria?key=Category&value=${categoryValue}`
+      `${
+        import.meta.env.VITE_APP_CHANNEL_ENDPOINT
+      }searchByCriteria?key=Category&value=${categoryValue}`
     );
 
     return response.data;
@@ -31,7 +33,7 @@ export async function search(
 ): Promise<ChannelCollectionResponse> {
   try {
     const response: AxiosResponse<ChannelCollectionResponse> = await axios.get(
-      `https://ytdb-backend.onrender.com/api/general/search?keyword=${input}`
+      `${import.meta.env.VITE_APP_CHANNEL_ENDPOINT}search?keyword=${input}`
     );
 
     return response.data;

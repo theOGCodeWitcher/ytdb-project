@@ -4,6 +4,8 @@ import clipDescription, { extractCategories, formatCount } from "../lib/util";
 import { MdOutlinePeopleOutline } from "react-icons/md";
 import { BiSolidVideoPlus } from "react-icons/bi";
 import { Link } from "react-router-dom";
+import placeholder from "../assets/placeholder.jpg";
+import bannerplaceholder from "../assets/bannerplaceholder.jpg";
 
 type CardProps = {
   data: {
@@ -51,9 +53,9 @@ export default function Card({ data }: CardProps) {
               <div
                 className="h-[12rem] bg-center bg-no-repeat brightness-50 "
                 style={{
-                  backgroundImage: data.BannerImage
-                    ? `url(${data.BannerImage || ""})`
-                    : "none",
+                  backgroundImage: `url(${
+                    data.BannerImage || bannerplaceholder
+                  })`,
                 }}
               ></div>
             )}
@@ -61,7 +63,7 @@ export default function Card({ data }: CardProps) {
               {data.Thumbnails && (
                 <figure className="h-[6rem] w-[6rem] rounded-full">
                   <img
-                    src={data.Thumbnails[1] || ""}
+                    src={data.Thumbnails[1] || placeholder}
                     alt={data.imgAlt || "Image"}
                     loading="lazy"
                   />

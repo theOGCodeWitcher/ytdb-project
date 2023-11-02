@@ -78,7 +78,10 @@ export default function Channel() {
                 <div className="flex gap-1 flex-wrap">
                   {categories &&
                     categories.map((item, index) => (
-                      <div key={index} className="badge   p-4 cursor-pointer">
+                      <div
+                        key={index}
+                        className="badge badge-neutral p-3 cursor-pointer"
+                      >
                         {item}
                       </div>
                     ))}

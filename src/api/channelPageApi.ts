@@ -6,7 +6,9 @@ export async function fetchChannelById(
 ): Promise<ChannelItem> {
   try {
     const response: AxiosResponse<ChannelItem> = await axios.get(
-      `https://ytdb-backend.onrender.com/api/general/getChannelById?channelId=${ChannelId}`
+      `${
+        import.meta.env.VITE_APP_CHANNEL_ENDPOINT
+      }getChannelById?channelId=${ChannelId}`
     );
     return response.data;
   } catch (error) {

@@ -34,7 +34,7 @@ export default function ReviewForm({ onSubmit }: ReviewFormProps) {
       <SectionHeading>Add Your Review</SectionHeading>
       {showMessage && <MessageComponent>{Message}</MessageComponent>}
       <form onSubmit={handleSubmit} className="p-4 space-y-4">
-        <div className="flex flex-row gap-16 md:gap-2 md:flex-col">
+        <div className="flex flex-row gap-12 md:gap-2 md:flex-col">
           <p className="mb-2 text-xl pt-1">Overall Rating</p>
           <div>
             {[...Array(5)].map((_, idx) => (
@@ -55,9 +55,8 @@ export default function ReviewForm({ onSubmit }: ReviewFormProps) {
             ))}
           </div>
         </div>
-
-        <div>
-          <p className="mb-2">What best describes this channel?</p>
+        <p className="mb-2">What best describes this channel?</p>
+        <div className="flex flex-col h-[15rem] flex-wrap">
           {[
             "Informative",
             "Engaging",
@@ -69,11 +68,13 @@ export default function ReviewForm({ onSubmit }: ReviewFormProps) {
             "Whimsical",
             "Heartwarming",
             "Challenging",
+            "Dull",
+            "Superficial",
+            "Predictable",
+            "Disjointed",
+            "Monotonous",
           ].map((attr) => (
-            <label
-              key={attr}
-              className="mr-4 inline-flex items-center w-[19rem]"
-            >
+            <label key={attr} className="mr-4 inline-flex items-center">
               <input
                 type="checkbox"
                 value={attr}
@@ -88,6 +89,7 @@ export default function ReviewForm({ onSubmit }: ReviewFormProps) {
 
         <div>
           <textarea
+            name="review"
             placeholder="Please! Add Your Review"
             rows={4}
             value={comment}
