@@ -6,7 +6,7 @@ import { ChannelItem } from "../types/type";
 import placeholder from "../assets/placeholder.jpg";
 import { useAuth0 } from "@auth0/auth0-react";
 import SearchResultsSkeleton from "./SearchResultsSkeleton";
-import { toast } from "react-hot-toast";
+// import { toast } from "react-hot-toast";
 
 export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -74,12 +74,10 @@ export const Navbar = () => {
       setSearchResults([]);
     }
 
-    if (searchResults === "No results found!") {
-      toast.error("No results found!");
-    }
+    // if (searchResults == "No results found!") {
+    //   toast.error("No results found!");
+    // }
   }, [searchQuery]);
-
-  console.log(searchResults);
 
   return (
     <>
@@ -167,7 +165,7 @@ export const Navbar = () => {
             </button>
           )}
           {isAuthenticated && (
-            <div className="dropdown dropdown-end">
+            <div className="dropdown dropdown-end z-[999]">
               <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                 <div className="w-10 rounded-full">
                   <img src={avatar} alt="User Avatar" />

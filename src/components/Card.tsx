@@ -49,7 +49,7 @@ export default function Card({ data }: CardProps) {
       <Link to={`/channel/${data.ChannelId}`}>
         <div className="card h-[32rem] w-[16rem] md:w-[18rem] md:h-[32rem] dark:bg-gray-800 shadow-2xl overflow-hidden cursor-pointer md:hover:scale-[1.04]   transition">
           <div className="relative  transition">
-            {data.BannerImage && (
+            {data.BannerImage ? (
               <div
                 className="h-[12rem] bg-center bg-no-repeat brightness-50 "
                 style={{
@@ -58,12 +58,27 @@ export default function Card({ data }: CardProps) {
                   })`,
                 }}
               ></div>
+            ) : (
+              <div
+                className="h-[12rem] bg-center bg-no-repeat brightness-50 "
+                style={{
+                  backgroundImage: `url(${bannerplaceholder})`,
+                }}
+              ></div>
             )}
             <div className="absolute inset-0 flex items-center justify-center ">
-              {data.Thumbnails && (
+              {data.Thumbnails ? (
                 <figure className="h-[6rem] w-[6rem] rounded-full">
                   <img
                     src={data.Thumbnails[1] || placeholder}
+                    alt={data.imgAlt || "Image"}
+                    loading="lazy"
+                  />
+                </figure>
+              ) : (
+                <figure className="h-[6rem] w-[6rem] rounded-full">
+                  <img
+                    src={placeholder}
                     alt={data.imgAlt || "Image"}
                     loading="lazy"
                   />
