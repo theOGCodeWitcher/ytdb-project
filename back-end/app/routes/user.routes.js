@@ -5,7 +5,7 @@ const config = require("../config");
 const endPointConfig = config.endPointConfig;
 
 module.exports = function (app) {
-  app.get(endPointConfig.userEndpoint + "/login", userController.login);
+  app.post(endPointConfig.userEndpoint + "/login", userController.login);
   app.get(
     endPointConfig.userEndpoint + "/getUserProfile",
     userController.getUserProfile
