@@ -22,17 +22,13 @@ const logger = config.loggerConfig.logger;
 const models = require("./app/models/");
 
 var corsOptions = {
-  origin: [
-    process.env.CORS_ORIGIN_1,
-    process.env.CORS_ORIGIN_2,
-    process.env.CORS_ORIGIN_3,
-  ],
+  origin: process.env.CORS_ORIGIN,
 };
 
 const PORT = process.env.SERVER_PORT || 8090;
 
 const app = express();
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
