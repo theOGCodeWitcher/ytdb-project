@@ -7,7 +7,7 @@ const userSchema = new mongoose.Schema({
   bio: String,
   age: Number,
   ytdbUsername: String,
-  name: String,
+  country: String,
   picture: String,
   locale: String,
   updated_at: Date,
