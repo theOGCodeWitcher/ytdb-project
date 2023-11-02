@@ -3,7 +3,7 @@ import { ChannelItem } from "../types/type";
 
 export async function fetchChannelById(
   ChannelId: string,
-  id: string
+  id?: string
 ): Promise<ChannelItem> {
   try {
     const response: AxiosResponse<ChannelItem> = await axios.get(

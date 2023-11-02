@@ -75,7 +75,9 @@ export function Profile() {
           </div>
         )}
         <div className="flex justify-between">
-          <h2 className="text-2xl font-semibold ">{userData.name}</h2>
+          <h2 className=" text-xl md:text-2xl font-semibold ">
+            {userData.name}
+          </h2>
           <p className="text font-semibold pt-1 ">Email: {userData.email}</p>
         </div>
 

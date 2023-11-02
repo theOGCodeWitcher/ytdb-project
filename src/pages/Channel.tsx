@@ -13,6 +13,7 @@ import VideoCompWrapper from "../components/VideoCompWrapper";
 import ReviewForm from "../components/ReviewForm";
 import HorizontalDivider from "../components/HorizontalDivider";
 import { getUserID_db } from "../context/customHooks";
+import { BsBalloonHeartFill, BsFillBookmarkStarFill } from "react-icons/bs";
 
 export default function Channel() {
   const { channelId } = useParams<string>();
@@ -29,20 +30,22 @@ export default function Channel() {
           let data: ChannelItem;
           if (id) {
             data = await fetchChannelById(channelId, id);
-            setchannelData(data);
-            setIsLoading(false);
-            if (data.TopicCategories) {
-              const categories = extractCategories(data.TopicCategories);
-              setcategories(categories);
-            }
-            if (data.Category) {
-              setcategories((prevVal) => {
-                if (prevVal && data.Category) {
-                  return [...prevVal, data.Category];
-                }
-                return prevVal || [];
-              });
-            }
+          } else {
+            data = await fetchChannelById(channelId, "");
+          }
+          setchannelData(data);
+          setIsLoading(false);
+          if (data.TopicCategories) {
+            const categories = extractCategories(data.TopicCategories);
+            setcategories(categories);
+          }
+          if (data.Category) {
+            setcategories((prevVal) => {
+              if (prevVal && data.Category) {
+                return [...prevVal, data.Category];
+              }
+              return prevVal || [];
+            });
           }
         } catch (error) {
           console.error("Error fetching channel data:", error);
@@ -116,23 +119,16 @@ export default function Channel() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-4 md:gap-8 items-center flex-shrink-0 ">
-                  <button className="btn btn-secondary btn-outline   btn-sm md:btn-bas w-full">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="h-6 w-6"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      stroke="currentColor"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth="2"
-                        d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"
-                      />
-                    </svg>
-                    Add to Favourite
-                  </button>
+                  <div className="flex w-full gap-[5rem] md:gap-4">
+                    <button className="btn btn-secondary btn-outline ml-4  btn-sm md:btn-bas ">
+                      <BsBalloonHeartFill size={20} />
+                      Favourite
+                    </button>
+                    <button className="btn btn-warning btn-outline   btn-sm md:btn-bas ">
+                      <BsFillBookmarkStarFill size={20} />
+                      wishlist
+                    </button>
+                  </div>
                   <div className="pb-4">
                     <a
                       href={`https://www.youtube.com/${channelData?.Username}`}
