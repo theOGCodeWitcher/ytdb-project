@@ -12,32 +12,37 @@ import Loading from "../components/Loading";
 import VideoCompWrapper from "../components/VideoCompWrapper";
 import ReviewForm from "../components/ReviewForm";
 import HorizontalDivider from "../components/HorizontalDivider";
+import { getUserID_db } from "../context/customHooks";
 
 export default function Channel() {
   const { channelId } = useParams<string>();
   const [channelData, setchannelData] = useState<ChannelItem>();
   const [categories, setcategories] = useState<string[] | undefined>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const id = getUserID_db();
 
   useEffect(() => {
     async function fetchchannelData() {
       if (channelId) {
         try {
           setIsLoading(true);
-          const data = await fetchChannelById(channelId);
-          setchannelData(data);
-          setIsLoading(false);
-          if (data.TopicCategories) {
-            const categories = extractCategories(data.TopicCategories);
-            setcategories(categories);
-          }
-          if (data.Category) {
-            setcategories((prevVal) => {
-              if (prevVal && data.Category) {
-                return [...prevVal, data.Category];
-              }
-              return prevVal || [];
-            });
+          let data: ChannelItem;
+          if (id) {
+            data = await fetchChannelById(channelId, id);
+            setchannelData(data);
+            setIsLoading(false);
+            if (data.TopicCategories) {
+              const categories = extractCategories(data.TopicCategories);
+              setcategories(categories);
+            }
+            if (data.Category) {
+              setcategories((prevVal) => {
+                if (prevVal && data.Category) {
+                  return [...prevVal, data.Category];
+                }
+                return prevVal || [];
+              });
+            }
           }
         } catch (error) {
           console.error("Error fetching channel data:", error);

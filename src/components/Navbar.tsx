@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import avatar from "../assets/profile.jpg";
 import { Link, useLocation } from "react-router-dom";
 import { search } from "../api/homePageApi";
@@ -6,6 +6,9 @@ import { ChannelItem } from "../types/type";
 import placeholder from "../assets/placeholder.jpg";
 import { useAuth0 } from "@auth0/auth0-react";
 import SearchResultsSkeleton from "./SearchResultsSkeleton";
+import UserContext from "../context/userContext";
+import { getUserData } from "../context/customHooks";
+import { fetchUserWithId } from "../api/UserApi";
 
 export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -13,10 +16,11 @@ export const Navbar = () => {
     []
   );
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
+  const { setuserData } = useContext(UserContext); //context api
+  const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
+  const location = useLocation();
 
   const dropdownRef = useRef<HTMLUListElement | null>(null);
-  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
-  const location = useLocation();
 
   const performSearch = async () => {
     try {
@@ -40,6 +44,19 @@ export const Navbar = () => {
   }, [searchQuery]);
 
   useEffect(() => {
+    if (isAuthenticated && user) {
+      const fetchUser = async () => {
+        try {
+          const obj = await fetchUserWithId(user);
+          console.log(obj._id);
+          setuserData(obj);
+        } catch (error) {
+          console.error("Error fetching UserData:", error);
+        }
+      };
+      fetchUser();
+    }
+
     const handleClickOutside = (event: globalThis.MouseEvent) => {
       if (
         dropdownRef.current &&
@@ -54,7 +71,7 @@ export const Navbar = () => {
     return () => {
       document.removeEventListener("click", handleClickOutside);
     };
-  }, []);
+  }, [isAuthenticated]);
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if (e.key === "Enter") {

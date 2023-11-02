@@ -40,6 +40,19 @@ export type VideoItem = {
 
 export type VideoItemResponse = VideoItem[];
 
+export type User = {
+  given_name?: string;
+  family_name?: string;
+  nickname?: string;
+  name?: string;
+  picture?: string;
+  locale?: string;
+  updated_at?: string; // Alternatively, you can also use Date if this string is always in a date format.
+  email?: string;
+  email_verified?: boolean;
+  sub?: string;
+  _id?: string;
+};
 export type ProfileProps = {
   name?: string;
   picture?: string;
@@ -47,4 +60,5 @@ export type ProfileProps = {
   bio?: string;
   age?: number;
   country?: string;
+  ytdbUsername?: string;
 };
