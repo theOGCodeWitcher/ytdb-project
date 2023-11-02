@@ -13,7 +13,7 @@ export const Navbar = () => {
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
   const dropdownRef = useRef<HTMLUListElement | null>(null);
-  const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
+  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
   const location = useLocation();
 
   const performSearch = async () => {
