@@ -178,7 +178,7 @@ exports.search = async (query) => {
       console.log(
         "Query added to bad searches cache. Returning 'No results found!'"
       );
-      return ["No results found!"];
+      return "No results found!";
     }
   } catch (error) {
     console.error("Error performing YouTube channel search:", error);
