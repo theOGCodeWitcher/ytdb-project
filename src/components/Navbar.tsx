@@ -6,10 +6,13 @@ import { ChannelItem } from "../types/type";
 import placeholder from "../assets/placeholder.jpg";
 import { useAuth0 } from "@auth0/auth0-react";
 import SearchResultsSkeleton from "./SearchResultsSkeleton";
+import { toast } from "react-hot-toast";
 
 export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [searchResults, setSearchResults] = useState<ChannelItem[]>([]);
+  const [searchResults, setSearchResults] = useState<ChannelItem[] | string>(
+    []
+  );
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
 
   const dropdownRef = useRef<HTMLUListElement | null>(null);
@@ -70,7 +73,13 @@ export const Navbar = () => {
       setIsDropdownOpen(false);
       setSearchResults([]);
     }
+
+    if (searchResults === "No results found!") {
+      toast.error("No results found!");
+    }
   }, [searchQuery]);
+
+  console.log(searchResults);
 
   return (
     <>
@@ -103,7 +112,7 @@ export const Navbar = () => {
                       <SearchResultsSkeleton />
                     </div>
                   ) : (
-                    Array.isArray("searchResults") &&
+                    Array.isArray(searchResults) &&
                     searchResults.map((result) => (
                       <li
                         key={result._id}
