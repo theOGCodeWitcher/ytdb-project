@@ -24,7 +24,10 @@ exports.getSearchResults = async (req, res) => {
 
 exports.getChannelById = async (req, res) => {
   try {
-    const results = await channelService.getChannelById(req.query.channelId);
+    const results = await channelService.getChannelById(
+      req.query.channelId,
+      req.query.userId
+    );
     res.status(200).send(results);
   } catch (error) {
     logger.error("Failed to fetch results:", error);

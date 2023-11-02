@@ -4,6 +4,7 @@ const { google } = require("googleapis");
 const channelModel = models.channelModel;
 const Cache = models.cacheModel;
 const reviewModel = models.reviewModel;
+const userModel = models.userModel;
 const process = require("process");
 const channelService = require("./channel.service");
 const moment = require("moment");
@@ -70,7 +71,6 @@ async function fetchPopularVideosAndChannels(videoCategoryId) {
 
     if (!processedChannels.has(channelId)) {
       const channel = await channelService.getChannelById(channelId);
-      //console.log("channel*******************", channel);
       results.push(channel);
       processedChannels.add(channelId);
     }
@@ -186,13 +186,29 @@ exports.search = async (query) => {
   }
 };
 
-exports.getChannelById = async (channelId) => {
+exports.getChannelById = async (channelId, userId) => {
   try {
     const existingChannel = await channelModel
       .findOne({
         ChannelId: channelId,
       })
       .exec();
+    if (userId) {
+      const user = await userModel.findById(userId).exec();
+      if (user) {
+        if (!user.channelsBrowsed || !(user.channelsBrowsed instanceof Map)) {
+          user.channelsBrowsed = new Map();
+        }
+        const channelsBrowsed = user.channelsBrowsed;
+        if (channelsBrowsed.has(channelId)) {
+          channelsBrowsed.set(channelId, new Date());
+        } else {
+          channelsBrowsed.set(channelId, new Date());
+        }
+        user.save();
+      }
+    }
+
     if (!existingChannel) {
       console.log(`Channel with ID ${channelId} not found.`);
       return await fetchAndCreateOrUpdateChannelAsync(

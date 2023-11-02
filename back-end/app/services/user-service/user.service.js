@@ -7,6 +7,7 @@ exports.login = async (userData) => {
   try {
     const existingUser = await userModel
       .findOne({ email: userData.email })
+      .select("-channelsBrowsed") // Exclude the channelsBrowsed field
       .exec();
 
     if (existingUser) {
@@ -25,7 +26,10 @@ exports.login = async (userData) => {
 exports.getUserProfile = async (userId) => {
   try {
     console.log(`Fetching user profile for ID: ${userId}`);
-    const user = await userModel.findById(userId).exec();
+    const user = await userModel
+      .findById(userId)
+      .select("-channelsBrowsed") // Exclude the channelsBrowsed field
+      .exec();
 
     if (user) {
       return user;

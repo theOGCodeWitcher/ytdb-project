@@ -11,6 +11,7 @@ const userSchema = new mongoose.Schema({
   email: String,
   email_verified: Boolean,
   sub: String,
+  channelsBrowsed: Map,
 });
 
 const user = mongoose.model("User", userSchema);
