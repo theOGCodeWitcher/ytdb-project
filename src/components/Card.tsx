@@ -47,7 +47,7 @@ export default function Card({ data }: CardProps) {
   return (
     <>
       <Link to={`/channel/${data.ChannelId}`}>
-        <div className="card h-[32rem] w-[16rem] md:w-[18rem] md:h-[32rem] dark:bg-gray-800 shadow-2xl overflow-hidden cursor-pointer hover:scale-[1.04]   transition">
+        <div className="card h-[32rem] w-[16rem] md:w-[18rem] md:h-[32rem] dark:bg-gray-800 shadow-2xl overflow-hidden cursor-pointer md:hover:scale-[1.04]   transition">
           <div className="relative  transition">
             {data.BannerImage && (
               <div
