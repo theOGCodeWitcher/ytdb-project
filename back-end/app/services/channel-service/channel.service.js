@@ -369,13 +369,15 @@ function calculateWeightedRating(
   const overallRating = weightedSum * 5;
   return Math.min(5, overallRating); // Cap the rating at 5
 }
-
 exports.getRecentVideosByChannelId = async (channelId) => {
+  const existingChannel = await channelModel
+    .findOne({ ChannelId: channelId })
+    .exec();
   try {
-    const existingChannel = await channelModel
-      .findOne({ ChannelId: channelId })
-      .exec();
-
+    // const existingChannel = await channelModel
+    //   .findOne({ ChannelId: channelId })
+    //   .exec();
+    console.log("existingChannel", existingChannel);
     const response = await youtube.channels.list({
       part: "snippet,statistics,brandingSettings,topicDetails,contentDetails",
       id: channelId,
@@ -385,6 +387,10 @@ exports.getRecentVideosByChannelId = async (channelId) => {
 
     if (!youtubeData) {
       console.log(`Channel with ID ${channelId} not found.`);
+      // If YouTube data is not found, check if existing channel has recent videos
+      if (existingChannel && existingChannel.RecentVideos) {
+        return existingChannel.RecentVideos;
+      }
       return null;
     }
 
@@ -424,6 +430,11 @@ exports.getRecentVideosByChannelId = async (channelId) => {
     console.error(
       `Error updating/inserting channel data for ${channelId}: ${error}`
     );
+
+    // Check if existing channel has recent videos and return them
+    if (existingChannel && existingChannel.RecentVideos) {
+      return existingChannel.RecentVideos;
+    }
     return null;
   }
 };
