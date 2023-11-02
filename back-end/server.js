@@ -100,5 +100,6 @@ async function initial() {
 }
 
 require("./app/routes/user.routes")(app);
+require("./app/routes/channel.routes")(app);
 
 module.exports = app;

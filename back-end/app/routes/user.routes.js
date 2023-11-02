@@ -5,32 +5,37 @@ const config = require("../config");
 const endPointConfig = config.endPointConfig;
 
 module.exports = function (app) {
+  app.get(endPointConfig.userEndpoint + "/login", userController.login);
   app.get(
-    endPointConfig.generalEndpoint + "/getAllChannels",
-    userController.getAllChannels
+    endPointConfig.userEndpoint + "/getUserProfile",
+    userController.getUserProfile
+  );
+  app.put(
+    endPointConfig.userEndpoint + "/updateUserProfile",
+    userController.updateUserProfile
+  );
+  app.delete(
+    endPointConfig.userEndpoint + "/deleteUserProfile",
+    userController.deleteUserProfile
+  );
+  app.post(
+    endPointConfig.userEndpoint + "/createReview",
+    userController.createReview
+  );
+  app.put(
+    endPointConfig.userEndpoint + "/updateReview/",
+    userController.updateReview
+  );
+  app.delete(
+    endPointConfig.userEndpoint + "/deleteReview/",
+    userController.deleteReview
   );
   app.get(
-    endPointConfig.generalEndpoint + "/search",
-    userController.getSearchResults
+    endPointConfig.userEndpoint + "/getReviewsByUserId/",
+    userController.getReviewsByUserId
   );
   app.get(
-    endPointConfig.generalEndpoint + "/getChannelById",
-    userController.getChannelById
-  );
-  app.get(
-    endPointConfig.generalEndpoint + "/searchByCriteria",
-    userController.searchByCriteria
-  );
-  app.get(
-    endPointConfig.generalEndpoint + "/getTrendingChannels",
-    userController.getTrendingChannels
-  );
-  app.get(
-    endPointConfig.generalEndpoint + "/getRecentVideosByChannelId",
-    userController.getRecentVideosByChannelId
-  );
-  app.get(
-    endPointConfig.generalEndpoint + "/getPopularVideosByChannelId",
-    userController.getPopularVideosByChannelId
+    endPointConfig.userEndpoint + "/getReviewsByChannelAndUser/",
+    userController.getReviewByChannelAndUser
   );
 };
