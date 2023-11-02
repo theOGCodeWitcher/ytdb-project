@@ -169,7 +169,7 @@ export const Navbar = () => {
               >
                 <Link to="/profile">
                   <li key={Math.random() * 10}>
-                    <a className="justify-between">Profile</a>
+                    <span className="justify-between">Profile</span>
                   </li>
                 </Link>
                 {/* <li key={Math.random() * 10}>

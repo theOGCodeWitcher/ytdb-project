@@ -7,12 +7,6 @@ export const Auth0ProviderWithNavigate = ({ children }: any) => {
   const domain = import.meta.env.VITE_APP_AUTH0_DOMAIN;
   const clientId = import.meta.env.VITE_APP_CLIENT_ID;
 
-  console.log(
-    `${
-      import.meta.env.VITE_APP_CHANNEL_ENDPOINT
-    }getRecentVideosByChannelId?channelId=`
-  );
-
   const onRedirectCallback = (appState: any) => {
     navigate(appState?.returnTo || window.location.pathname);
   };

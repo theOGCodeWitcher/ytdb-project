@@ -10,12 +10,6 @@ export async function fetchRecentVideos(
         import.meta.env.VITE_APP_CHANNEL_ENDPOINT
       }getRecentVideosByChannelId?channelId=${ChannelId}`
     );
-    console.log(
-      `${
-        import.meta.env.VITE_APP_CHANNEL_ENDPOINT
-      }getRecentVideosByChannelId?channelId=`
-    );
-
     return response.data;
   } catch (error) {
     throw error;
