@@ -176,7 +176,7 @@ export const Navbar = () => {
             </button>
           )}
           {isAuthenticated && (
-            <div className="dropdown dropdown-end z-[999]">
+            <div className="dropdown dropdown-end z-[999] ">
               <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                 <div className="w-10 rounded-full">
                   <img src={avatar} alt="User Avatar" />
@@ -184,18 +184,20 @@ export const Navbar = () => {
               </label>
               <ul
                 tabIndex={0}
-                className="mt-3  p-2 shadow menu menu-sm dropdown-content bg-base-100 rounded-box w-52"
+                className="mt-3  p-2  menu menu-sm dropdown-content bg-base-100 rounded-box w-52 shadow-xl"
               >
                 <Link to="/profile">
-                  <li key={Math.random() * 10}>
+                  <li key={1}>
                     <span className="justify-between">Profile</span>
                   </li>
                 </Link>
-                {/* <li key={Math.random() * 10}>
-                  <a>Settings</a>
-                </li> */}
+                <Link to="/wishlist&favourites">
+                  <li key={2}>
+                    <span>Wishlist & Favourites</span>
+                  </li>
+                </Link>
                 {
-                  <li key={Math.random() * 10}>
+                  <li key={3}>
                     <a onClick={() => logout()}>Logout</a>
                   </li>
                 }

@@ -41,3 +41,18 @@ export const userDataObj = {
   age: 28,
   country: "India",
 };
+
+export const reviewTags = [
+  "Informative  📚",
+  "Engaging  🎉",
+  "Authentic  🙌",
+  "Insightful  💡",
+  "Dull  😴",
+  "Superficial  💅",
+  "Predictable  🙄",
+  "Lengthy  🕒",
+  "Versatile  🔄",
+  "Well-rounded  ⚖️",
+  "Comprehensive  🌐",
+  "All-encompassing  ☯️",
+];
