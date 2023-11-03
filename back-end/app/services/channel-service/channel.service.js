@@ -285,6 +285,7 @@ async function fetchAndCreateOrUpdateChannelCommon(channelId) {
       const topicMatch = topicCategory.match(/\/wiki\/(.+)$/);
       if (topicMatch && topicMatch[1]) {
         const topic = topicMatch[1];
+        ExtractedCategories.add(topic);
         const category = topicToCategory[topic];
         if (category) {
           ExtractedCategories.add(category);
@@ -590,15 +591,17 @@ exports.getReviewsByChannelId = async (channelId) => {
 exports.getSimilarChannelsDetails = async (channelId) => {
   try {
     const similarChannels = await findSimilarChannels(channelId);
-    const similarChannelIds = similarChannels.map(
-      (channel) => channel.ChannelId
-    );
+    console.log("similarChannels", similarChannels);
 
-    const similarChannelsDetails = await channelModel
-      .find({ ChannelId: { $in: similarChannelIds } })
-      .exec();
+    const results = [];
+    for (const channelId of similarChannels) {
+      const channel = await channelModel
+        .findOne({ ChannelId: channelId })
+        .exec();
+      results.push(channel);
+    }
 
-    return similarChannelsDetails;
+    return results;
   } catch (error) {
     console.error(`Error getting details of similar channels: ${error}`);
     return [];
@@ -612,33 +615,44 @@ async function findSimilarChannels(channelId) {
 
     if (
       !channel ||
-      !channel.ExtractedCategories ||
-      channel.ExtractedCategories.length === 0
+      !channel.TopicCategories ||
+      channel.TopicCategories.length === 0
     ) {
       return [];
     }
 
-    const similarChannelsArray = [];
-
-    for (const category of channel.ExtractedCategories) {
+    const channelCounts = new Map();
+    for (const category of channel.TopicCategories) {
       const matchingChannels = await channelModel
         .find({
-          ExtractedCategories: category,
-          ChannelId: { $ne: channelId }, // Exclude the current channel
+          TopicCategories: category,
+          ChannelId: { $ne: channelId },
         })
-        .sort({ Rating: -1 }) // Sort by rating in descending order
+        .sort({ Rating: -1 })
         .limit(15)
         .exec();
 
       for (const matchingChannel of matchingChannels) {
-        similarChannelsArray.push(matchingChannel);
-        if (similarChannelsArray.length >= MAX_RESULT_SIZE) {
-          break;
+        if (!channelCounts.has(matchingChannel.ChannelId)) {
+          channelCounts.set(matchingChannel.ChannelId, 0);
         }
+
+        channelCounts.set(
+          matchingChannel.ChannelId,
+          channelCounts.get(matchingChannel.ChannelId) + 1
+        );
       }
     }
 
+    const sortedChannels = [...channelCounts.entries()].sort(
+      (a, b) => b[1] - a[1]
+    );
+    const similarChannelsArray = sortedChannels
+      .slice(0, MAX_RESULT_SIZE)
+      .map((entry) => entry[0]);
+
     shuffleArray(similarChannelsArray);
+    console.log("similarChannelsArray", similarChannelsArray);
     return getRandomChannels(similarChannelsArray, 5);
   } catch (error) {
     console.error(`Error finding similar channels: ${error}`);
