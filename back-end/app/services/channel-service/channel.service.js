@@ -553,6 +553,36 @@ function createChannel(channelData) {
   }
 }
 
+// exports.getReviewsByChannelId = async (channelId) => {
+//   return reviewModel.find({ channelId: channelId });
+// };
+
 exports.getReviewsByChannelId = async (channelId) => {
-  return reviewModel.find({ channelId: channelId });
+  try {
+    const reviews = await reviewModel.find({ channelId: channelId });
+    const reviewsWithUserInfo = [];
+    for (const review of reviews) {
+      const userId = review.userId;
+
+      const user = await userModel.findById(userId);
+
+      if (user) {
+        const userName = user.name;
+        const ytdbUsername = user.ytdbUsername;
+
+        const reviewWithUserInfo = {
+          review: review,
+          userName: userName,
+          ytdbUsername: ytdbUsername,
+        };
+
+        reviewsWithUserInfo.push(reviewWithUserInfo);
+      }
+    }
+
+    return reviewsWithUserInfo;
+  } catch (error) {
+    console.error(`Error getting reviews with user info: ${error}`);
+    return [];
+  }
 };
