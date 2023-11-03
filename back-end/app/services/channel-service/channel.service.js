@@ -277,6 +277,7 @@ async function fetchAndCreateOrUpdateChannelCommon(channelId) {
     );
   }
 
+  const updatedCategories = new Set();
   if (youtubeData.topicDetails !== undefined) {
     newChannelData.topicCategories = youtubeData.topicDetails.topicCategories;
     const ExtractedCategories = new Set();
@@ -285,6 +286,7 @@ async function fetchAndCreateOrUpdateChannelCommon(channelId) {
       const topicMatch = topicCategory.match(/\/wiki\/(.+)$/);
       if (topicMatch && topicMatch[1]) {
         const topic = topicMatch[1];
+        updatedCategories.add(topic.replace(/_/g, " "));
         ExtractedCategories.add(topic);
         const category = topicToCategory[topic];
         if (category) {
@@ -292,6 +294,7 @@ async function fetchAndCreateOrUpdateChannelCommon(channelId) {
         }
       }
     }
+    newChannelData.TopicCategories = Array.from(updatedCategories);
 
     newChannelData.ExtractedCategories = Array.from(ExtractedCategories);
   }
