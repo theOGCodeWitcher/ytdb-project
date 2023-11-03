@@ -21,7 +21,7 @@ exports.getUserProfile = async (req, res) => {
     if (user) {
       res.status(200).send(user);
     } else {
-      res.status(404).send("User not found");
+      res.status(200).send("User not found");
     }
   } catch (error) {
     logger.error("Failed to fetch user:", error);
@@ -42,7 +42,7 @@ exports.updateUserProfile = async (req, res) => {
     if (updatedUser) {
       res.status(200).send(updatedUser);
     } else {
-      res.status(404).send("User not found");
+      res.status(200).send("User not found");
     }
   } catch (error) {
     logger.error("Failed to update user profile:", error);
@@ -59,7 +59,7 @@ exports.deleteUserProfile = async (req, res) => {
     if (deletedUser) {
       res.status(200).send("User deleted successfully");
     } else {
-      res.status(404).send("User not found");
+      res.status(200).send("User not found");
     }
   } catch (error) {
     logger.error("Failed to delete user profile:", error);
@@ -141,7 +141,7 @@ exports.getReviewByChannelAndUser = async (req, res) => {
     if (review) {
       res.status(200).send(review);
     } else {
-      res.status(404).send("Review not found");
+      res.status(200).send("Review not found");
     }
   } catch (error) {
     logger.error("Failed to fetch review:", error);
