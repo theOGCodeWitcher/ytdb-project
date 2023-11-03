@@ -1,6 +1,6 @@
 export function ReviewCard({ userName, rating, review, tags }: any) {
   return (
-    <div className=" relative p-6 rounded-lg shadow-lg max-w-md mx-auto bg-gray-100 dark:bg-gray-800 w-[24rem] h-[15rem] gap-8 my-2">
+    <div className=" relative p-6 rounded-lg shadow-lg max-w-md mx-auto bg-gray-100 dark:bg-gray-800 w-[20rem] md:w-[24rem] h-[15rem] gap-8 my-2">
       <div className="flex items-center mb-4">
         {[...Array(5)].map((_, idx) => (
           <span
