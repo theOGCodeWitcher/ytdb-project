@@ -3,7 +3,7 @@ const cors = require("cors");
 const { auth } = require("express-openid-connect");
 const process = require("process");
 const axios = require("axios");
-
+const userService = require("./app/services/user-service/user.service");
 require("dotenv").config();
 
 const configAuth = {
@@ -91,6 +91,10 @@ models.mongoose
 
 async function initial() {
   try {
+    // const res = await userService.getRecommendations(
+    //   "654408cc9092fcc92016827b"
+    // );
+    // console.log("Final*********", res);
   } catch (err) {
     logger.error("Error searching YouTube", err);
   }
