@@ -33,7 +33,7 @@ export default function OwnReview() {
   }, [channelId, userId]);
 
   return (
-    <div className="flex flex-col gap-8 item-center w-1/2">
+    <div className="flex flex-col gap-8 item-center md:w-1/2 px-8">
       <SectionHeading>My Review</SectionHeading>
       {reviewsData &&
         (isLoadingReview ? (
