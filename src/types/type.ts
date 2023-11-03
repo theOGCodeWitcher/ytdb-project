@@ -20,12 +20,16 @@ export type ChannelItem = {
 
 export type ChannelCollectionResponse = ChannelItem[];
 
+export type ReviewFormData = {
+  channelId: string;
+  rating: number;
+  tags: string[];
+  review: string;
+  userId: string;
+};
+
 export type ReviewFormProps = {
-  onSubmit: (formData: {
-    rating: number;
-    comment: string;
-    attributes: string[];
-  }) => void;
+  onSubmit: (data: ReviewFormData) => void;
 };
 
 export type VideoItem = {
@@ -61,4 +65,10 @@ export type ProfileProps = {
   age?: number;
   country?: string;
   ytdbUsername?: string;
+};
+
+export type ReviewCardProps = {
+  review: { id: string; rating: number; review: string; tags: string[] };
+  userName: string;
+  ytdbUsername: string;
 };

@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
-import { fetchChannelById } from "../api/channelPageApi";
+import { fetchChannelById, postReview } from "../api/channelPageApi";
 import { useParams } from "react-router-dom";
-import { ChannelItem } from "../types/type";
+import { ChannelItem, ReviewFormData } from "../types/type";
 import { RatingComp } from "../components/Rating";
 import { extractCategories, formatCount } from "../lib/util";
 import { MdOutlinePeopleOutline } from "react-icons/md";
@@ -14,6 +14,7 @@ import ReviewForm from "../components/ReviewForm";
 import HorizontalDivider from "../components/HorizontalDivider";
 import { getUserID_db } from "../context/customHooks";
 import { BsBalloonHeartFill, BsFillBookmarkStarFill } from "react-icons/bs";
+import ReviewContainer from "../components/ReviewContainer";
 
 export default function Channel() {
   const { channelId } = useParams<string>();
@@ -22,47 +23,51 @@ export default function Channel() {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const id = getUserID_db();
 
-  useEffect(() => {
-    async function fetchchannelData() {
-      if (channelId) {
-        try {
-          setIsLoading(true);
-          let data: ChannelItem;
-          if (id) {
-            data = await fetchChannelById(channelId, id);
-          } else {
-            data = await fetchChannelById(channelId, "");
-          }
-          setchannelData(data);
-          setIsLoading(false);
-          if (data.TopicCategories) {
-            const categories = extractCategories(data.TopicCategories);
-            setcategories(categories);
-          }
-          if (data.Category) {
-            setcategories((prevVal) => {
-              if (prevVal && data.Category) {
-                return [...prevVal, data.Category];
-              }
-              return prevVal || [];
-            });
-          }
-        } catch (error) {
-          console.error("Error fetching channel data:", error);
-          setIsLoading(false);
+  async function fetchchannelData() {
+    if (channelId) {
+      try {
+        setIsLoading(true);
+        let data: ChannelItem;
+        if (id) {
+          data = await fetchChannelById(channelId, id);
+        } else {
+          data = await fetchChannelById(channelId, "");
         }
+        setchannelData(data);
+        setIsLoading(false);
+        if (data.TopicCategories) {
+          const categories = extractCategories(data.TopicCategories);
+          setcategories(categories);
+        }
+        if (data.Category) {
+          setcategories((prevVal) => {
+            if (prevVal && data.Category) {
+              return [...prevVal, data.Category];
+            }
+            return prevVal || [];
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching channel data:", error);
+        setIsLoading(false);
       }
     }
+  }
 
+  async function submitForm(formData: ReviewFormData) {
+    try {
+      const response = await postReview(formData);
+      console.log(response);
+    } catch (error) {
+      console.log("Error posting form", error);
+    }
+  }
+  useEffect(() => {
     fetchchannelData();
   }, [channelId]);
 
-  const handleFormSubmission = (formData: {
-    rating: number;
-    attributes: string[];
-    comment: string;
-  }) => {
-    console.log("Data from form:", formData);
+  const handleFormSubmission = (formData: ReviewFormData) => {
+    submitForm(formData);
   };
 
   return (
@@ -187,6 +192,8 @@ export default function Channel() {
             </div>
           </div>
           <VideoCompWrapper />
+          <HorizontalDivider />
+          <ReviewContainer />
           <HorizontalDivider />
           <ReviewForm onSubmit={handleFormSubmission} />
         </>
