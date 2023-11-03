@@ -66,3 +66,9 @@ export type ProfileProps = {
   country?: string;
   ytdbUsername?: string;
 };
+
+export type ReviewCardProps = {
+  review: { id: string; rating: number; review: string; tags: string[] };
+  userName: string;
+  ytdbUsername: string;
+};

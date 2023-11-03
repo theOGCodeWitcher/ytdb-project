@@ -47,7 +47,6 @@ export const Navbar = () => {
       const fetchUser = async () => {
         try {
           const obj = await fetchUserWithId(user);
-          console.log(obj._id);
           setuserData(obj);
         } catch (error) {
           console.error("Error fetching UserData:", error);

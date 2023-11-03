@@ -18,8 +18,6 @@ export default function ReviewForm({ onSubmit }: ReviewFormProps) {
 
   const { channelId } = useParams<string>();
   const userId = getUserID_db();
-  console.log(userId);
-
   const handleAttributeToggle = (attr: string) => {
     setshowMessage(false);
     setTags((prev) =>
@@ -123,14 +121,20 @@ export default function ReviewForm({ onSubmit }: ReviewFormProps) {
         </div>
 
         <div>
-          <textarea
-            name="review"
-            placeholder="Please! Add Your Review"
-            rows={4}
-            value={review}
-            onChange={(e) => setReview(e.target.value)}
-            className="w-full p-2 border rounded"
-          ></textarea>
+          <div className="w-full p-2 border rounded relative">
+            <textarea
+              name="review"
+              placeholder="Please! Add Your Review"
+              rows={4}
+              value={review}
+              onChange={(e) => setReview(e.target.value)}
+              className="w-full h-full resize-none focus:outline-none"
+              maxLength={200}
+            ></textarea>
+            <div className="absolute bottom-2 right-2 text-sm text-gray-500">
+              {review.length}/200
+            </div>
+          </div>
         </div>
 
         <button className="btn btn-outline btn-primary">Post review</button>

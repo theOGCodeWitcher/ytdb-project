@@ -56,3 +56,46 @@ export const reviewTags = [
   "Comprehensive  🌐",
   "All-encompassing  ☯️",
 ];
+
+export const reviews = [
+  {
+    channelId: "UCX6OQ3DkcsbYNE6H8uQQuVA",
+    userId: "654408cc9092fcc92016827b",
+    rating: 4,
+    review:
+      "Great channel for learning new things. The tutorials are comprehensive and easy to follow.",
+    tags: ["Educational 📘", "In-depth 🕵️‍♂️"],
+  },
+  {
+    channelId: "UCX6OQ3DkcsbYNE6H8uQQuVB",
+    userId: "654408cc9092fcc92016827c",
+    rating: 3,
+    review:
+      "A decent channel, but sometimes the pacing is a bit too slow for my taste.",
+    tags: ["Well-rounded  ⚖️"],
+  },
+  {
+    channelId: "UCX6OQ3DkcsbYNE6H8uQQuVC",
+    userId: "654408cc9092fcc92016827d",
+    rating: 5,
+    review: "One of my favorite channels. Consistently high-quality content!",
+    tags: ["Entertaining 🍿", "Professional 🎩"],
+  },
+  {
+    channelId: "UCX6OQ3DkcsbYNE6H8uQQuVD",
+    userId: "654408cc9092fcc92016827e",
+    rating: 2,
+    review: "",
+    tags: ["Versatile  🔄"],
+  },
+  {
+    channelId: "UCX6OQ3DkcsbYNE6H8uQQuVE",
+    userId: "654408cc9092fcc92016827f",
+    rating: 4,
+    review:
+      "They provide a unique perspective on the topics they cover. I appreciate the creativity.",
+    tags: ["Creative 🎨", "Reliable 🔍"],
+  },
+];
+
+export default reviews;
