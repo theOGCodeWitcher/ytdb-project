@@ -148,3 +148,103 @@ exports.getReviewByChannelAndUser = async (req, res) => {
     res.status(500).send("Failed to fetch review");
   }
 };
+
+exports.addToWishlist = async (req, res) => {
+  const channelId = req.query.channelId;
+  const userId = req.query.userId;
+  try {
+    await userService.addToWishlist(userId, channelId);
+    res.status(200).json({ message: "Channel added to wishlist successfully" });
+  } catch (error) {
+    console.error(`Error adding to wishlist: ${error}`);
+    res.status(500).json({ error: "Error adding to wishlist" });
+  }
+};
+
+exports.getWishlist = async (req, res) => {
+  const userId = req.query.userId;
+  try {
+    const wishlist = await userService.getWishlist(userId);
+    res.status(200).json(wishlist);
+  } catch (error) {
+    console.error(`Error fetching wishlist: ${error}`);
+    res.status(500).json({ error: "Error fetching wishlist" });
+  }
+};
+
+exports.updateWishlist = async (req, res) => {
+  const userId = req.query.userId;
+  const { channelIds } = req.body;
+  try {
+    await userService.updateWishlist(userId, channelIds);
+    res.status(200).json({ message: "Wishlist updated successfully" });
+  } catch (error) {
+    console.error(`Error updating wishlist: ${error}`);
+    res.status(500).json({ error: "Error updating wishlist" });
+  }
+};
+
+exports.removeFromWishlist = async (req, res) => {
+  const channelId = req.query.channelId;
+  const userId = req.query.userId;
+  try {
+    await userService.removeFromWishlist(userId, channelId);
+    res
+      .status(200)
+      .json({ message: "Channel removed from wishlist successfully" });
+  } catch (error) {
+    console.error(`Error removing from wishlist: ${error}`);
+    res.status(500).json({ error: "Error removing from wishlist" });
+  }
+};
+
+exports.addToFavourites = async (req, res) => {
+  const channelId = req.query.channelId;
+  const userId = req.query.userId;
+  try {
+    await userService.addToFavourites(userId, channelId);
+    res
+      .status(200)
+      .json({ message: "Channel added to favourites successfully" });
+  } catch (error) {
+    console.error(`Error adding to favourites: ${error}`);
+    res.status(500).json({ error: "Error adding to favourites" });
+  }
+};
+
+exports.getFavourites = async (req, res) => {
+  const userId = req.query.userId;
+  try {
+    const favourites = await userService.getFavourites(userId);
+    res.status(200).json(favourites);
+  } catch (error) {
+    console.error(`Error fetching favourites: ${error}`);
+    res.status(500).json({ error: "Error fetching favourites" });
+  }
+};
+
+exports.updateFavourites = async (req, res) => {
+  const userId = req.query.userId;
+  const { channelIds } = req.body;
+  try {
+    await userService.updateFavourites(userId, channelIds);
+    res.status(200).json({ message: "Favourites updated successfully" });
+  } catch (error) {
+    console.error(`Error updating favourites: ${error}`);
+    res.status(500).json({ error: "Error updating favourites" });
+  }
+};
+
+exports.removeFromFavourites = async (req, res) => {
+  const channelId = req.query.channelId;
+  const userId = req.query.userId;
+  try {
+    await userService.removeFromFavourites(userId, channelId);
+    res
+      .status(200)
+      .json({ message: "Channel removed from favourites successfully" });
+  } catch (error) {
+    console.error(`Error removing from favourites: ${error}`);
+    res.status(500).json({ error: "Error removing from favourites" });
+  }
+};
