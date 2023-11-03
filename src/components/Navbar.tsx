@@ -1,5 +1,4 @@
 import { useEffect, useState, useRef, useContext } from "react";
-import avatar from "../assets/profile.jpg";
 import { Link, useLocation } from "react-router-dom";
 import { search } from "../api/homePageApi";
 import { ChannelItem } from "../types/type";
@@ -178,7 +177,7 @@ export const Navbar = () => {
             <div className="dropdown dropdown-end z-[999] ">
               <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                 <div className="w-10 rounded-full">
-                  <img src={avatar} alt="User Avatar" />
+                  <img src={user?.picture} alt="User Avatar" />
                 </div>
               </label>
               <ul

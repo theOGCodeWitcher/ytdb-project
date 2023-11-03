@@ -121,14 +121,14 @@ export default function ReviewForm({ onSubmit }: ReviewFormProps) {
         </div>
 
         <div>
-          <div className="w-full p-2 border rounded relative">
+          <div className="w-full   rounded relative">
             <textarea
               name="review"
               placeholder="Please! Add Your Review"
               rows={4}
               value={review}
               onChange={(e) => setReview(e.target.value)}
-              className="w-full h-full resize-none focus:outline-none"
+              className="w-full h-full resize-none focus:ring-0 border p-2 dark:border-black focus:outline-none"
               maxLength={200}
             ></textarea>
             <div className="absolute bottom-2 right-2 text-sm text-gray-500">

@@ -1,7 +1,11 @@
 import { useEffect, useState } from "react";
-import { fetchChannelById, postReview } from "../api/channelPageApi";
+import {
+  fetchChannelById,
+  getReviewsByChannelId,
+  postReview,
+} from "../api/channelPageApi";
 import { useParams } from "react-router-dom";
-import { ChannelItem, ReviewFormData } from "../types/type";
+import { ChannelItem, ReviewCardProps, ReviewFormData } from "../types/type";
 import { RatingComp } from "../components/Rating";
 import { extractCategories, formatCount } from "../lib/util";
 import { MdOutlinePeopleOutline } from "react-icons/md";
@@ -15,6 +19,7 @@ import HorizontalDivider from "../components/HorizontalDivider";
 import { getUserID_db } from "../context/customHooks";
 import { BsBalloonHeartFill, BsFillBookmarkStarFill } from "react-icons/bs";
 import ReviewContainer from "../components/ReviewContainer";
+import OwnReview from "../components/OwnReview";
 
 export default function Channel() {
   const { channelId } = useParams<string>();
@@ -64,11 +69,29 @@ export default function Channel() {
   }
   useEffect(() => {
     fetchchannelData();
+    fetchReviewsByChannelId();
   }, [channelId]);
 
   const handleFormSubmission = (formData: ReviewFormData) => {
     submitForm(formData);
   };
+
+  const [reviewsData, setreviewsData] = useState<ReviewCardProps[]>();
+  const [isLoadingReview, setIsLoadingReview] = useState<boolean>(true);
+
+  async function fetchReviewsByChannelId() {
+    if (channelId) {
+      try {
+        setIsLoadingReview(true);
+        const data = await getReviewsByChannelId(channelId);
+        setreviewsData(data);
+        setIsLoadingReview(false);
+      } catch (error) {
+        console.error("Error fetching channel data:", error);
+        setIsLoadingReview(false);
+      }
+    }
+  }
 
   return (
     <>
@@ -193,9 +216,17 @@ export default function Channel() {
           </div>
           <VideoCompWrapper />
           <HorizontalDivider />
-          <ReviewContainer />
+          <div className="w-full flex">
+            <ReviewForm onSubmit={handleFormSubmission} />
+            <OwnReview />
+          </div>
           <HorizontalDivider />
-          <ReviewForm onSubmit={handleFormSubmission} />
+          {reviewsData && (
+            <ReviewContainer
+              reviewsData={reviewsData}
+              isLoadingReview={isLoadingReview}
+            />
+          )}
         </>
       )}
     </>
