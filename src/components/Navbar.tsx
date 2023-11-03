@@ -196,7 +196,17 @@ export const Navbar = () => {
                 </Link>
                 {
                   <li key={3}>
-                    <a onClick={() => logout()}>Logout</a>
+                    <a
+                      onClick={() =>
+                        logout({
+                          logoutParams: {
+                            returnTo: window.location.origin,
+                          },
+                        })
+                      }
+                    >
+                      Logout
+                    </a>
                   </li>
                 }
               </ul>
