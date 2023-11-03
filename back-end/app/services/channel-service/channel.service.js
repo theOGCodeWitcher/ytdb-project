@@ -606,7 +606,7 @@ exports.getSimilarChannelsDetails = async (channelId) => {
 };
 
 async function findSimilarChannels(channelId) {
-  const MAX_RESULT_SIZE = 15;
+  const MAX_RESULT_SIZE = 30;
   try {
     const channel = await channelModel.findOne({ ChannelId: channelId }).exec();
 
@@ -627,7 +627,7 @@ async function findSimilarChannels(channelId) {
           ChannelId: { $ne: channelId }, // Exclude the current channel
         })
         .sort({ Rating: -1 }) // Sort by rating in descending order
-        .limit(5)
+        .limit(15)
         .exec();
 
       for (const matchingChannel of matchingChannels) {
