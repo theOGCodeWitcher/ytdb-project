@@ -22,20 +22,52 @@ module.exports = function (app) {
     endPointConfig.userEndpoint + "/createReview",
     userController.createReview
   );
+  app.post(
+    endPointConfig.userEndpoint + "/addToWishlist",
+    userController.addToWishlist
+  );
+  app.post(
+    endPointConfig.userEndpoint + "/addToFavourites",
+    userController.addToFavourites
+  );
   app.put(
-    endPointConfig.userEndpoint + "/updateReview/",
+    endPointConfig.userEndpoint + "/updateReview",
     userController.updateReview
   );
+  app.put(
+    endPointConfig.userEndpoint + "/updateWishlist",
+    userController.updateWishlist
+  );
+  app.put(
+    endPointConfig.userEndpoint + "/updateFavourites",
+    userController.updateFavourites
+  );
   app.delete(
-    endPointConfig.userEndpoint + "/deleteReview/",
+    endPointConfig.userEndpoint + "/deleteReview",
     userController.deleteReview
   );
+  app.delete(
+    endPointConfig.userEndpoint + "/removeFromWishlist",
+    userController.removeFromWishlist
+  );
+  app.delete(
+    endPointConfig.userEndpoint + "/removeFromFavourites",
+    userController.removeFromFavourites
+  );
   app.get(
-    endPointConfig.userEndpoint + "/getReviewsByUserId/",
+    endPointConfig.userEndpoint + "/getReviewsByUserId",
     userController.getReviewsByUserId
   );
   app.get(
-    endPointConfig.userEndpoint + "/getReviewsByChannelAndUser/",
+    endPointConfig.userEndpoint + "/getWishlist",
+    userController.getWishlist
+  );
+  app.get(
+    endPointConfig.userEndpoint + "/getFavourites",
+    userController.getFavourites
+  );
+  app.get(
+    endPointConfig.userEndpoint + "/getReviewsByChannelAndUser",
     userController.getReviewByChannelAndUser
   );
 };
