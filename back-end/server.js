@@ -20,6 +20,7 @@ const config = require("./app/config/");
 const logger = config.loggerConfig.logger;
 
 const models = require("./app/models/");
+const { channelService } = require("./app/services");
 
 var corsOptions = {
   origin: process.env.CORS_ORIGIN,
@@ -95,6 +96,10 @@ async function initial() {
     //   "654408cc9092fcc92016827b"
     // );
     // console.log("Final*********", res);
+    // const res = await channelService.getSimilarChannelsDetails(
+    //   "UCymK_3BWUcoYVVf5D_GmACQ"
+    // );
+    // console.log(res);
   } catch (err) {
     logger.error("Error searching YouTube", err);
   }
