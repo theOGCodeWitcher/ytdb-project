@@ -600,8 +600,8 @@ exports.getSimilarChannelsDetails = async (channelId) => {
         .exec();
       results.push(channel);
     }
-
-    return results;
+    results.sort((a, b) => b.Rating - a.Rating);
+    return results.slice(0, 6);
   } catch (error) {
     console.error(`Error getting details of similar channels: ${error}`);
     return [];
@@ -653,7 +653,7 @@ async function findSimilarChannels(channelId) {
 
     shuffleArray(similarChannelsArray);
     console.log("similarChannelsArray", similarChannelsArray);
-    return getRandomChannels(similarChannelsArray, 5);
+    return getRandomChannels(similarChannelsArray, 20);
   } catch (error) {
     console.error(`Error finding similar channels: ${error}`);
     return [];
