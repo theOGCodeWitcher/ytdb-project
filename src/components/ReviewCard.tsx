@@ -1,5 +1,3 @@
-import { ReviewCardProps } from "../types/type";
-
 export function ReviewCard({ userName, rating, review, tags }: any) {
   return (
     <div className=" p-6 rounded-lg shadow-lg max-w-md mx-auto dark:bg-gray-800 ">

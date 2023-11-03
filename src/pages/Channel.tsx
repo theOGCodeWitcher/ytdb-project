@@ -14,7 +14,6 @@ import ReviewForm from "../components/ReviewForm";
 import HorizontalDivider from "../components/HorizontalDivider";
 import { getUserID_db } from "../context/customHooks";
 import { BsBalloonHeartFill, BsFillBookmarkStarFill } from "react-icons/bs";
-import ReviewCard from "../components/ReviewCard";
 import ReviewContainer from "../components/ReviewContainer";
 
 export default function Channel() {
