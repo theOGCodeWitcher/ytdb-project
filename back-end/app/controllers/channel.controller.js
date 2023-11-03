@@ -100,3 +100,15 @@ exports.getReviewsByChannelId = async (req, res) => {
     res.status(500).send("Failed to fetch reviews");
   }
 };
+
+exports.getSimilarChannels = async (req, res) => {
+  try {
+    const channels = await channelService.getSimilarChannelsDetails(
+      req.query.channelId
+    );
+    res.status(200).send(channels);
+  } catch (error) {
+    logger.error("Failed to fetch channels:", error);
+    res.status(500).send("Failed to fetch channels");
+  }
+};

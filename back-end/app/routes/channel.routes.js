@@ -26,6 +26,10 @@ module.exports = function (app) {
     channelController.getTrendingChannels
   );
   app.get(
+    endPointConfig.channelEndpoint + "/getSimilarChannels",
+    channelController.getSimilarChannels
+  );
+  app.get(
     endPointConfig.channelEndpoint + "/getRecentVideosByChannelId",
     channelController.getRecentVideosByChannelId
   );

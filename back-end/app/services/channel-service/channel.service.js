@@ -586,3 +586,73 @@ exports.getReviewsByChannelId = async (channelId) => {
     return [];
   }
 };
+
+exports.getSimilarChannelsDetails = async (channelId) => {
+  try {
+    const similarChannels = await findSimilarChannels(channelId);
+    const similarChannelIds = similarChannels.map(
+      (channel) => channel.ChannelId
+    );
+
+    const similarChannelsDetails = await channelModel
+      .find({ ChannelId: { $in: similarChannelIds } })
+      .exec();
+
+    return similarChannelsDetails;
+  } catch (error) {
+    console.error(`Error getting details of similar channels: ${error}`);
+    return [];
+  }
+};
+
+async function findSimilarChannels(channelId) {
+  const MAX_RESULT_SIZE = 15;
+  try {
+    const channel = await channelModel.findOne({ ChannelId: channelId }).exec();
+
+    if (
+      !channel ||
+      !channel.ExtractedCategories ||
+      channel.ExtractedCategories.length === 0
+    ) {
+      return [];
+    }
+
+    const similarChannelsArray = [];
+
+    for (const category of channel.ExtractedCategories) {
+      const matchingChannels = await channelModel
+        .find({
+          ExtractedCategories: category,
+          ChannelId: { $ne: channelId }, // Exclude the current channel
+        })
+        .sort({ Rating: -1 }) // Sort by rating in descending order
+        .limit(5)
+        .exec();
+
+      for (const matchingChannel of matchingChannels) {
+        similarChannelsArray.push(matchingChannel);
+        if (similarChannelsArray.length >= MAX_RESULT_SIZE) {
+          break;
+        }
+      }
+    }
+
+    shuffleArray(similarChannelsArray);
+    return getRandomChannels(similarChannelsArray, 5);
+  } catch (error) {
+    console.error(`Error finding similar channels: ${error}`);
+    return [];
+  }
+}
+
+function shuffleArray(array) {
+  for (let i = array.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [array[i], array[j]] = [array[j], array[i]];
+  }
+}
+
+function getRandomChannels(array, count) {
+  return array.slice(0, count);
+}
