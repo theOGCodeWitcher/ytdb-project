@@ -20,8 +20,11 @@ export default function OwnReview({ setdisplayReviewForm }: any) {
         setIsLoadingReview(true);
         const data = await getReviewsByChannelIdAnduserId(channelId, userId);
         setreviewsData(data);
+        console.log(data);
         if (typeof data === "object" && data !== null && !Array.isArray(data)) {
           setdisplayReviewForm(false);
+        } else {
+          setdisplayReviewForm(true);
         }
         setIsLoadingReview(false);
       } catch (error) {

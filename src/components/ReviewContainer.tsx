@@ -18,8 +18,8 @@ export default function ReviewContainer({
       {isLoadingReview ? (
         <Loading />
       ) : (
-        <div className="flex  flex-col justify-center gap-8">
-          <SectionHeading>Reviews</SectionHeading>
+        <div className="flex  flex-col justify-center gap-8 ">
+          <SectionHeading>Community Reviews</SectionHeading>
           {reviewsData?.length != 0 ? (
             <div className="flex flex-wrap">
               {reviewsData?.map((review, index) => (
@@ -36,7 +36,9 @@ export default function ReviewContainer({
             </div>
           ) : (
             <div className="w-full flex justify-center ">
-              <span>No reviews on this channel yet</span>
+              <span className="text-xl mb-16">
+                No reviews on this channel yet
+              </span>
             </div>
           )}
         </div>

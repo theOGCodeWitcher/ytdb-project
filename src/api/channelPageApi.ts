@@ -67,3 +67,18 @@ export async function getReviewsByChannelIdAnduserId(
     throw error;
   }
 }
+
+export async function getSimilarChannel(
+  ChannelId: string
+): Promise<ChannelItem[]> {
+  try {
+    const response: AxiosResponse<ChannelItem[]> = await axios.get(
+      `${
+        import.meta.env.VITE_APP_CHANNEL_ENDPOINT
+      }getSimilarChannels?channelId=${ChannelId}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}

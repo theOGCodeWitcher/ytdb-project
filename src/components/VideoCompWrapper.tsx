@@ -52,13 +52,13 @@ export default function VideoCompWrapper() {
         <SectionHeading>Videos</SectionHeading>
         <div className="flex gap-2 md:gap-6 items-center md:pt-3">
           <div
-            className="badge badge-neutral badge-xs md:badge-md p-4 cursor-pointer"
+            className="badge bg-gray-100 dark:bg-gray-800 border border-gray-300 badge-xs md:badge-md p-4 cursor-pointer"
             onClick={showMostRecent}
           >
             Most Recent
           </div>
           <div
-            className="badge badge-neutral badge-xs md:badge-md p-4 cursor-pointer"
+            className="badge bg-gray-100 dark:bg-gray-800 border border-gray-300 badge-xs md:badge-md p-4 cursor-pointer"
             onClick={showMostPopular}
           >
             Most Popular

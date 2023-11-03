@@ -20,6 +20,9 @@ import { getUserID_db } from "../context/customHooks";
 import { BsBalloonHeartFill, BsFillBookmarkStarFill } from "react-icons/bs";
 import ReviewContainer from "../components/ReviewContainer";
 import OwnReview from "../components/OwnReview";
+import bannerplaceholder from "../assets/bannerplaceholder.jpg";
+import SimilarChannel from "../components/SimilarChannel";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export default function Channel() {
   const { channelId } = useParams<string>();
@@ -27,10 +30,9 @@ export default function Channel() {
   const [categories, setcategories] = useState<string[] | undefined>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [displayReviewForm, setdisplayReviewForm] = useState<boolean>(true);
+  const [displayReviewForm, setdisplayReviewForm] = useState<boolean>(false);
   const id = getUserID_db();
-
-  console.log(displayReviewForm);
+  const { isAuthenticated } = useAuth0();
 
   async function fetchchannelData() {
     if (channelId) {
@@ -100,6 +102,9 @@ export default function Channel() {
   useEffect(() => {
     fetchchannelData();
     fetchReviewsByChannelId();
+    if (!isAuthenticated) {
+      setdisplayReviewForm(true);
+    }
   }, [channelId, isModalOpen]);
 
   return (
@@ -128,7 +133,11 @@ export default function Channel() {
           <div className="flex flex-col md:flex-row  md:px-8 md:mx-8  md:py-4 md:my-4 ">
             <div className="flex flex-col  px-2 my-2 overflow-hidden md:w-1/2">
               <img
-                src={channelData?.BannerImage}
+                src={
+                  channelData?.BannerImage
+                    ? channelData.BannerImage
+                    : bannerplaceholder
+                }
                 loading="lazy"
                 key={channelData?.ChannelId}
                 className="rounded-sm"
@@ -142,7 +151,7 @@ export default function Channel() {
                     categories.map((item, index) => (
                       <div
                         key={index}
-                        className="badge badge-neutral p-3 cursor-pointer"
+                        className="badge bg-gray-100 dark:bg-gray-800 border border-gray-300 p-3 cursor-pointer"
                       >
                         {item}
                       </div>
@@ -210,7 +219,7 @@ export default function Channel() {
               <div className="flex flex-col p-2 m-2 gap-4">
                 <h6 className="text-xl font-semibold">Description</h6>
                 <p className="text-sm">{channelData?.Description}</p>
-                <div className="flex justify-between gap-1  px-4 py-2 rounded-lg border border-black">
+                <div className="flex justify-between gap-1  px-4 py-2 rounded-lg border border-black bg-gray-50 dark:border-white dark:bg-gray-800">
                   {channelData?.Subs && (
                     <div className="flex align-center  flex-col gap-1">
                       <MdOutlinePeopleOutline size={36} />
@@ -242,11 +251,14 @@ export default function Channel() {
           </div>
           <VideoCompWrapper />
           <HorizontalDivider />
-          <div className="w-full flex flex-col md:flex-row">
-            {displayReviewForm && (
+          <SimilarChannel />
+          <HorizontalDivider />
+          <div className="w-full justify-center flex flex-col md:flex-row">
+            {displayReviewForm ? (
               <ReviewForm onSubmit={handleFormSubmission} />
+            ) : (
+              <OwnReview setdisplayReviewForm={setdisplayReviewForm} />
             )}
-            <OwnReview setdisplayReviewForm={setdisplayReviewForm} />
           </div>
           <HorizontalDivider />
           {reviewsData && (
