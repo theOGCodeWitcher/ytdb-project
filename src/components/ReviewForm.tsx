@@ -28,8 +28,8 @@ export default function ReviewForm({ onSubmit }: ReviewFormProps) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (rating === 0 || tags.length === 0) {
-      setMessage("Please provide a rating and select at least one tag.");
+    if (rating === 0 || tags.length === 0 || review.length < 20) {
+      setMessage("Please fill all the fields before submission.");
       setshowMessage(true);
       return;
     }
@@ -40,8 +40,16 @@ export default function ReviewForm({ onSubmit }: ReviewFormProps) {
     }
 
     if (channelId && userId) {
-      onSubmit({ channelId, rating, userId, review, tags });
+      onSubmit({ channelId, rating, userId, review, tags }, clearForm);
     }
+  };
+
+  const clearForm = () => {
+    setRating(0);
+    setReview("");
+    setTags([]);
+    setMessage("");
+    setshowMessage(false);
   };
 
   useEffect(() => {

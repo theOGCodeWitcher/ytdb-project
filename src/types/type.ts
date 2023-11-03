@@ -29,7 +29,7 @@ export type ReviewFormData = {
 };
 
 export type ReviewFormProps = {
-  onSubmit: (data: ReviewFormData) => void;
+  onSubmit: (data: ReviewFormData, clearFormCallback: () => void) => void;
 };
 
 export type VideoItem = {

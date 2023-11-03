@@ -177,7 +177,16 @@ export const Navbar = () => {
             <div className="dropdown dropdown-end z-[999] ">
               <label tabIndex={0} className="btn btn-ghost btn-circle avatar">
                 <div className="w-10 rounded-full">
-                  <img src={user?.picture} alt="User Avatar" />
+                  <img
+                    src={
+                      user
+                        ? user.picture && user.picture?.length > 0
+                          ? user.picture
+                          : placeholder
+                        : ""
+                    }
+                    alt="User Avatar"
+                  />
                 </div>
               </label>
               <ul

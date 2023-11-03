@@ -7,7 +7,7 @@ import SectionHeading from "./SectionHeading";
 import ReviewCard from "./ReviewCard";
 import Loading from "./Loading";
 
-export default function OwnReview() {
+export default function OwnReview({ setdisplayReviewForm }: any) {
   const { channelId } = useParams<string>();
 
   const [reviewsData, setreviewsData] = useState<OwnReviewCardProps>();
@@ -20,6 +20,9 @@ export default function OwnReview() {
         setIsLoadingReview(true);
         const data = await getReviewsByChannelIdAnduserId(channelId, userId);
         setreviewsData(data);
+        if (typeof data === "object" && data !== null && !Array.isArray(data)) {
+          setdisplayReviewForm(false);
+        }
         setIsLoadingReview(false);
       } catch (error) {
         console.error("Error fetching channel data:", error);

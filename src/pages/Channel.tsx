@@ -26,7 +26,11 @@ export default function Channel() {
   const [channelData, setchannelData] = useState<ChannelItem>();
   const [categories, setcategories] = useState<string[] | undefined>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [displayReviewForm, setdisplayReviewForm] = useState<boolean>(true);
   const id = getUserID_db();
+
+  console.log(displayReviewForm);
 
   async function fetchchannelData() {
     if (channelId) {
@@ -59,21 +63,21 @@ export default function Channel() {
     }
   }
 
-  async function submitForm(formData: ReviewFormData) {
+  async function submitForm(formData: ReviewFormData, clearForm: () => void) {
     try {
-      const response = await postReview(formData);
-      console.log(response);
+      await postReview(formData);
+      setIsModalOpen(true);
+      clearForm();
     } catch (error) {
       console.log("Error posting form", error);
     }
   }
-  useEffect(() => {
-    fetchchannelData();
-    fetchReviewsByChannelId();
-  }, [channelId]);
 
-  const handleFormSubmission = (formData: ReviewFormData) => {
-    submitForm(formData);
+  const handleFormSubmission = (
+    formData: ReviewFormData,
+    clearForm: () => void
+  ) => {
+    submitForm(formData, clearForm);
   };
 
   const [reviewsData, setreviewsData] = useState<ReviewCardProps[]>();
@@ -93,12 +97,34 @@ export default function Channel() {
     }
   }
 
+  useEffect(() => {
+    fetchchannelData();
+    fetchReviewsByChannelId();
+  }, [channelId, isModalOpen]);
+
   return (
     <>
       {isLoading ? (
         <Loading />
       ) : (
         <>
+          {isModalOpen && (
+            <div className="fixed inset-0 flex items-center justify-center z-50">
+              <div className="modal modal-open">
+                <div className="modal-box">
+                  <h2 className="text-lg">Review Submission Successfull</h2>
+                  <div className="modal-action">
+                    <button
+                      onClick={() => setIsModalOpen(false)}
+                      className="btn"
+                    >
+                      Ok
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
           <div className="flex flex-col md:flex-row  md:px-8 md:mx-8  md:py-4 md:my-4 ">
             <div className="flex flex-col  px-2 my-2 overflow-hidden md:w-1/2">
               <img
@@ -217,8 +243,10 @@ export default function Channel() {
           <VideoCompWrapper />
           <HorizontalDivider />
           <div className="w-full flex flex-col md:flex-row">
-            <ReviewForm onSubmit={handleFormSubmission} />
-            <OwnReview />
+            {displayReviewForm && (
+              <ReviewForm onSubmit={handleFormSubmission} />
+            )}
+            <OwnReview setdisplayReviewForm={setdisplayReviewForm} />
           </div>
           <HorizontalDivider />
           {reviewsData && (
