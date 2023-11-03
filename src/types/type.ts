@@ -72,3 +72,9 @@ export type ReviewCardProps = {
   userName: string;
   ytdbUsername: string;
 };
+
+export type OwnReviewCardProps = {
+  rating: number;
+  review: string;
+  tags: string[];
+};

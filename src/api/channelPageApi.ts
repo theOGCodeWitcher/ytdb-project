@@ -1,5 +1,10 @@
 import axios, { AxiosResponse } from "axios";
-import { ChannelItem, ReviewCardProps, ReviewFormData } from "../types/type";
+import {
+  ChannelItem,
+  OwnReviewCardProps,
+  ReviewCardProps,
+  ReviewFormData,
+} from "../types/type";
 
 export async function fetchChannelById(
   ChannelId: string,
@@ -40,6 +45,22 @@ export async function getReviewsByChannelId(
       `${
         import.meta.env.VITE_APP_CHANNEL_ENDPOINT
       }getReviewsByChannelId?channelId=${ChannelId}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getReviewsByChannelIdAnduserId(
+  ChannelId: string,
+  userId: string
+): Promise<OwnReviewCardProps> {
+  try {
+    const response: AxiosResponse<OwnReviewCardProps> = await axios.get(
+      `${
+        import.meta.env.VITE_APP_USER_ENDPOINT
+      }getReviewsByChannelAndUser?userId=${userId}&channelId=${ChannelId}`
     );
     return response.data;
   } catch (error) {

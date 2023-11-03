@@ -1,6 +1,6 @@
 export function ReviewCard({ userName, rating, review, tags }: any) {
   return (
-    <div className=" p-6 rounded-lg shadow-lg max-w-md mx-auto dark:bg-gray-800 ">
+    <div className=" p-6 rounded-lg shadow-lg max-w-md mx-auto bg-gray-100 dark:bg-gray-800 ">
       <div className="flex items-center mb-4">
         {[...Array(5)].map((_, idx) => (
           <span
@@ -19,18 +19,21 @@ export function ReviewCard({ userName, rating, review, tags }: any) {
         </blockquote>
       )}
       <div className="mb-4">
-        {tags.map((tag: any) => (
-          <span
-            key={tag}
-            className="inline-block badge-neutral rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2"
-          >
-            {tag}
-          </span>
-        ))}
+        {tags &&
+          tags.map((tag: any) => (
+            <span
+              key={tag}
+              className="inline-block badge-neutral rounded-full px-3 py-1 text-sm font-semibold mr-2 mb-2"
+            >
+              {tag}
+            </span>
+          ))}
       </div>
-      <div className="text-right text-sm text-gray-500">
-        Reviewed by: {userName}
-      </div>
+      {userName && (
+        <div className="text-right text-sm text-gray-500">
+          Reviewed by: {userName}
+        </div>
+      )}
     </div>
   );
 }

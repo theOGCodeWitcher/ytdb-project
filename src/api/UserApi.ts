@@ -1,5 +1,5 @@
 import axios, { AxiosResponse } from "axios";
-import { ProfileProps, User } from "../types/type";
+import { ProfileProps, ReviewCardProps, User } from "../types/type";
 
 export async function fetchUserWithId(userAuthObj: User): Promise<User> {
   try {
@@ -37,6 +37,21 @@ export async function updateUserProfile(
         import.meta.env.VITE_APP_USER_ENDPOINT
       }updateUserProfile?userId=${userId_db}`,
       formValues
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getReviewsByUserId(
+  userId: string
+): Promise<ReviewCardProps[]> {
+  try {
+    const response: AxiosResponse<ReviewCardProps[]> = await axios.get(
+      `${
+        import.meta.env.VITE_APP_USER_ENDPOINT
+      }getReviewsByUserId?userId=${userId}`
     );
     return response.data;
   } catch (error) {
