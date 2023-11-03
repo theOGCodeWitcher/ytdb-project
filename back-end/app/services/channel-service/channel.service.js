@@ -606,7 +606,7 @@ exports.getSimilarChannelsDetails = async (channelId) => {
 };
 
 async function findSimilarChannels(channelId) {
-  const MAX_RESULT_SIZE = 15;
+  const MAX_RESULT_SIZE = 30;
   try {
     const channel = await channelModel.findOne({ ChannelId: channelId }).exec();
 
