@@ -627,7 +627,7 @@ async function findSimilarChannels(channelId) {
           ChannelId: { $ne: channelId }, // Exclude the current channel
         })
         .sort({ Rating: -1 }) // Sort by rating in descending order
-        .limit(5)
+        .limit(15)
         .exec();
 
       for (const matchingChannel of matchingChannels) {
