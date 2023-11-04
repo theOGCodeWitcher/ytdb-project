@@ -103,7 +103,7 @@ export const Navbar = () => {
               <input
                 type="text"
                 placeholder="Search Channel  🔍 "
-                className="input input-bordered md:w-[22rem] w-[13rem] h-9 text-xs focus:outline-none dark:bg-gray-800"
+                className="input input-bordered md:w-[22rem] w-[15rem] h-9 text-xs focus:outline-none dark:bg-gray-800"
                 value={searchQuery}
                 onChange={(e) => {
                   handleChange(e);
