@@ -93,7 +93,7 @@ models.mongoose
 async function initial() {
   try {
     // const res = await userService.getRecommendations(
-    //   "654408cc9092fcc92016827b"
+    //   "65447a5b465cb174552f5d4f"
     // );
     // console.log("Final*********", res);
     // const res = await channelService.getSimilarChannelsDetails(

@@ -70,4 +70,8 @@ module.exports = function (app) {
     endPointConfig.userEndpoint + "/getReviewsByChannelAndUser",
     userController.getReviewByChannelAndUser
   );
+  app.get(
+    endPointConfig.userEndpoint + "/getRecommendations",
+    userController.getRecommendations
+  );
 };

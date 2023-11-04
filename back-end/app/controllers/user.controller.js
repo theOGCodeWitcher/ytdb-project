@@ -248,3 +248,14 @@ exports.removeFromFavourites = async (req, res) => {
     res.status(500).json({ error: "Error removing from favourites" });
   }
 };
+
+exports.getRecommendations = async (req, res) => {
+  const userId = req.query.userId;
+  try {
+    const channels = await userService.getRecommendations(userId);
+    res.status(200).json(channels);
+  } catch (error) {
+    console.error(`Error fetching channels: ${error}`);
+    res.status(500).json({ error: "Error fetching channels" });
+  }
+};
