@@ -2,10 +2,16 @@ import { useEffect, useState } from "react";
 import {
   fetchChannelById,
   getReviewsByChannelId,
+  getReviewsByChannelIdAnduserId,
   postReview,
 } from "../api/channelPageApi";
 import { useParams } from "react-router-dom";
-import { ChannelItem, ReviewCardProps, ReviewFormData } from "../types/type";
+import {
+  ChannelItem,
+  OwnReviewCardProps,
+  ReviewCardProps,
+  ReviewFormData,
+} from "../types/type";
 import { RatingComp } from "../components/Rating";
 import { extractCategories, formatCount } from "../lib/util";
 import { MdOutlinePeopleOutline } from "react-icons/md";
@@ -30,9 +36,9 @@ export default function Channel() {
   const [categories, setcategories] = useState<string[] | undefined>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [displayReviewForm, setdisplayReviewForm] = useState<boolean>(false);
   const id = getUserID_db();
   const { isAuthenticated } = useAuth0();
+  const userId = getUserID_db();
 
   async function fetchchannelData() {
     if (channelId) {
@@ -99,14 +105,37 @@ export default function Channel() {
     }
   }
 
+  const [ownreviewsData, setownreviewsData] = useState<OwnReviewCardProps>();
+  const [isLoadingOwnReview, setIsLoadingOwnReview] = useState<boolean>(false);
+  const [reviewExist, setreviewExist] = useState<boolean>(false);
+
+  async function fetchReviewsByChannelIdAndUserId() {
+    if (channelId && userId) {
+      try {
+        setIsLoadingOwnReview(true);
+        const data = await getReviewsByChannelIdAnduserId(channelId, userId);
+        setownreviewsData(data);
+        if (typeof data === "object" && data !== null && !Array.isArray(data)) {
+          setreviewExist(true);
+        } else {
+          setreviewExist(false);
+        }
+        setIsLoadingOwnReview(false);
+      } catch (error) {
+        console.error("Error fetching channel data:", error);
+        setIsLoadingOwnReview(false);
+      }
+    }
+  }
+
   useEffect(() => {
     fetchchannelData();
     fetchReviewsByChannelId();
-    if (!isAuthenticated) {
-      setdisplayReviewForm(true);
-    }
   }, [channelId, isModalOpen]);
 
+  useEffect(() => {
+    fetchReviewsByChannelIdAndUserId();
+  }, [isAuthenticated, channelId, userId, isModalOpen]);
   return (
     <>
       {isLoading ? (
@@ -117,7 +146,7 @@ export default function Channel() {
             <div className="fixed inset-0 flex items-center justify-center z-50">
               <div className="modal modal-open">
                 <div className="modal-box">
-                  <h2 className="text-lg">Review Submission Successfull</h2>
+                  <h2 className="text-lg">Thanks for posting a review! 😍"</h2>
                   <div className="modal-action">
                     <button
                       onClick={() => setIsModalOpen(false)}
@@ -182,28 +211,28 @@ export default function Channel() {
                   </div>
                 </div>
                 <div className="flex flex-col gap-4 md:gap-8 items-center flex-shrink-0 ">
-                  <div className="flex w-full gap-[5rem] md:gap-4">
-                    <button className="btn btn-secondary btn-outline ml-4  btn-sm md:btn-bas ">
+                  <div className="flex w-full gap-3 md:gap-4">
+                    <button className="btn btn-secondary btn-outline ml-4 mt-1  btn-sm md:btn-bas ">
                       <BsBalloonHeartFill size={20} />
                       Favourite
                     </button>
-                    <button className="btn btn-warning btn-outline   btn-sm md:btn-bas ">
+                    <button className="btn btn-warning btn-outline mt-1  btn-sm md:btn-bas ">
                       <BsFillBookmarkStarFill size={20} />
                       wishlist
                     </button>
-                  </div>
-                  <div className="pb-4">
-                    <a
-                      href={`https://www.youtube.com/${channelData?.Username}`}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      <img
-                        src={Youtubelogo}
-                        loading="lazy"
-                        className="h-[3rem] w-[5.5rem] md:h-[4rem] md:w-[7rem] cursor-pointer hover:scale-[1.1] transition-all dark:bg-white rounded-xl border border-black"
-                      ></img>
-                    </a>
+                    <div className="pb-4 ">
+                      <a
+                        href={`https://www.youtube.com/${channelData?.Username}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        <img
+                          src={Youtubelogo}
+                          loading="lazy"
+                          className="h-[2.5rem] w-[5rem] md:h-[3rem] md:w-[6rem] cursor-pointer hover:scale-[1.1] transition-all dark:bg-white rounded-xl border border-black"
+                        ></img>
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -254,10 +283,16 @@ export default function Channel() {
           <SimilarChannel />
           <HorizontalDivider />
           <div className="w-full justify-center flex flex-col md:flex-row">
-            {displayReviewForm ? (
+            {!isAuthenticated && <ReviewForm onSubmit={handleFormSubmission} />}
+            {isAuthenticated && reviewExist && (
+              <OwnReview
+                ownReviewData={ownreviewsData}
+                isLoadingOwnReview={isLoadingOwnReview}
+                reviewExist={reviewExist}
+              />
+            )}
+            {isAuthenticated && !reviewExist && (
               <ReviewForm onSubmit={handleFormSubmission} />
-            ) : (
-              <OwnReview setdisplayReviewForm={setdisplayReviewForm} />
             )}
           </div>
           <HorizontalDivider />

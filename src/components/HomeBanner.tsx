@@ -1,4 +1,5 @@
 import bannerImage from "../assets/bannerImage.jpg";
+import { Link } from "react-router-dom";
 
 export const HomeBanner = () => {
   return (
@@ -17,9 +18,11 @@ export const HomeBanner = () => {
               Dive into quality recommendations and insightful reviews
             </p>
             <div className=" md:py-4 ">
-              <button className="btn btn-xs btn-outline btn-primary rounded-lg  md:w-[10rem]">
-                Explore
-              </button>
+              <Link to="./explore">
+                <button className="btn btn-xs btn-outline btn-primary rounded-lg  md:w-[10rem]">
+                  Explore
+                </button>
+              </Link>
             </div>
           </div>
         </div>

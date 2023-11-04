@@ -28,8 +28,14 @@ export default function ReviewForm({ onSubmit }: ReviewFormProps) {
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (rating === 0 || tags.length === 0 || review.length < 20) {
-      setMessage("Please fill all the fields before submission.");
+    if (rating === 0 || tags.length === 0) {
+      setMessage("Please fill all the fields before submission ");
+      setshowMessage(true);
+      return;
+    }
+
+    if (review.length < 10) {
+      setMessage("Review Should be at leat 10 Characters long ");
       setshowMessage(true);
       return;
     }
@@ -59,7 +65,7 @@ export default function ReviewForm({ onSubmit }: ReviewFormProps) {
   }, [userId]);
 
   return (
-    <div className=" w-full md:w-1/2 rounded-lg px-4 md:mx-8 bg-gray-100 dark:bg-gray-800">
+    <div className=" w-full md:w-1/2 rounded-lg px-4 md:mx-8 bg-gray-100 dark:bg-gray-800  ">
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="modal modal-open">

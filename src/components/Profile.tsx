@@ -78,18 +78,18 @@ export function Profile() {
     }
   };
 
-  console.log(reviewsData);
-
   return (
     userData && (
       <>
         <div className=" mt-8 p-8 dark:bg-gray-800 bg-gray-100 rounded-lg flex flex-col gap-4 w-full max-w-xl mx-auto relative">
-          <button
-            className="btn absolute top-4 left-2 "
-            onClick={() => seteditOpen(false)}
-          >
-            <AiOutlineClose size={20} />
-          </button>
+          {editOpen && (
+            <button
+              className="btn absolute top-4 left-2 "
+              onClick={() => seteditOpen(false)}
+            >
+              <AiOutlineClose size={20} />
+            </button>
+          )}
           <button
             className="btn absolute top-4 right-2 "
             onClick={() => seteditOpen(true)}
@@ -198,7 +198,7 @@ export function Profile() {
               <h2 className=" font-semibold ">
                 YTDB Username :{userData.ytdbUsername}
               </h2>
-              <p className="text-gray-500 italic ">"Bio: {userData.bio}"</p>
+              <p className="text-gray-500 italic ">Bio: {userData.bio}</p>
               <p className="text-gray-600 ">Age: {userData.age}</p>
               <p className="text-gray-600 ">Country: {userData.country}</p>
             </div>

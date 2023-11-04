@@ -1,4 +1,6 @@
 import { AiTwotoneHeart } from "react-icons/ai";
+import { FaLinkedin } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
 export default function Footer() {
   return (
@@ -7,14 +9,34 @@ export default function Footer() {
       <span className="px-4 py-2">
         {<AiTwotoneHeart size={24} color="red" />}
       </span>
-      <small>in India</small>
+      <small className="mb-1">in India</small>
+      <small>Crafted By</small>
+      <div className="flex gap-4 my-2">
+        <Link to="https://www.linkedin.com/in/rahul-singhh/">
+          <small className="text-white flex gap-2">
+            {" "}
+            <div className="pt-1">
+              <FaLinkedin size={15}></FaLinkedin>
+            </div>
+            Rahul Singh
+          </small>
+        </Link>
+        <Link to="https://www.linkedin.com/in/jatinnaroraa/">
+          <small className="text-white flex gap-2">
+            <div className="pt-1">
+              <FaLinkedin size={15}></FaLinkedin>
+            </div>{" "}
+            Jatin Arora
+          </small>
+        </Link>
+      </div>
       <small className="mb-2 block text-xs">
         &copy; 2023 YTDB. All rights reserved.
       </small>
       <p className="text-xs">
         <span className="font-semibold">About this website:</span> built with
-        React , TypeScript, Tailwind CSS, MongoDb, Express, NodeJs, Framer
-        Motion, React Email & Resend, Vercel hosting.
+        React , TypeScript, Tailwind CSS, MongoDb, Express, NodeJs, Auth0,
+        Vercel hosting.
       </p>
     </footer>
   );

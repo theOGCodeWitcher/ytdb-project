@@ -27,19 +27,19 @@ export default function SimilarChannel() {
 
   useEffect(() => {
     fetchSimilarChannel();
-  }, [channelId]); // Runs the effect when channelId changes
+  }, [channelId]);
 
   return (
     <div>
       {" "}
-      {/* A div or some other container element is required to wrap the JSX */}
       {isLoading ? (
         <Loading />
       ) : (
         data && (
           <>
-            <SectionHeading>Similar Channels </SectionHeading>{" "}
-            {/* You should pass a title prop */}
+            <div className="mb-4">
+              <SectionHeading>Similar Channels </SectionHeading>{" "}
+            </div>
             <CardCollection data={data} />
           </>
         )

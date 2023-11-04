@@ -106,7 +106,7 @@ export default function Card({ data }: CardProps) {
                 categories.map((item, index) => (
                   <div
                     key={index}
-                    className="badge p-2 text-xs capitalize border-gray-200"
+                    className="badge p-2 text-xs capitalize border-gray-200 mb-[0.1rem]"
                   >
                     {item}
                   </div>

@@ -7,6 +7,8 @@ import { Navbar } from "./components/Navbar";
 import Footer from "./components/Footer";
 import Profile from "./components/Profile";
 import { Toaster } from "react-hot-toast";
+import Wishlist from "./components/Wishlist";
+import Explore from "./components/Explore";
 
 function App() {
   return (
@@ -18,6 +20,8 @@ function App() {
           <Route path="/" element={<Homepage />} />
           <Route path="/homePage" element={<Homepage />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/wishlist&favourites" element={<Wishlist />} />
+          <Route path="/explore" element={<Explore />} />
           <Route path="/channel/:channelId" element={<Channel />} />
         </Routes>
       </div>

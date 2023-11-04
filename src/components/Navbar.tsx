@@ -7,6 +7,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import SearchResultsSkeleton from "./SearchResultsSkeleton";
 import UserContext from "../context/userContext";
 import { fetchUserWithId } from "../api/UserApi";
+import { BiSearchAlt } from "react-icons/bi";
 
 export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -99,8 +100,8 @@ export const Navbar = () => {
             <div className="form-control pt-2 relative">
               <input
                 type="text"
-                placeholder="Search Channel"
-                className="input input-bordered md:w-[22rem] w-[12rem] h-9 text-xs focus:outline-none"
+                placeholder="Search Channel  🔍 "
+                className="input input-bordered md:w-[22rem] w-[13rem] h-9 text-xs focus:outline-none dark:bg-gray-800"
                 value={searchQuery}
                 onChange={(e) => {
                   handleChange(e);

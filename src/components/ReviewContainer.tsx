@@ -3,6 +3,7 @@ import { ReviewCardProps } from "../types/type";
 
 import Loading from "./Loading";
 import SectionHeading from "./SectionHeading";
+import { useLocation } from "react-router-dom";
 
 type ReviewContainerProps = {
   reviewsData: ReviewCardProps[];
@@ -13,13 +14,19 @@ export default function ReviewContainer({
   reviewsData,
   isLoadingReview,
 }: ReviewContainerProps) {
+  const location = useLocation();
+
   return (
     <div className="flex  flex-col">
       {isLoadingReview ? (
         <Loading />
       ) : (
         <div className="flex  flex-col justify-center gap-8 ">
-          <SectionHeading>Community Reviews</SectionHeading>
+          {location.pathname == "/profile" ? (
+            <SectionHeading>My Reviews</SectionHeading>
+          ) : (
+            <SectionHeading>Community Reviews</SectionHeading>
+          )}
           {reviewsData?.length != 0 ? (
             <div className="flex flex-wrap">
               {reviewsData?.map((review, index) => (
@@ -36,9 +43,13 @@ export default function ReviewContainer({
             </div>
           ) : (
             <div className="w-full flex justify-center ">
-              <span className="text-xl mb-16">
-                No reviews on this channel yet
-              </span>
+              {location.pathname == "/profile" ? (
+                <></>
+              ) : (
+                <span className="text-xl mb-16">
+                  No reviews on this channel yet
+                </span>
+              )}
             </div>
           )}
         </div>
