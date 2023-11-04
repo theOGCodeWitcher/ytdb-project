@@ -33,7 +33,15 @@ exports.searchByCriteria = async (key, videoCategory) => {
     }
 
     const results = await fetchPopularVideosAndChannels(categoryID);
-    return results;
+
+    if (results && Array.isArray(results)) {
+      // Filter out null objects
+      const filteredResults = results.filter((result) => result !== null);
+      return filteredResults;
+    } else {
+      console.error("No results found.");
+      return null;
+    }
   } catch (error) {
     console.error(`Error fetching popular videos and channels: ${error}`);
     return null;
