@@ -7,6 +7,8 @@ const channelSchema = new mongoose.Schema({
   uploads: Number,
   Subs: Number,
   VideoViews: Number,
+  Favourite: Boolean,
+  Wishlist: Boolean,
   Rating: String,
   Category: String,
   TopicCategories: [String],
