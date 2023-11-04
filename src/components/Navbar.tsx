@@ -93,11 +93,10 @@ export const Navbar = () => {
     <>
       <div className="navbar  shadow-md px-3 relative">
         <div className="flex-1">
-          <div className="flex justify-between w-4/5 md:w-2/3">
+          <div className="flex justify-between md:w-2/3">
             <div className="h-[3rem] w-[3rem] flex">
-              <img src={logo} alt="" className="pt-1"></img>
               <Link to="/">
-                <p className="btn btn-ghost normal-case text-xl">YTDB</p>
+                <img src={logo} alt="" className="pt-1"></img>
               </Link>
             </div>
             <div className="form-control pt-2 relative">
@@ -162,7 +161,7 @@ export const Navbar = () => {
             </div>
           </div>
         </div>
-        <div className="flex-none gap-2">
+        <div className="flex-none ">
           {!isAuthenticated && (
             <button
               className="btn btn-sm btn-outline btn-primary"
