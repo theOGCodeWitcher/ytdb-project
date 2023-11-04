@@ -7,7 +7,7 @@ import { useAuth0 } from "@auth0/auth0-react";
 import SearchResultsSkeleton from "./SearchResultsSkeleton";
 import UserContext from "../context/userContext";
 import { fetchUserWithId } from "../api/UserApi";
-import { BiSearchAlt } from "react-icons/bi";
+import logo from "../assets/logo.png";
 
 export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -15,7 +15,7 @@ export const Navbar = () => {
     []
   );
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
-  const { setuserData } = useContext(UserContext); //context api
+  const { setuserData } = useContext(UserContext);
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
   const location = useLocation();
 
@@ -94,9 +94,12 @@ export const Navbar = () => {
       <div className="navbar  shadow-md px-3 relative">
         <div className="flex-1">
           <div className="flex justify-between w-4/5 md:w-2/3">
-            <Link to="/">
-              <p className="btn btn-ghost normal-case text-xl">YTDB</p>
-            </Link>
+            <div className="h-[3rem] w-[3rem] flex">
+              <img src={logo} alt="" className="pt-1"></img>
+              <Link to="/">
+                <p className="btn btn-ghost normal-case text-xl">YTDB</p>
+              </Link>
+            </div>
             <div className="form-control pt-2 relative">
               <input
                 type="text"
