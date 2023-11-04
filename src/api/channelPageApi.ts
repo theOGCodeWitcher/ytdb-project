@@ -82,3 +82,35 @@ export async function getSimilarChannel(
     throw error;
   }
 }
+
+export async function deleteFromFav(
+  ChannelId: string,
+  userId: string
+): Promise<{ message: string }> {
+  try {
+    const response: AxiosResponse<{ message: string }> = await axios.delete(
+      `${
+        import.meta.env.VITE_APP_USER_ENDPOINT
+      }removeFromFavourites?userId=${userId}&channelId=${ChannelId}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function deleteFromWishlist(
+  ChannelId: string,
+  userId: string
+): Promise<{ message: string }> {
+  try {
+    const response: AxiosResponse<{ message: string }> = await axios.delete(
+      `${
+        import.meta.env.VITE_APP_USER_ENDPOINT
+      }removeFromWishlist?userId=${userId}&channelId=${ChannelId}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}

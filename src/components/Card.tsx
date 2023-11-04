@@ -1,11 +1,17 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { RatingComp } from "./Rating";
 import clipDescription, { extractCategories, formatCount } from "../lib/util";
 import { MdOutlinePeopleOutline } from "react-icons/md";
+import { RxCross2 } from "react-icons/rx";
 import { BiSolidVideoPlus } from "react-icons/bi";
 import { Link } from "react-router-dom";
 import placeholder from "../assets/placeholder.jpg";
 import bannerplaceholder from "../assets/bannerplaceholder.jpg";
+import { useLocation } from "react-router-dom";
+import UserContext from "../context/userContext";
+import toast from "react-hot-toast";
+import { deleteFromFav, deleteFromWishlist } from "../api/channelPageApi";
+import { getUserID_db } from "../context/customHooks";
 
 type CardProps = {
   data: {
@@ -25,6 +31,42 @@ type CardProps = {
 
 export default function Card({ data }: CardProps) {
   const [categories, setcategories] = useState<string[] | undefined>([]);
+  const location = useLocation();
+  const userId = getUserID_db();
+
+  const { setChangeObserved } = useContext(UserContext);
+
+  const [isButtonLoading, setisButtonLoading] = useState<boolean>(false);
+
+  async function handleDeleteFav() {
+    if (userId && data.ChannelId) {
+      try {
+        setisButtonLoading(true);
+        const response = await deleteFromFav(data.ChannelId, userId);
+        setChangeObserved(true);
+        toast.success(response.message);
+        setisButtonLoading(false);
+      } catch (error) {
+        console.error("Error fetching channel data:", error);
+        setisButtonLoading(false);
+      }
+    }
+  }
+
+  async function handleDeleteWishlist() {
+    if (userId && data.ChannelId) {
+      try {
+        setisButtonLoading(true);
+        const response = await deleteFromWishlist(data.ChannelId, userId);
+        toast.success(response.message);
+        setChangeObserved(true);
+        setisButtonLoading(false);
+      } catch (error) {
+        console.error("Error fetching channel data:", error);
+        setisButtonLoading(false);
+      }
+    }
+  }
 
   useEffect(() => {
     if (data.TopicCategories) {
@@ -46,8 +88,8 @@ export default function Card({ data }: CardProps) {
 
   return (
     <>
-      <Link to={`/channel/${data.ChannelId}`}>
-        <div className="card h-[32rem] w-[16rem] md:w-[18rem] md:h-[32rem] dark:bg-gray-800 shadow-2xl overflow-hidden cursor-pointer md:hover:scale-[1.04]   transition">
+      <div className="card relative h-[32rem] w-[16rem] md:w-[18rem] md:h-[32rem] dark:bg-gray-800 shadow-2xl overflow-hidden cursor-pointer md:hover:scale-[1.04]   transition">
+        <Link to={`/channel/${data.ChannelId}`}>
           <div className="relative  transition">
             {data.BannerImage ? (
               <div
@@ -88,7 +130,11 @@ export default function Card({ data }: CardProps) {
           </div>
 
           <div className="card-body p-[0.8rem]  ">
-            {data.Title && <h2 className="card-title text-sm">{data.Title}</h2>}
+            <div className="flex">
+              {data.Title && (
+                <h2 className="card-title text-sm">{data.Title}</h2>
+              )}
+            </div>
             {data.Rating && (
               <div className="flex ">
                 <RatingComp Rating={Number(data.Rating)} />
@@ -129,8 +175,42 @@ export default function Card({ data }: CardProps) {
               )}
             </div>
           </div>
-        </div>
-      </Link>
+        </Link>
+        {location.pathname === "/wishlist" && (
+          <button
+            className=" absolute btn btn-error btn-outline top-2 right-2 mt-1 btn-sm w-[7rem] p-1 "
+            onClick={() => {
+              handleDeleteWishlist();
+            }}
+          >
+            {isButtonLoading ? (
+              <span className="loading loading-spinner text-primary"></span>
+            ) : (
+              <>
+                <RxCross2 size={20} />
+                Remove
+              </>
+            )}
+          </button>
+        )}
+        {location.pathname === "/favorites" && (
+          <button
+            className=" absolute btn btn-error btn-outline top-2 right-2 mt-1 btn-sm w-[7rem] p-1 "
+            onClick={() => {
+              handleDeleteFav();
+            }}
+          >
+            {isButtonLoading ? (
+              <span className="loading loading-spinner text-primary"></span>
+            ) : (
+              <>
+                <RxCross2 size={20} />
+                Remove
+              </>
+            )}
+          </button>
+        )}
+      </div>
     </>
   );
 }

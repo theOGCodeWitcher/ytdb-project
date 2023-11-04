@@ -13,7 +13,7 @@ export default function Footer() {
       <small>Crafted By</small>
       <div className="flex gap-4 my-2">
         <Link to="https://www.linkedin.com/in/rahul-singhh/">
-          <small className="text-white flex gap-2">
+          <small className="dark:text-white text-gray-800 flex gap-2">
             {" "}
             <div className="pt-1">
               <FaLinkedin size={15}></FaLinkedin>
@@ -22,7 +22,7 @@ export default function Footer() {
           </small>
         </Link>
         <Link to="https://www.linkedin.com/in/jatinnaroraa/">
-          <small className="text-white flex gap-2">
+          <small className="dark:text-white text-gray-800 flex gap-2">
             <div className="pt-1">
               <FaLinkedin size={15}></FaLinkedin>
             </div>{" "}

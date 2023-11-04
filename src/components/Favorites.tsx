@@ -1,54 +1,53 @@
 import { getUserID_db } from "../context/customHooks";
 import { useContext, useEffect, useState } from "react";
 import { ChannelCollectionResponse } from "../types/type";
-import { getWishlist } from "../api/UserApi";
+import { getFavorites } from "../api/UserApi";
 import Loading from "./Loading";
 import SectionHeading from "./SectionHeading";
 import CardCollection from "./CardCollection";
-import { BsFillBookmarkStarFill } from "react-icons/bs";
+import { BsBalloonHeartFill } from "react-icons/bs";
 import UserContext from "../context/userContext";
-export default function Wishlist() {
-  const userId = getUserID_db();
+
+export default function Favorites() {
   const { changeObserved, setChangeObserved } = useContext(UserContext);
+  const userId = getUserID_db();
+  const [favChannels, setfavChannels] =
+    useState<ChannelCollectionResponse | null>(null);
+  const [isLoadingFav, setisLoadingFav] = useState<boolean>(true);
 
-  const [wishlist, setwishlist] = useState<ChannelCollectionResponse | null>(
-    null
-  );
-  const [isLoadingWishlist, setisLoadingWishlist] = useState<boolean>(true);
-
-  async function fetchWishlist() {
+  async function fetchFavorites() {
     if (userId) {
       try {
-        setisLoadingWishlist(true);
-        const data = await getWishlist(userId);
-        setwishlist(data);
+        setisLoadingFav(true);
+        const data = await getFavorites(userId);
+        setfavChannels(data);
+        setisLoadingFav(false);
         setChangeObserved(false);
-        setisLoadingWishlist(false);
       } catch (error) {
         console.error("Error fetching channel data:", error);
-        setisLoadingWishlist(false);
+        setisLoadingFav(false);
         setChangeObserved(false);
       }
     }
   }
 
   useEffect(() => {
-    fetchWishlist();
+    fetchFavorites();
   }, [userId, changeObserved]);
 
   return (
     <>
-      {isLoadingWishlist ? (
+      {isLoadingFav ? (
         <Loading />
       ) : (
         <div className="mb-4  ">
           <div className="flex mx-2 px-2 py-2 my-2 md:mx-8 md:px-8 items-center">
-            <SectionHeading>Wishlist</SectionHeading>
+            <SectionHeading>Favorites</SectionHeading>
             <div className="md:pt-3">
-              <BsFillBookmarkStarFill size={26} />
+              <BsBalloonHeartFill size={26} />
             </div>
           </div>
-          {wishlist && <CardCollection data={wishlist} />}
+          {favChannels && <CardCollection data={favChannels} />}
         </div>
       )}
     </>

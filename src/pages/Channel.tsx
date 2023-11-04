@@ -29,13 +29,14 @@ import OwnReview from "../components/OwnReview";
 import bannerplaceholder from "../assets/bannerplaceholder.jpg";
 import SimilarChannel from "../components/SimilarChannel";
 import { useAuth0 } from "@auth0/auth0-react";
+import { addToFavourite, addToWishlist } from "../api/UserApi";
+import toast from "react-hot-toast";
 
 export default function Channel() {
   const { channelId } = useParams<string>();
   const [channelData, setchannelData] = useState<ChannelItem>();
   const [categories, setcategories] = useState<string[] | undefined>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isModalOpen, setIsModalOpen] = useState(false);
   const id = getUserID_db();
   const { isAuthenticated } = useAuth0();
   const userId = getUserID_db();
@@ -74,7 +75,9 @@ export default function Channel() {
   async function submitForm(formData: ReviewFormData, clearForm: () => void) {
     try {
       await postReview(formData);
-      setIsModalOpen(true);
+      fetchReviewsByChannelIdAndUserId();
+      fetchReviewsByChannelId();
+      toast.success("Review Posted Succesfully");
       clearForm();
     } catch (error) {
       console.log("Error posting form", error);
@@ -128,37 +131,58 @@ export default function Channel() {
     }
   }
 
+  //Add to favourite Function
+
+  const [isButtonLoadingFav, setisButtonLoadingFav] = useState<boolean>(false);
+  const [isButtonLoadingWishlist, setisButtonLoadingWishlist] =
+    useState<boolean>(false);
+
+  async function handleFav() {
+    if (channelId && userId) {
+      try {
+        setisButtonLoadingFav(true);
+        const response = await addToFavourite(channelId, userId);
+        setisButtonLoadingFav(false);
+        toast.success(response.message);
+      } catch (error) {
+        console.log("Error posting form", error);
+        setisButtonLoadingFav(false);
+      }
+    } else {
+      toast.error("Please Login first");
+    }
+  }
+
+  async function handleWishlist() {
+    if (channelId && userId) {
+      try {
+        setisButtonLoadingWishlist(true);
+        const response = await addToWishlist(channelId, userId);
+        toast.success(response.message);
+        setisButtonLoadingWishlist(false);
+      } catch (error) {
+        console.log("Error posting form", error);
+        setisButtonLoadingWishlist(false);
+      }
+    } else {
+      toast.error("Please Login first");
+    }
+  }
+
   useEffect(() => {
-    fetchchannelData();
     fetchReviewsByChannelId();
-  }, [channelId, isModalOpen]);
+    fetchchannelData();
+  }, [channelId]);
 
   useEffect(() => {
     fetchReviewsByChannelIdAndUserId();
-  }, [isAuthenticated, channelId, userId, isModalOpen]);
+  }, [channelId, userId]);
   return (
     <>
       {isLoading ? (
         <Loading />
       ) : (
         <>
-          {isModalOpen && (
-            <div className="fixed inset-0 flex items-center justify-center z-50">
-              <div className="modal modal-open">
-                <div className="modal-box">
-                  <h2 className="text-lg">Thanks for posting a review! 😍"</h2>
-                  <div className="modal-action">
-                    <button
-                      onClick={() => setIsModalOpen(false)}
-                      className="btn"
-                    >
-                      Ok
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
           <div className="flex flex-col md:flex-row  md:px-8 md:mx-8  md:py-4 md:my-4 ">
             <div className="flex flex-col  px-2 my-2 overflow-hidden md:w-1/2">
               <img
@@ -212,13 +236,31 @@ export default function Channel() {
                 </div>
                 <div className="flex flex-col gap-4 md:gap-8 items-center flex-shrink-0 ">
                   <div className="flex w-full gap-3 md:gap-4">
-                    <button className="btn btn-secondary btn-outline ml-4 mt-1  btn-sm md:btn-bas ">
-                      <BsBalloonHeartFill size={20} />
-                      Favourite
+                    <button
+                      className="btn btn-secondary btn-outline ml-4 mt-1 btn-sm w-[8rem] p-1 "
+                      onClick={() => handleFav()}
+                    >
+                      {isButtonLoadingFav ? (
+                        <span className="loading loading-spinner text-primary"></span>
+                      ) : (
+                        <>
+                          <BsBalloonHeartFill size={20} />
+                          Favourite
+                        </>
+                      )}
                     </button>
-                    <button className="btn btn-warning btn-outline mt-1  btn-sm md:btn-bas ">
-                      <BsFillBookmarkStarFill size={20} />
-                      wishlist
+                    <button
+                      className="btn btn-warning btn-outline mt-1  btn-sm md:btn-bas "
+                      onClick={() => handleWishlist()}
+                    >
+                      {isButtonLoadingWishlist ? (
+                        <span className="loading loading-spinner text-primary"></span>
+                      ) : (
+                        <>
+                          <BsFillBookmarkStarFill size={20} />
+                          wishlist
+                        </>
+                      )}
                     </button>
                     <div className="pb-4 ">
                       <a

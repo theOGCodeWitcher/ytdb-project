@@ -1,5 +1,10 @@
 import axios, { AxiosResponse } from "axios";
-import { ProfileProps, ReviewCardProps, User } from "../types/type";
+import {
+  ChannelCollectionResponse,
+  ProfileProps,
+  ReviewCardProps,
+  User,
+} from "../types/type";
 
 export async function fetchUserWithId(userAuthObj: User): Promise<User> {
   try {
@@ -52,6 +57,66 @@ export async function getReviewsByUserId(
       `${
         import.meta.env.VITE_APP_USER_ENDPOINT
       }getReviewsByUserId?userId=${userId}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function addToFavourite(
+  channelId: string,
+  userId: String
+): Promise<{ message: string }> {
+  try {
+    const response: AxiosResponse<{ message: string }> = await axios.post(
+      `${
+        import.meta.env.VITE_APP_USER_ENDPOINT
+      }addToFavourites?channelId=${channelId}&userId=${userId}`
+    );
+
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function addToWishlist(
+  channelId: string,
+  userId: String
+): Promise<{ message: string }> {
+  try {
+    const response: AxiosResponse<{ message: string }> = await axios.post(
+      `${
+        import.meta.env.VITE_APP_USER_ENDPOINT
+      }addToWishlist?channelId=${channelId}&userId=${userId}`
+    );
+
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getFavorites(
+  userId: string
+): Promise<ChannelCollectionResponse> {
+  try {
+    const response: AxiosResponse<ChannelCollectionResponse> = await axios.get(
+      `${import.meta.env.VITE_APP_USER_ENDPOINT}getFavourites?userId=${userId}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}
+
+export async function getWishlist(
+  userId: string
+): Promise<ChannelCollectionResponse> {
+  try {
+    const response: AxiosResponse<ChannelCollectionResponse> = await axios.get(
+      `${import.meta.env.VITE_APP_USER_ENDPOINT}getWishlist?userId=${userId}`
     );
     return response.data;
   } catch (error) {

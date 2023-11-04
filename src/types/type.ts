@@ -51,7 +51,7 @@ export type User = {
   name?: string;
   picture?: string;
   locale?: string;
-  updated_at?: string; // Alternatively, you can also use Date if this string is always in a date format.
+  updated_at?: string;
   email?: string;
   email_verified?: boolean;
   sub?: string;
@@ -77,4 +77,9 @@ export type OwnReviewCardProps = {
   rating: number;
   review: string;
   tags: string[];
+};
+
+export type AddFavOrWishlist = {
+  channelId: string;
+  userId: string;
 };

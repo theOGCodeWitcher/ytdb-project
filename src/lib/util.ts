@@ -9,7 +9,7 @@ export default function clipDescription(description: string): string {
 
 export function extractCategories(urls: string[]) {
   const results: string[] = [];
-  const maxCategories = 5;
+  const maxCategories = 3;
 
   urls.forEach((url: string) => {
     const parts = url.split("/");

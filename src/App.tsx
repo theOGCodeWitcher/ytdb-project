@@ -9,6 +9,7 @@ import Profile from "./components/Profile";
 import { Toaster } from "react-hot-toast";
 import Wishlist from "./components/Wishlist";
 import Explore from "./components/Explore";
+import Favorites from "./components/Favorites";
 
 function App() {
   return (
@@ -20,7 +21,8 @@ function App() {
           <Route path="/" element={<Homepage />} />
           <Route path="/homePage" element={<Homepage />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/wishlist&favourites" element={<Wishlist />} />
+          <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/favorites" element={<Favorites />} />
           <Route path="/explore" element={<Explore />} />
           <Route path="/channel/:channelId" element={<Channel />} />
         </Routes>

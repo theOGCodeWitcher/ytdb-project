@@ -201,13 +201,18 @@ export const Navbar = () => {
                     <span className="justify-between">Profile</span>
                   </li>
                 </Link>
-                <Link to="/wishlist&favourites">
+                <Link to="/wishlist">
                   <li key={2}>
-                    <span>Wishlist & Favourites</span>
+                    <span>Wishlist </span>
+                  </li>
+                </Link>
+                <Link to="/favorites">
+                  <li key={3}>
+                    <span> Favourites</span>
                   </li>
                 </Link>
                 {
-                  <li key={3}>
+                  <li key={4}>
                     <a
                       onClick={() =>
                         logout({

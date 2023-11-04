@@ -8,9 +8,12 @@ interface UserProviderProps {
 
 const UserProvider = ({ children }: UserProviderProps) => {
   const [userData, setuserData] = useState<User | null>(null);
+  const [changeObserved, setChangeObserved] = useState<boolean | null>(null);
 
   return (
-    <UserContext.Provider value={{ userData, setuserData }}>
+    <UserContext.Provider
+      value={{ userData, setuserData, changeObserved, setChangeObserved }}
+    >
       {children}
     </UserContext.Provider>
   );
