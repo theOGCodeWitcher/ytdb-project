@@ -474,19 +474,16 @@ exports.getRecommendations = async (userId) => {
         // Step 3.2: Extract channelIds from the search results
         const channelIds = videos.map((video) => video.snippet.channelId);
 
-        // Step 3.3: Filter out the current channel's ID
-        const uniqueChannelIds = channelIds.filter((id) => id !== channelId);
+        const uniqueChannelIds = channelIds
+          .filter((id) => id !== channelId)
+          .filter(
+            (id, index) => !videos[index].snippet.title.includes(channelTitle)
+          );
 
         // Convert the keys to strings (ensure consistency)
         const channelIdStr = channelId.toString();
         const uniqueChannelIdsStr = uniqueChannelIds.map((id) => id.toString());
 
-        const uniqueChannelTitle = channelInfo.data.items[0].snippet.title;
-
-        // Check if the unique channel's title contains the name of the current channel
-        if (uniqueChannelTitle.includes(channelTitle)) {
-          continue;
-        }
         // Step 3.4: Add unique channelIds to the majorSet and the recommendationGraph
         uniqueChannelIdsStr.forEach(async (uniqueChannelIdStr) => {
           majorSet.add(uniqueChannelIdStr);
