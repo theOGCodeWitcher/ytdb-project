@@ -27,12 +27,10 @@ type CardProps = {
     Category?: string;
     ChannelId?: string;
   };
+  onRemoveCard: (channelId: string) => void;
 };
 
-export default function Card({
-  data,
-  onRemoveCard,
-}: CardProps & { onRemoveCard: (channelId: string) => void }) {
+export default function Card({ data, onRemoveCard }: CardProps) {
   const [categories, setcategories] = useState<string[] | undefined>([]);
   const location = useLocation();
   const userId = getUserID_db();
