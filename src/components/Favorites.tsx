@@ -1,15 +1,13 @@
 import { getUserID_db } from "../context/customHooks";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ChannelCollectionResponse } from "../types/type";
 import { getFavorites } from "../api/UserApi";
 import Loading from "./Loading";
 import SectionHeading from "./SectionHeading";
 import CardCollection from "./CardCollection";
 import { BsBalloonHeartFill } from "react-icons/bs";
-import UserContext from "../context/userContext";
 
 export default function Favorites() {
-  const { changeObserved, setChangeObserved } = useContext(UserContext);
   const userId = getUserID_db();
   const [favChannels, setfavChannels] =
     useState<ChannelCollectionResponse | null>(null);
@@ -22,18 +20,26 @@ export default function Favorites() {
         const data = await getFavorites(userId);
         setfavChannels(data);
         setisLoadingFav(false);
-        setChangeObserved(false);
       } catch (error) {
         console.error("Error fetching channel data:", error);
         setisLoadingFav(false);
-        setChangeObserved(false);
       }
     }
   }
 
+  const removeCard = (channelIdToRemove: string) => {
+    setfavChannels((currentData) =>
+      currentData
+        ? currentData.filter(
+            (channel) => channel.ChannelId !== channelIdToRemove
+          )
+        : null
+    );
+  };
+
   useEffect(() => {
     fetchFavorites();
-  }, [userId, changeObserved]);
+  }, [userId]);
 
   return (
     <>
@@ -47,7 +53,9 @@ export default function Favorites() {
               <BsBalloonHeartFill size={26} />
             </div>
           </div>
-          {favChannels && <CardCollection data={favChannels} />}
+          {favChannels && (
+            <CardCollection data={favChannels} onRemoveCard={removeCard} />
+          )}
         </div>
       )}
     </>

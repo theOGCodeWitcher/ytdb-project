@@ -1,15 +1,14 @@
 import { getUserID_db } from "../context/customHooks";
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ChannelCollectionResponse } from "../types/type";
 import { getWishlist } from "../api/UserApi";
 import Loading from "./Loading";
 import SectionHeading from "./SectionHeading";
 import CardCollection from "./CardCollection";
 import { BsFillBookmarkStarFill } from "react-icons/bs";
-import UserContext from "../context/userContext";
+
 export default function Wishlist() {
   const userId = getUserID_db();
-  const { changeObserved, setChangeObserved } = useContext(UserContext);
 
   const [wishlist, setwishlist] = useState<ChannelCollectionResponse | null>(
     null
@@ -22,19 +21,27 @@ export default function Wishlist() {
         setisLoadingWishlist(true);
         const data = await getWishlist(userId);
         setwishlist(data);
-        setChangeObserved(false);
         setisLoadingWishlist(false);
       } catch (error) {
         console.error("Error fetching channel data:", error);
         setisLoadingWishlist(false);
-        setChangeObserved(false);
       }
     }
   }
 
+  const removeCard = (channelIdToRemove: string) => {
+    setwishlist((currentData) =>
+      currentData
+        ? currentData.filter(
+            (channel) => channel.ChannelId !== channelIdToRemove
+          )
+        : null
+    );
+  };
+
   useEffect(() => {
     fetchWishlist();
-  }, [userId, changeObserved]);
+  }, [userId]);
 
   return (
     <>
@@ -48,7 +55,9 @@ export default function Wishlist() {
               <BsFillBookmarkStarFill size={26} />
             </div>
           </div>
-          {wishlist && <CardCollection data={wishlist} />}
+          {wishlist && (
+            <CardCollection data={wishlist} onRemoveCard={removeCard} />
+          )}
         </div>
       )}
     </>
