@@ -481,6 +481,12 @@ exports.getRecommendations = async (userId) => {
         const channelIdStr = channelId.toString();
         const uniqueChannelIdsStr = uniqueChannelIds.map((id) => id.toString());
 
+        const uniqueChannelTitle = channelInfo.data.items[0].snippet.title;
+
+        // Check if the unique channel's title contains the name of the current channel
+        if (uniqueChannelTitle.includes(channelTitle)) {
+          continue;
+        }
         // Step 3.4: Add unique channelIds to the majorSet and the recommendationGraph
         uniqueChannelIdsStr.forEach(async (uniqueChannelIdStr) => {
           majorSet.add(uniqueChannelIdStr);
