@@ -298,8 +298,6 @@ async function fetchAndCreateOrUpdateChannelCommon(channelId) {
   if (youtubeData.brandingSettings.image !== undefined) {
     newChannelData.BannerImage =
       youtubeData.brandingSettings.image.bannerExternalUrl;
-    newChannelData.bannerImage =
-      youtubeData.brandingSettings.image.bannerExternalUrl;
   }
 
   for (const thumbnailType in youtubeData.snippet.thumbnails) {
