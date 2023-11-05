@@ -424,13 +424,13 @@ exports.getRecommendations = async (userId) => {
     // Step 1: Get favorites latest 2 and add to minorSet
     const favorites = Array.from(user.favourites);
     favorites.sort((a, b) => b[1] - a[1]); // Sort by date in descending order
-    const recentFavorites = favorites.slice(0, 3).map((channel) => channel[0]);
+    const recentFavorites = favorites.slice(0, 5).map((channel) => channel[0]);
     recentFavorites.forEach((channelId) => minorSet.add(channelId));
 
     // Step 2: Get browsed latest 2 and add to minorSet
     const browsed = Array.from(user.channelsBrowsed);
     browsed.sort((a, b) => b[1] - a[1]); // Sort by date in descending order
-    const recentBrowsed = browsed.slice(0, 3).map((channel) => channel[0]);
+    const recentBrowsed = browsed.slice(0, 5).map((channel) => channel[0]);
     recentBrowsed.forEach((channelId) => minorSet.add(channelId));
 
     const majorSet = new Set();
@@ -466,7 +466,7 @@ exports.getRecommendations = async (userId) => {
           part: "snippet",
           q: channelTitle,
           type: "video",
-          maxResults: 30,
+          maxResults: 50,
         });
         searchCost += 100;
         const videos = searchResponse.data.items || [];
