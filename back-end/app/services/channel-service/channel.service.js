@@ -6,11 +6,12 @@ const Cache = models.cacheModel;
 const reviewModel = models.reviewModel;
 const userModel = models.userModel;
 const process = require("process");
+require("dotenv").config();
 const channelService = require("./channel.service");
 const moment = require("moment");
 const youtube = google.youtube({
   version: "v3",
-  auth: "AIzaSyCt1HOHgkmvF5unFo9eGg4djvU95cn4nlc",
+  auth: process.env.YOUTUBE_API_KEY,
 });
 
 exports.getTrendingChannels = async () => {
