@@ -1,37 +1,41 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { ProfileProps, ReviewCardProps } from "../types/type";
 import {
   fetchUserProfile,
   getReviewsByUserId,
   updateUserProfile,
 } from "../api/UserApi";
-import { getUserID_db } from "../context/customHooks";
+
 import { BiSolidEditAlt, BiSolidSave } from "react-icons/bi";
 import ReviewContainer from "./ReviewContainer";
 import HorizontalDivider from "./HorizontalDivider";
 import { AiOutlineClose } from "react-icons/ai";
+import UserContext from "../context/userContext";
 
 export function Profile() {
-  const [userData, setUserData] = useState<ProfileProps | null>(null);
+  const [userInfo, setUserInfo] = useState<ProfileProps | null>(null);
   // const [loading, setLoading] = useState(true);
   // const [error, setError] = useState<Error | null>(null);
   const [editOpen, seteditOpen] = useState<boolean>(false);
   const [reviewsData, setreviewsData] = useState<ReviewCardProps[]>();
   const [isLoadingReview, setIsLoadingReview] = useState<boolean>(true);
 
-  const id = getUserID_db();
-
+  const { userData } = useContext(UserContext);
+  let userId: string | undefined;
+  if (userData) {
+    userId = userData._id;
+  }
   const fetchProfileData = async () => {
     try {
-      if (id) {
-        const response = await fetchUserProfile(id);
+      if (userId) {
+        const response = await fetchUserProfile(userId);
         setFormValues({
-          ytdbUsername: userData?.ytdbUsername || "",
-          bio: userData?.bio || "",
-          age: userData?.age || 0,
-          country: userData?.country || "",
+          ytdbUsername: userInfo?.ytdbUsername || "",
+          bio: userInfo?.bio || "",
+          age: userInfo?.age || 0,
+          country: userInfo?.country || "",
         });
-        setUserData(response);
+        setUserInfo(response);
       }
     } catch (error) {
       console.log("Error fetching profile data:", error);
@@ -39,10 +43,10 @@ export function Profile() {
   };
 
   async function fetchReviews() {
-    if (id) {
+    if (userId) {
       try {
         setIsLoadingReview(true);
-        const data = await getReviewsByUserId(id);
+        const data = await getReviewsByUserId(userId);
         setreviewsData(data);
         setIsLoadingReview(false);
       } catch (error) {
@@ -55,7 +59,7 @@ export function Profile() {
   useEffect(() => {
     fetchProfileData();
     fetchReviews();
-  }, [id, editOpen]);
+  }, [userId, editOpen]);
 
   // if (loading) return <p>Loading...</p>;
   //   if (error) return <p>Error loading user data: {error.message}</p>;
@@ -69,8 +73,8 @@ export function Profile() {
 
   const handleSave = async (formValues: ProfileProps) => {
     try {
-      if (id) {
-        await updateUserProfile(id, formValues);
+      if (userId) {
+        await updateUserProfile(userId, formValues);
         seteditOpen(false);
       }
     } catch (error) {
@@ -194,14 +198,16 @@ export function Profile() {
               </button>
             </div>
           ) : (
-            <div className="flex flex-col gap-4">
-              <h2 className=" font-semibold ">
-                YTDB Username :{userData.ytdbUsername}
-              </h2>
-              <p className="text-gray-500 italic ">Bio: {userData.bio}</p>
-              <p className="text-gray-600 ">Age: {userData.age}</p>
-              <p className="text-gray-600 ">Country: {userData.country}</p>
-            </div>
+            userInfo && (
+              <div className="flex flex-col gap-4">
+                <h2 className=" font-semibold ">
+                  YTDB Username :{userInfo.ytdbUsername}
+                </h2>
+                <p className="text-gray-500 italic ">Bio: {userInfo.bio}</p>
+                <p className="text-gray-600 ">Age: {userInfo.age}</p>
+                <p className="text-gray-600 ">Country: {userInfo.country}</p>
+              </div>
+            )
           )}
         </div>
         <HorizontalDivider />

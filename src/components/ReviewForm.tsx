@@ -13,8 +13,8 @@ export default function ReviewForm({ onSubmit }: ReviewFormProps) {
   const [tags, setTags] = useState<string[]>([]);
   const [Message, setMessage] = useState<string>("");
   const [showMessage, setshowMessage] = useState<boolean>(false);
-  const { loginWithRedirect } = useAuth0();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const { loginWithRedirect } = useAuth0();
 
   const { channelId } = useParams<string>();
   const userId = getUserID_db();
@@ -42,7 +42,7 @@ export default function ReviewForm({ onSubmit }: ReviewFormProps) {
 
     if (!userId) {
       setIsModalOpen(true);
-      return; // Return here to stop the rest of the function execution
+      return;
     }
 
     if (channelId && userId) {

@@ -16,6 +16,8 @@ export type ChannelItem = {
   Rating?: string;
   TopicCategories?: string[];
   BannerImage?: string;
+  Favourite?: boolean;
+  Wishlist?: boolean;
 };
 
 export type ChannelCollectionResponse = ChannelItem[];

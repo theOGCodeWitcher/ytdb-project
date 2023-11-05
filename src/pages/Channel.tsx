@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import {
+  deleteFromFav,
+  deleteFromWishlist,
   fetchChannelById,
   getReviewsByChannelId,
   getReviewsByChannelIdAnduserId,
@@ -37,8 +39,7 @@ export default function Channel() {
   const [channelData, setchannelData] = useState<ChannelItem>();
   const [categories, setcategories] = useState<string[] | undefined>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const id = getUserID_db();
-  const { isAuthenticated } = useAuth0();
+  const { isAuthenticated, loginWithRedirect } = useAuth0();
   const userId = getUserID_db();
 
   async function fetchchannelData() {
@@ -46,8 +47,8 @@ export default function Channel() {
       try {
         setIsLoading(true);
         let data: ChannelItem;
-        if (id) {
-          data = await fetchChannelById(channelId, id);
+        if (userId) {
+          data = await fetchChannelById(channelId, userId);
         } else {
           data = await fetchChannelById(channelId, "");
         }
@@ -140,12 +141,17 @@ export default function Channel() {
     useState<boolean>(false);
 
   async function handleFav() {
-    if (channelId && userId) {
+    if (channelId && userId && channelData?.Favourite) {
       try {
         setisButtonLoadingFav(true);
-        const response = await addToFavourite(channelId, userId);
+        if (channelData?.Favourite) {
+          await deleteFromFav(channelId, userId);
+          channelData.Favourite = false;
+        } else {
+          await addToFavourite(channelId, userId);
+          channelData.Favourite = true;
+        }
         setisButtonLoadingFav(false);
-        toast.success(response.message);
       } catch (error) {
         console.log("Error posting form", error);
         setisButtonLoadingFav(false);
@@ -156,11 +162,17 @@ export default function Channel() {
   }
 
   async function handleWishlist() {
-    if (channelId && userId) {
+    if (channelId && userId && channelData?.Wishlist) {
       try {
         setisButtonLoadingWishlist(true);
-        const response = await addToWishlist(channelId, userId);
-        toast.success(response.message);
+
+        if (channelData?.Wishlist) {
+          await deleteFromWishlist(channelId, userId);
+          channelData.Wishlist = false;
+        } else {
+          await addToWishlist(channelId, userId);
+          channelData.Wishlist = true;
+        }
         setisButtonLoadingWishlist(false);
       } catch (error) {
         console.log("Error posting form", error);
@@ -179,6 +191,9 @@ export default function Channel() {
   useEffect(() => {
     fetchReviewsByChannelIdAndUserId();
   }, [channelId, userId]);
+
+  console.log(channelData?.Favourite);
+
   return (
     <>
       {isLoading ? (
@@ -239,28 +254,46 @@ export default function Channel() {
                 <div className="flex flex-col gap-4 md:gap-8 items-center flex-shrink-0 ">
                   <div className="flex w-full gap-3 md:gap-4">
                     <button
-                      className="btn btn-secondary btn-outline ml-4 mt-1 btn-sm w-[8rem] p-1 "
-                      onClick={() => handleFav()}
+                      className={`btn btn-secondary ${
+                        channelData?.Favourite ? "" : "btn-outline"
+                      } ml-4 mt-1 btn-sm w-[3rem] p-1 `}
+                      onClick={() =>
+                        isAuthenticated
+                          ? handleFav()
+                          : loginWithRedirect({
+                              appState: {
+                                returnTo: location.pathname,
+                              },
+                            })
+                      }
                     >
                       {isButtonLoadingFav ? (
                         <span className="loading loading-spinner text-primary"></span>
                       ) : (
                         <>
                           <BsBalloonHeartFill size={20} />
-                          Favourite
                         </>
                       )}
                     </button>
                     <button
-                      className="btn btn-warning btn-outline mt-1  btn-sm md:btn-bas "
-                      onClick={() => handleWishlist()}
+                      className={`btn btn-warning ${
+                        channelData?.Wishlist ? "" : "btn-outline"
+                      } mt-1  btn-sm md:btn-bas `}
+                      onClick={() =>
+                        isAuthenticated
+                          ? handleWishlist()
+                          : loginWithRedirect({
+                              appState: {
+                                returnTo: location.pathname,
+                              },
+                            })
+                      }
                     >
                       {isButtonLoadingWishlist ? (
                         <span className="loading loading-spinner text-primary"></span>
                       ) : (
                         <>
                           <BsFillBookmarkStarFill size={20} />
-                          wishlist
                         </>
                       )}
                     </button>
