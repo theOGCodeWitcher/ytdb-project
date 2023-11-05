@@ -10,7 +10,7 @@ const channelService = require("./channel.service");
 const moment = require("moment");
 const youtube = google.youtube({
   version: "v3",
-  auth: process.env.YOUTUBE_API_KEY,
+  auth: "AIzaSyCt1HOHgkmvF5unFo9eGg4djvU95cn4nlc",
 });
 
 exports.getTrendingChannels = async () => {
@@ -230,11 +230,12 @@ exports.getChannelById = async (channelId, userId) => {
         await existingChannel.save();
         user.save();
       }
-    } else {
-      existingChannel.Favourite = false;
-      existingChannel.Wishlist = false;
-      await existingChannel.save();
     }
+    // } else {
+    //   existingChannel.Favourite = false;
+    //   existingChannel.Wishlist = false;
+    //   await existingChannel.save();
+    // }
 
     if (!existingChannel) {
       console.log(`Channel with ID ${channelId} not found.`);
@@ -294,7 +295,7 @@ async function fetchAndCreateOrUpdateChannelCommon(channelId) {
   };
 
   if (youtubeData.brandingSettings.image !== undefined) {
-    newChannelData.bannerImage =
+    newChannelData.BannerImage =
       youtubeData.brandingSettings.image.bannerExternalUrl;
   }
 
