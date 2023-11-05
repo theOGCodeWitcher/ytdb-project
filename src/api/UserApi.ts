@@ -123,3 +123,18 @@ export async function getWishlist(
     throw error;
   }
 }
+
+export async function getRecommendation(
+  userId: string
+): Promise<ChannelCollectionResponse> {
+  try {
+    const response: AxiosResponse<ChannelCollectionResponse> = await axios.get(
+      `${
+        import.meta.env.VITE_APP_USER_ENDPOINT
+      }getRecommendations?userId=${userId}`
+    );
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+}

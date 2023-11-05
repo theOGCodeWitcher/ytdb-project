@@ -52,6 +52,8 @@ export default function Channel() {
           data = await fetchChannelById(channelId, "");
         }
         setchannelData(data);
+        console.log(data);
+
         setIsLoading(false);
         if (data.TopicCategories) {
           const categories = extractCategories(data.TopicCategories);
