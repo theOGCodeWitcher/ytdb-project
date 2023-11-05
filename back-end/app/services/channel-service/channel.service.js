@@ -6,6 +6,7 @@ const Cache = models.cacheModel;
 const reviewModel = models.reviewModel;
 const userModel = models.userModel;
 const process = require("process");
+require("dotenv").config();
 const channelService = require("./channel.service");
 const moment = require("moment");
 const youtube = google.youtube({
@@ -230,11 +231,12 @@ exports.getChannelById = async (channelId, userId) => {
         await existingChannel.save();
         user.save();
       }
-    } else {
-      existingChannel.Favourite = false;
-      existingChannel.Wishlist = false;
-      await existingChannel.save();
     }
+    // } else {
+    //   existingChannel.Favourite = false;
+    //   existingChannel.Wishlist = false;
+    //   await existingChannel.save();
+    // }
 
     if (!existingChannel) {
       console.log(`Channel with ID ${channelId} not found.`);
@@ -294,7 +296,7 @@ async function fetchAndCreateOrUpdateChannelCommon(channelId) {
   };
 
   if (youtubeData.brandingSettings.image !== undefined) {
-    newChannelData.bannerImage =
+    newChannelData.BannerImage =
       youtubeData.brandingSettings.image.bannerExternalUrl;
   }
 
