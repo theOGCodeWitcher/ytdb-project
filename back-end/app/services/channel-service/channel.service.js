@@ -223,10 +223,16 @@ exports.getChannelById = async (channelId, userId) => {
           channelsBrowsed.set(channelId, new Date());
         }
         if (user.wishlist.has(channelId)) {
-          existingChannel.Favourite = true;
+          console.log("wishlist has channel");
+          existingChannel.Wishlist = true;
+        } else {
+          existingChannel.Wishlist = false;
         }
         if (user.favourites.has(channelId)) {
-          existingChannel.Wishlist = true;
+          console.log("favourites has channel");
+          existingChannel.Favourite = true;
+        } else {
+          existingChannel.Favourite = false;
         }
         await existingChannel.save();
         user.save();
