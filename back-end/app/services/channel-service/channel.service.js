@@ -210,6 +210,10 @@ exports.getChannelById = async (channelId, userId) => {
         ChannelId: channelId,
       })
       .exec();
+    if (existingChannel) {
+      existingChannel.Favourite = false;
+      existingChannel.Wishlist = false;
+    }
     if (userId) {
       const user = await userModel.findById(userId).exec();
       if (user) {
