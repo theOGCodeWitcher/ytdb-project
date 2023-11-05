@@ -27,7 +27,7 @@ type CardProps = {
     Category?: string;
     ChannelId?: string;
   };
-  onRemoveCard: (channelId: string) => void;
+  onRemoveCard?: (channelId: string) => void;
 };
 
 export default function Card({ data, onRemoveCard }: CardProps) {
@@ -45,7 +45,9 @@ export default function Card({ data, onRemoveCard }: CardProps) {
         setisButtonLoading(true);
         const response = await deleteFromFav(data.ChannelId, userId);
         setChangeObserved(true);
-        onRemoveCard(data.ChannelId);
+        if (onRemoveCard) {
+          onRemoveCard(data.ChannelId);
+        }
         toast.success(response.message);
         setisButtonLoading(false);
       } catch (error) {
@@ -61,7 +63,9 @@ export default function Card({ data, onRemoveCard }: CardProps) {
         setisButtonLoading(true);
         const response = await deleteFromWishlist(data.ChannelId, userId);
         toast.success(response.message);
-        onRemoveCard(data.ChannelId);
+        if (onRemoveCard) {
+          onRemoveCard(data.ChannelId);
+        }
         setisButtonLoading(false);
       } catch (error) {
         console.error("Error fetching channel data:", error);
