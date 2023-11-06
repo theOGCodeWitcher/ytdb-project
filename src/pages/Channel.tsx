@@ -31,7 +31,12 @@ import OwnReview from "../components/OwnReview";
 import bannerplaceholder from "../assets/bannerplaceholder.jpg";
 import SimilarChannel from "../components/SimilarChannel";
 import { useAuth0 } from "@auth0/auth0-react";
-import { addToFavourite, addToWishlist } from "../api/UserApi";
+import {
+  addToFavourite,
+  addToWishlist,
+  getFavorites,
+  getWishlist,
+} from "../api/UserApi";
 import toast from "react-hot-toast";
 
 export default function Channel() {
@@ -40,6 +45,7 @@ export default function Channel() {
   const [categories, setcategories] = useState<string[] | undefined>([]);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const { isAuthenticated, loginWithRedirect } = useAuth0();
+
   const userId = getUserID_db();
 
   async function fetchchannelData() {
@@ -53,8 +59,6 @@ export default function Channel() {
           data = await fetchChannelById(channelId, "");
         }
         setchannelData(data);
-        console.log(data);
-
         setIsLoading(false);
         if (data.TopicCategories) {
           const categories = extractCategories(data.TopicCategories);
@@ -141,7 +145,7 @@ export default function Channel() {
     useState<boolean>(false);
 
   async function handleFav() {
-    if (channelId && userId && channelData?.Favourite) {
+    if (channelId && userId) {
       try {
         setisButtonLoadingFav(true);
         if (channelData?.Favourite) {
@@ -149,7 +153,8 @@ export default function Channel() {
           channelData.Favourite = false;
         } else {
           await addToFavourite(channelId, userId);
-          channelData.Favourite = true;
+          if (channelData?.Favourite !== undefined)
+            channelData.Favourite = true;
         }
         setisButtonLoadingFav(false);
       } catch (error) {
@@ -162,16 +167,15 @@ export default function Channel() {
   }
 
   async function handleWishlist() {
-    if (channelId && userId && channelData?.Wishlist) {
+    if (channelId && userId) {
       try {
         setisButtonLoadingWishlist(true);
-
         if (channelData?.Wishlist) {
           await deleteFromWishlist(channelId, userId);
           channelData.Wishlist = false;
         } else {
           await addToWishlist(channelId, userId);
-          channelData.Wishlist = true;
+          if (channelData?.Wishlist !== undefined) channelData.Wishlist = true;
         }
         setisButtonLoadingWishlist(false);
       } catch (error) {
@@ -183,6 +187,51 @@ export default function Channel() {
     }
   }
 
+  const [wishlistBool, setwishlistBool] = useState<boolean>(false);
+  const [favBool, setfavBool] = useState<boolean>(false);
+
+  async function checkWishlistItemOrNot() {
+    if (userId && channelId) {
+      try {
+        const data = await getWishlist(userId);
+        const item = data.find(
+          (wishlistItem) => wishlistItem.ChannelId === channelId
+        );
+        if (item) {
+          setwishlistBool(true);
+        } else {
+          setwishlistBool(false);
+        }
+      } catch (error) {
+        console.error("Error fetching channel data:", error);
+      }
+    }
+  }
+
+  async function checkFavItemOrNot() {
+    if (userId && channelId) {
+      try {
+        const data = await getFavorites(userId);
+        const item = data.find((favItem) => favItem.ChannelId === channelId);
+        if (item) {
+          setfavBool(true);
+        } else {
+          setfavBool(false);
+        }
+      } catch (error) {
+        console.error("Error fetching channel data:", error);
+      }
+    }
+  }
+
+  useEffect(() => {
+    checkFavItemOrNot();
+  }, [userId, isButtonLoadingFav, channelId]);
+
+  useEffect(() => {
+    checkWishlistItemOrNot();
+  }, [userId, isButtonLoadingWishlist, channelId]);
+
   useEffect(() => {
     fetchReviewsByChannelId();
     fetchchannelData();
@@ -192,7 +241,7 @@ export default function Channel() {
     fetchReviewsByChannelIdAndUserId();
   }, [channelId, userId]);
 
-  console.log(channelData?.Favourite);
+  console.log(channelData);
 
   return (
     <>
@@ -255,7 +304,7 @@ export default function Channel() {
                   <div className="flex w-full gap-3 md:gap-4">
                     <button
                       className={`btn btn-secondary ${
-                        channelData?.Favourite ? "" : "btn-outline"
+                        channelData?.Favourite || favBool ? "" : "btn-outline"
                       } ml-4 mt-1 btn-sm w-[3rem] p-1 `}
                       onClick={() =>
                         isAuthenticated
@@ -277,7 +326,9 @@ export default function Channel() {
                     </button>
                     <button
                       className={`btn btn-warning ${
-                        channelData?.Wishlist ? "" : "btn-outline"
+                        channelData?.Wishlist || wishlistBool
+                          ? ""
+                          : "btn-outline"
                       } mt-1  btn-sm md:btn-bas `}
                       onClick={() =>
                         isAuthenticated
