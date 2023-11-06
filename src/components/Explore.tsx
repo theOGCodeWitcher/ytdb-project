@@ -18,7 +18,7 @@ export default function Explore() {
       try {
         setisLoading(true);
         const data = await getRecommendation(userId);
-        setexploreData(data);
+        setexploreData(data.slice(0, 15));
         setisLoading(false);
       } catch (error) {
         console.error("Error fetching channel data:", error);
@@ -40,7 +40,7 @@ export default function Explore() {
       ) : (
         <div className="mb-4  ">
           <div className="flex mx-2 px-2 py-2 my-2 md:mx-8 md:px-8 items-center">
-            <SectionHeading>Wishlist</SectionHeading>
+            <SectionHeading>Recommendation Crafted Just For You</SectionHeading>
             <div className="md:pt-3">
               <MdOutlineTravelExplore size={26} />
             </div>

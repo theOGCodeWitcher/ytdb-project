@@ -1,7 +1,10 @@
 import bannerImage from "../assets/bannerImage.jpg";
 import { Link } from "react-router-dom";
+import { useAuth0 } from "@auth0/auth0-react";
 
 export const HomeBanner = () => {
+  const { loginWithRedirect, isAuthenticated } = useAuth0();
+
   return (
     <section id="banner">
       <div className=" w-full h-[17rem] md:h-[20rem] flex rounded-lg shadow-lg">
@@ -19,7 +22,17 @@ export const HomeBanner = () => {
             </p>
             <div className=" md:py-4 ">
               <Link to="./explore">
-                <button className="btn btn-xs btn-outline btn-primary rounded-lg  md:w-[10rem]">
+                <button
+                  className="btn btn-xs btn-outline btn-primary rounded-lg  md:w-[10rem]"
+                  onClick={() => {
+                    !isAuthenticated &&
+                      loginWithRedirect({
+                        appState: {
+                          returnTo: location.pathname,
+                        },
+                      });
+                  }}
+                >
                   Explore
                 </button>
               </Link>
