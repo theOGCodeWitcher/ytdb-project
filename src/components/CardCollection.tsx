@@ -27,9 +27,9 @@ export default function CardCollection({
     <div className=" relative flex">
       <button
         onClick={() => scroll(-500)}
-        className="absolute left-4 z-10 top-4 glass btn  opacity-50 h-[32rem] md:w-[1rem] hidden md:block  "
+        className="absolute left-2  z-10 top-4 glass btn  opacity-50 h-[32rem] md:w-[1.5rem] hidden md:block   "
       >
-        <div>
+        <div className=" absolute left-1">
           <BiSolidChevronsLeft size={26} />
         </div>
       </button>
@@ -47,9 +47,9 @@ export default function CardCollection({
 
       <button
         onClick={() => scroll(500)}
-        className="absolute right-4 z-10 top-4 glass btn  h-[32rem] md:w-[1rem] w-[0.5rem] opacity-50  items-center justify-center  hidden md:block"
+        className="absolute right-2 z-10 top-4 glass btn  h-[32rem] md:w-[1rem] w-[0.5rem] opacity-50   hidden md:block"
       >
-        <div>
+        <div className="absolute right-1">
           {" "}
           <BiSolidChevronsRight size={24} />
         </div>
