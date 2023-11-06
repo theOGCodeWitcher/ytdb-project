@@ -15,7 +15,7 @@ import { fetchAccToCategory } from "../api/homePageApi";
 import { ChannelCollectionResponse } from "../types/type";
 import { useEffect, useState } from "react";
 import CardCollection from "./CardCollection";
-import Loading from "./Loading";
+import { CardCollectionSkeleton } from "./CardCollectionSkeleton";
 
 const categoryImages = [
   animal,
@@ -55,29 +55,32 @@ export const BrowseCategorySection = () => {
       if (categoryName == "recreation") {
         categoryName = "entertainment";
       }
+      setIsLoading(true);
       setselectedCategory(categoryName);
       const response = await fetchAccToCategory(categoryName);
       setselectedCategoryResponse(response);
+      setIsLoading(false);
     } catch (error) {
       console.error("Error fetching data for category:", categoryName, error);
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    async function fetchInitial() {
-      try {
-        setselectedCategory("comedy");
-        setIsLoading(true);
-        const response = await fetchAccToCategory("comedy");
-        setselectedCategoryResponse(response);
-        setIsLoading(false);
-      } catch (error) {
-        console.error("Error fetching data for category:", error);
-        setIsLoading(false);
-      }
-    }
+    // async function fetchInitial() {
+    //   try {
+    //     setselectedCategory("comedy");
+    //     setIsLoading(true);
+    //     const response = await fetchAccToCategory("comedy");
+    //     setselectedCategoryResponse(response);
+    //     setIsLoading(false);
+    //   } catch (error) {
+    //     console.error("Error fetching data for category:", error);
+    //     setIsLoading(false);
+    //   }
+    // }
 
-    fetchInitial();
+    handleTileClick("comedy");
   }, []);
 
   return (
@@ -104,7 +107,7 @@ export const BrowseCategorySection = () => {
         </div>
       </div>
       {isLoading ? (
-        <Loading />
+        <CardCollectionSkeleton />
       ) : (
         <CardCollection data={selectedCategoryResponse} />
       )}

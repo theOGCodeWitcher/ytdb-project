@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { ChannelCollectionResponse } from "../types/type";
-import Loading from "./Loading";
 import CardCollection from "./CardCollection";
 import { getSimilarChannel } from "../api/channelPageApi";
 import SectionHeading from "./SectionHeading";
+import { CardCollectionSkeleton } from "./CardCollectionSkeleton";
 
 export default function SimilarChannel() {
   const { channelId } = useParams<string>();
@@ -30,20 +30,15 @@ export default function SimilarChannel() {
   }, [channelId]);
 
   return (
-    <div>
-      {" "}
+    <>
+      <div className="mb-4">
+        <SectionHeading>Similar Channels </SectionHeading>{" "}
+      </div>
       {isLoading ? (
-        <Loading />
+        <CardCollectionSkeleton />
       ) : (
-        data && (
-          <>
-            <div className="mb-4">
-              <SectionHeading>Similar Channels </SectionHeading>{" "}
-            </div>
-            <CardCollection data={data} />
-          </>
-        )
+        data && <CardCollection data={data} />
       )}
-    </div>
+    </>
   );
 }
