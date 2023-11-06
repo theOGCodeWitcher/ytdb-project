@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { fetchTrending } from "../api/homePageApi";
 import { ChannelCollectionResponse } from "../types/type";
 import { FaFireAlt } from "react-icons/fa";
-import { CardSkeletonCollection } from "./CardCollectionSkeleton";
+import { CardCollectionSkeleton } from "./CardCollectionSkeleton";
 
 export const TrendingSection = () => {
   const [data, setData] = useState<ChannelCollectionResponse | null>(null);
@@ -41,7 +41,7 @@ export const TrendingSection = () => {
           </div>
         </div>
         {isLoading ? (
-          <CardSkeletonCollection />
+          <CardCollectionSkeleton />
         ) : (
           data && <CardCollection data={data} />
         )}
