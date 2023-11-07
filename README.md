@@ -1,5 +1,7 @@
 # YouTube Channel Insights and Recommendations Web App
-![Project Logo](https://imageupload.io/ib/Lag56R1plv1jObl_1699393308.png) <!-- Replace with your project logo URL -->
+<p align="center">
+  <img src="https://imageupload.io/ib/Lag56R1plv1jObl_1699393308.png" width="200" alt="Project Logo">
+</p>
 
 Welcome to our **YouTube Channel Insights and Recommendations Web App** project! 🚀
 
@@ -9,9 +11,9 @@ Welcome to our **YouTube Channel Insights and Recommendations Web App** project!
 
 Are you tired of sifting through countless YouTube channels to find the content that truly interests you? Our project aims to provide a **responsive web app** that simplifies the discovery of exciting YouTube channels by offering a range of features and innovations.
 
-![Trending Channels](https://imageupload.io/CouT5tiTVqZ8A9b)
-![Trending Channels](https://imageupload.io/qd9pC0cLQMQWUPD)
-![Trending Channels](https://imageupload.io/sWbdShIvL15yjec)
+![Trending Channels](https://imageupload.io/ib/IxGyXUKAbhmEC45_1699393464.png)
+![Trending Channels](https://imageupload.io/ib/dilb2uYEdNaYgOx_1699393464.png)
+![Trending Channels](https://imageupload.io/ib/vMplcJG5NueiVrA_1699393463.png)
 
 ### Rate and Review Channels 🌟
 
