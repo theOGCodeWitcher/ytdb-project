@@ -6,7 +6,8 @@ export default {
     extend: {},
   },
   daisyui: {
-    themes: ["light", "dark", "cupcake", "dracula"],
+    themes: ["light", "dark"],
   },
   plugins: [require("daisyui")],
+  darkMode: ["class", '[data-theme="dark"]'], //specifying here the daisy ui theme i want my dark class of tailwind to refer to.
 };

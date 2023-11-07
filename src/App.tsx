@@ -10,6 +10,7 @@ import { Toaster } from "react-hot-toast";
 import Wishlist from "./components/Wishlist";
 import Explore from "./components/Explore";
 import Favorites from "./components/Favorites";
+import { ThemeSwitch } from "./components/ThemeSwitch";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
           <Route path="/channel/:channelId" element={<Channel />} />
         </Routes>
       </div>
+      <ThemeSwitch />
       <Footer />
     </div>
   );

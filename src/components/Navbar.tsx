@@ -103,7 +103,7 @@ export const Navbar = () => {
               <input
                 type="text"
                 placeholder="Search Channel  🔍 "
-                className="input input-bordered md:w-[22rem] w-[15rem] h-9 text-xs focus:outline-none dark:bg-gray-800"
+                className="input input-bordered  w-[15rem] h-12 text-xs focus:outline-none bg-slate-100 dark:bg-gray-800 md:w-[35rem]  md:text-sm "
                 value={searchQuery}
                 onChange={(e) => {
                   handleChange(e);
@@ -115,7 +115,7 @@ export const Navbar = () => {
               {isDropdownOpen && (
                 <ul
                   ref={dropdownRef}
-                  className="search-dropdown  z-[99] bg-white  dark:bg-gray-800  rounded-md shadow-lg mt-10 absolute left-0 w-[12rem] md:w-[22rem] h-fit   "
+                  className="search-dropdown  z-[99] bg-white  dark:bg-gray-800  rounded-md shadow-lg mt-10 absolute left-0 w-[12rem] md:w-[35rem] h-fit   "
                 >
                   {searchResults.length === 0 ? (
                     <div>

@@ -23,7 +23,7 @@ export const HomeBanner = () => {
             <div className=" md:py-4 ">
               <Link to="./explore">
                 <button
-                  className="btn btn-xs btn-outline btn-primary rounded-lg  md:w-[10rem]"
+                  className="btn  btn-outline btn-primary rounded-lg  md:w-[14rem]"
                   onClick={() => {
                     !isAuthenticated &&
                       loginWithRedirect({

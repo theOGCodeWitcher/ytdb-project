@@ -157,7 +157,7 @@ export function Profile() {
                   Age
                 </label>
                 <input
-                  type="input"
+                  type="number"
                   id="age"
                   value={formValues.age}
                   onChange={(e) =>
@@ -188,7 +188,7 @@ export function Profile() {
                 />
               </div>
               <button
-                className="btn "
+                className="btn border border-black "
                 onClick={() => {
                   handleSave(formValues);
                 }}
