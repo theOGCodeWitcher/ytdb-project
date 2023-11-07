@@ -2,6 +2,8 @@ const express = require("express");
 const cors = require("cors");
 const { auth } = require("express-openid-connect");
 const process = require("process");
+const axios = require("axios");
+const userService = require("./app/services/user-service/user.service");
 require("dotenv").config();
 
 const configAuth = {
@@ -14,11 +16,11 @@ const configAuth = {
 };
 
 const config = require("./app/config/");
-const serverConfig = config.serverConfig;
+
 const logger = config.loggerConfig.logger;
 
 const models = require("./app/models/");
-const { userService } = require("./app/services");
+const { channelService } = require("./app/services");
 
 var corsOptions = {
   origin: process.env.CORS_ORIGIN,
@@ -27,19 +29,34 @@ var corsOptions = {
 const PORT = process.env.SERVER_PORT || 8090;
 
 const app = express();
-app.use(cors(corsOptions));
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(auth(configAuth));
 
 app.get("/", function (req, res) {
-  console.log(req.oidc.isAuthenticated());
+  res.send("Server is up!");
 });
 
 app.listen(PORT, () => {
   logger.info(`Server is running on port ${PORT}.`);
 });
+
+function logMessage() {
+  console.log(`Server is running trying to keep it active!`);
+}
+
+setInterval(async () => {
+  logMessage();
+
+  try {
+    await axios.get(`https://ytdb-backend.onrender.com`);
+    console.log("Self-triggered request sent.");
+  } catch (error) {
+    console.error("Error sending self-triggered request:", error);
+  }
+}, 14 * 60 * 1000);
 
 app.use(async (req, res, next) => {
   try {
@@ -75,13 +92,20 @@ models.mongoose
 
 async function initial() {
   try {
-    const searchResult = await userService.searchYoutube("test");
-    console.log("searchResult:", searchResult);
+    // const res = await userService.getRecommendations(
+    //   "65447a5b465cb174552f5d4f"
+    // );
+    // console.log("Final*********", res);
+    // const res = await channelService.getSimilarChannelsDetails(
+    //   "UCymK_3BWUcoYVVf5D_GmACQ"
+    // );
+    // console.log(res);
   } catch (err) {
     logger.error("Error searching YouTube", err);
   }
 }
 
 require("./app/routes/user.routes")(app);
+require("./app/routes/channel.routes")(app);
 
 module.exports = app;
