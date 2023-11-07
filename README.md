@@ -52,8 +52,7 @@ While we're thrilled with the progress we've made so far, we consider this proje
 - **Frontend:** React, Tailwind CSS
 - **Backend:** MongoDB, Express.js, Node.js
 - **Authentication:** Auth0
-- **Recommendation Engine:** Custom Algorithm
-- **Recommendations Algorithm:** Graph-Based, DFS
+- **Recommendation Engine:** Graph-Based Custom Algorithm
 - **Other Features:** Dark Mode, Trending Channels, User Reviews, Wishlist, Favorites
 
 ## Contributions 🤝
