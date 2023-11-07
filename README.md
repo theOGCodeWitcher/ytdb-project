@@ -14,7 +14,6 @@ Are you tired of sifting through countless YouTube channels to find the content 
 ![Trending Channels](https://imageupload.io/ib/IxGyXUKAbhmEC45_1699393464.png)
 
 
-
 ### Rate and Review Channels 🌟
 
 Similar to IMDb, our web app allows users to **rate and review YouTube channels**, empowering the community to identify and showcase the best content creators out there.
@@ -29,6 +28,10 @@ We've designed a sophisticated rating algorithm that takes multiple factors into
 
 Explore trending channels across various categories, so you can always stay updated with what's hot on YouTube, all in one place.
 
+### Personalized Recommendations Algorithm 🌐
+
+We've taken content discovery to the next level with our graph-based solution for personalized recommendations. Discover how data structures and algorithms play a vital role in enhancing your user experience.The more you use the system, the smarter it becomes at providing recommendations. You can even maintain a favorite channels list or add channels to your wish list to explore them later.
+
 ### Intuitive User Interface 🖥️
 
 Our user-friendly interface, complete with a dark mode feature, allows you to explore new channels comfortably, day or night.
@@ -38,10 +41,6 @@ Our user-friendly interface, complete with a dark mode feature, allows you to ex
 ### Secure Authentication 🔐
 
 User data security is a top priority for us. We've implemented Auth0 for seamless and secure user authentication, with faster login and registration processes and zero security breaches.
-
-### Personalized Recommendations Algorithm 🌐
-
-We've taken content discovery to the next level with our graph-based solution for personalized recommendations. Discover how data structures and algorithms play a vital role in enhancing your user experience.The more you use the system, the smarter it becomes at providing recommendations. You can even maintain a favorite channels list or add channels to your wish list to explore them later.
 
 ## Work in Progress 🛠️
 
