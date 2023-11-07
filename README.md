@@ -12,10 +12,12 @@ Welcome to our **YouTube Channel Insights and Recommendations Web App** project!
 Are you tired of sifting through countless YouTube channels to find the content that truly interests you? Our project aims to provide a **responsive web app** that simplifies the discovery of exciting YouTube channels by offering a range of features and innovations.
 
 ![Trending Channels](https://imageupload.io/ib/IxGyXUKAbhmEC45_1699393464.png)
-![Trending Channels](https://imageupload.io/ib/dilb2uYEdNaYgOx_1699393464.png)
-![Trending Channels](https://imageupload.io/ib/vMplcJG5NueiVrA_1699393463.png)
+
+
 
 ### Rate and Review Channels 🌟
+
+![Rate and Review Channels](https://imageupload.io/ib/vMplcJG5NueiVrA_1699393463.png)
 
 Similar to IMDb, our web app allows users to **rate and review YouTube channels**, empowering the community to identify and showcase the best content creators out there.
 
@@ -27,11 +29,9 @@ We've designed a sophisticated rating algorithm that takes multiple factors into
 
 Explore trending channels across various categories, so you can always stay updated with what's hot on YouTube, all in one place.
 
-### Personalized Channel Recommendations 🎯
-
-Discover new channels tailored to your preferences. The more you use the system, the smarter it becomes at providing recommendations. You can even maintain a favorite channels list or add channels to your wish list to explore them later.
-
 ### Intuitive User Interface 🖥️
+
+![Trending Channels](https://imageupload.io/ib/dilb2uYEdNaYgOx_1699393464.png)
 
 Our user-friendly interface, complete with a dark mode feature, allows you to explore new channels comfortably, day or night.
 
@@ -41,7 +41,7 @@ User data security is a top priority for us. We've implemented Auth0 for seamles
 
 ### Personalized Recommendations Algorithm 🌐
 
-We've taken content discovery to the next level with our graph-based solution for personalized recommendations. Discover how data structures and algorithms play a vital role in enhancing your user experience.
+We've taken content discovery to the next level with our graph-based solution for personalized recommendations. Discover how data structures and algorithms play a vital role in enhancing your user experience.The more you use the system, the smarter it becomes at providing recommendations. You can even maintain a favorite channels list or add channels to your wish list to explore them later.
 
 ## Work in Progress 🛠️
 
