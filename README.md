@@ -32,6 +32,8 @@ Explore trending channels across various categories, so you can always stay upda
 
 We've taken content discovery to the next level with our graph-based solution for personalized recommendations. Discover how data structures and algorithms play a vital role in enhancing your user experience.The more you use the system, the smarter it becomes at providing recommendations. You can even maintain a favorite channels list or add channels to your wish list to explore them later.
 
+![Recommendations](https://imageupload.io/ib/GhLouSCkMjIoTZV_1699394622.png)
+
 ### Intuitive User Interface 🖥️
 
 Our user-friendly interface, complete with a dark mode feature, allows you to explore new channels comfortably, day or night.
