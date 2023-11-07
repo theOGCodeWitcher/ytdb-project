@@ -17,9 +17,9 @@ Are you tired of sifting through countless YouTube channels to find the content 
 
 ### Rate and Review Channels 🌟
 
-![Rate and Review Channels](https://imageupload.io/ib/vMplcJG5NueiVrA_1699393463.png)
-
 Similar to IMDb, our web app allows users to **rate and review YouTube channels**, empowering the community to identify and showcase the best content creators out there.
+
+![Rate and Review Channels](https://imageupload.io/ib/vMplcJG5NueiVrA_1699393463.png)
 
 ### Sophisticated Rating Algorithm 📊
 
@@ -31,9 +31,9 @@ Explore trending channels across various categories, so you can always stay upda
 
 ### Intuitive User Interface 🖥️
 
-![Trending Channels](https://imageupload.io/ib/dilb2uYEdNaYgOx_1699393464.png)
-
 Our user-friendly interface, complete with a dark mode feature, allows you to explore new channels comfortably, day or night.
+
+![Trending Channels](https://imageupload.io/ib/dilb2uYEdNaYgOx_1699393464.png)
 
 ### Secure Authentication 🔐
 
