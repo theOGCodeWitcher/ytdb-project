@@ -13,6 +13,9 @@ Are you tired of sifting through countless YouTube channels to find the content 
 
 ![Trending Channels](https://imageupload.io/ib/IxGyXUKAbhmEC45_1699393464.png)
 
+### Discover Trending Channels 🔥
+
+Explore trending channels across various categories, so you can always stay updated with what's hot on YouTube, all in one place.
 
 ### Rate and Review Channels 🌟
 
@@ -23,10 +26,6 @@ Similar to IMDb, our web app allows users to **rate and review YouTube channels*
 ### Sophisticated Rating Algorithm 📊
 
 We've designed a sophisticated rating algorithm that takes multiple factors into account to provide a channel rating out of 5. As users rate channels, the system evolves to reflect their preferences.
-
-### Discover Trending Channels 🔥
-
-Explore trending channels across various categories, so you can always stay updated with what's hot on YouTube, all in one place.
 
 ### Personalized Recommendations Algorithm 🌐
 
