@@ -1,5 +1,4 @@
 module.exports = {
-  generalEndpoint: "/api/general",
+  channelEndpoint: "/api/channel",
   userEndpoint: "/api/user",
-  adminEndpoint: "/api/admin",
 };
