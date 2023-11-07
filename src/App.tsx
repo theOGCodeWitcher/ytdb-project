@@ -1,32 +1,34 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./App.css";
 
-function App() {
-  const [count, setCount] = useState(0);
+import { Route, Routes } from "react-router-dom";
+import Channel from "./pages/Channel";
+import Homepage from "./pages/Homepage";
+import { Navbar } from "./components/Navbar";
+import Footer from "./components/Footer";
+import Profile from "./components/Profile";
+import { Toaster } from "react-hot-toast";
+import Wishlist from "./components/Wishlist";
+import Explore from "./components/Explore";
+import Favorites from "./components/Favorites";
 
+function App() {
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="flex flex-col min-h-screen">
+      <Navbar />
+      <div className="flex-grow">
+        <Toaster position="top-right" reverseOrder={false} />
+        <Routes>
+          <Route path="/" element={<Homepage />} />
+          <Route path="/homePage" element={<Homepage />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/wishlist" element={<Wishlist />} />
+          <Route path="/favorites" element={<Favorites />} />
+          <Route path="/explore" element={<Explore />} />
+          <Route path="/channel/:channelId" element={<Channel />} />
+        </Routes>
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">Shri Ganesh, to start our project</p>
-    </>
+      <Footer />
+    </div>
   );
 }
 
