@@ -49,11 +49,18 @@ While we're thrilled with the progress we've made so far, we consider this proje
 
 ## Technologies Used
 
-- **Frontend:** React, Tailwind CSS
-- **Backend:** MongoDB, Express.js, Node.js
-- **Authentication:** Auth0
-- **Recommendation Engine:** Graph-Based Custom Algorithm
-- **Other Features:** Dark Mode, Trending Channels, User Reviews, Wishlist, Favorites
+Our YouTube Channel Insights and Recommendations Web App is built using a modern technology stack to provide a seamless and feature-rich experience. Here's an overview of the key technologies and how they contribute to the project:
+
+- **Frontend:** We've developed the user interface using React, a popular JavaScript library for building user interfaces. Tailwind CSS is used for styling, providing a clean and responsive design that ensures an intuitive user experience.
+
+- **Backend:** The backend of our web app is powered by a combination of MongoDB, Express.js, and Node.js. MongoDB serves as our database, Express.js as the server framework, and Node.js as the runtime environment. This robust stack ensures efficient data storage, retrieval, and server-side processing.
+
+- **Authentication:** We've integrated Auth0 for user authentication. It offers a secure and streamlined authentication process, reducing the risk of security breaches and providing a seamless login and registration experience for our users.
+
+- **Recommendation Engine:** Our recommendation engine is a custom solution that utilizes a graph-based approach. It enhances content discovery by creating connections between channels, allowing for efficient and personalized recommendations.
+
+- **Other Features:** In addition to the core functionality, our web app offers several features, including dark mode for user comfort during night-time browsing, trending channels to stay updated with popular content, user reviews and ratings for channel feedback, and the ability to create wishlists and maintain a list of favorite channels.
+
 
 ## Contributions 🤝
 
