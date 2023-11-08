@@ -101,7 +101,8 @@ export const Navbar = () => {
             </div>
             <div className="form-control pt-2 relative">
               <input
-                type="text"
+                type="search"
+                autoComplete=""
                 placeholder="Search Channel  🔍 "
                 className="input input-bordered  w-[15rem] h-12 text-xs focus:outline-none bg-slate-100 dark:bg-gray-800 md:w-[35rem]  md:text-sm "
                 value={searchQuery}
@@ -115,7 +116,7 @@ export const Navbar = () => {
               {isDropdownOpen && (
                 <ul
                   ref={dropdownRef}
-                  className="search-dropdown  z-[99] bg-white  dark:bg-gray-800  rounded-md shadow-lg mt-10 absolute left-0 w-[12rem] md:w-[35rem] h-fit   "
+                  className="search-dropdown  z-[99] bg-white  dark:bg-gray-800  rounded-md shadow-lg mt-12 absolute left-0 w-[12rem] md:w-[35rem] h-fit   "
                 >
                   {searchResults.length === 0 ? (
                     <div>
