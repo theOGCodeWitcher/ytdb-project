@@ -241,8 +241,6 @@ export default function Channel() {
     fetchReviewsByChannelIdAndUserId();
   }, [channelId, userId]);
 
-  console.log(channelData);
-
   return (
     <>
       {isLoading ? (

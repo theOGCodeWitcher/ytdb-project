@@ -45,10 +45,16 @@ export default function Explore() {
       ) : (
         <div className="mb-4  ">
           <div className="flex mx-2 px-2 py-2 my-2 md:mx-8 md:px-8items-center">
-            <SectionHeading>Recommendation Crafted Just For You</SectionHeading>
-            <div className="md:pt-3">
-              <MdOutlineTravelExplore size={26} />
-            </div>
+            <SectionHeading>
+              {exploreData?.length !== 0
+                ? `Recommendation Crafted Just For You`
+                : `Please browse the website more or add some channels to your favourite's list to help us curate personalised recommendations`}
+            </SectionHeading>
+            {exploreData?.length !== 0 && (
+              <div className="md:pt-3">
+                <MdOutlineTravelExplore size={26} />
+              </div>
+            )}
           </div>
           {exploreData && <CardContainer data={exploreData} />}
         </div>

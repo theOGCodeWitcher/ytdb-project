@@ -11,6 +11,7 @@ import ReviewContainer from "./ReviewContainer";
 import HorizontalDivider from "./HorizontalDivider";
 import { AiOutlineClose } from "react-icons/ai";
 import UserContext from "../context/userContext";
+import { CountryDropdown } from "react-country-region-selector";
 
 export function Profile() {
   const [userInfo, setUserInfo] = useState<ProfileProps | null>(null);
@@ -174,17 +175,15 @@ export function Profile() {
                 <label htmlFor="country" className="font-medium">
                   Country
                 </label>
-                <input
-                  type="text"
+                <CountryDropdown
                   id="country"
                   value={formValues.country}
-                  onChange={(e) =>
+                  onChange={(val) =>
                     setFormValues((prev) => ({
                       ...prev,
-                      country: e.target.value,
+                      country: val,
                     }))
                   }
-                  className="border rounded p-2"
                 />
               </div>
               <button

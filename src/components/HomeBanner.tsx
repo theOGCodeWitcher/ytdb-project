@@ -15,7 +15,7 @@ export const HomeBanner = () => {
           ></div>
           <div className=" relative pt-6 px-4 flex gap-2 flex-col">
             <h1 className="text-base md:text-4xl font-bold md:mb-4">
-              "Navigate YouTube Like Never Before"
+              "Explore YouTube Like Never Before"
             </h1>
             <p className="text-sm md:text-xl w-full ">
               Dive into quality recommendations and insightful reviews
