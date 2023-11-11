@@ -51,7 +51,7 @@ While we're thrilled with the progress we've made so far, we consider this proje
 
 Our YouTube Channel Insights and Recommendations Web App is built using a modern technology stack to provide a seamless and feature-rich experience. Here's an overview of the key technologies and how they contribute to the project:
 
-- **Frontend:** We've developed the user interface using React, a popular JavaScript library for building user interfaces. Tailwind CSS is used for styling, providing a clean and responsive design that ensures an intuitive user experience.
+- **Frontend:** We've developed the user interface using React + TypeScript, a popular JavaScript library for building user interfaces. Tailwind CSS is used for styling, providing a clean and responsive design that ensures an intuitive user experience and DaisyUI.
 
 - **Backend:** The backend of our web app is powered by a combination of MongoDB, Express.js, and Node.js. MongoDB serves as our database, Express.js as the server framework, and Node.js as the runtime environment. This robust stack ensures efficient data storage, retrieval, and server-side processing.
 
