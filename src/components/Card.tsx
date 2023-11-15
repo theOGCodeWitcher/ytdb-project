@@ -94,7 +94,7 @@ export default function Card({ data, onRemoveCard }: CardProps) {
 
   return (
     <>
-      <div className="card relative h-[30rem] w-[19rem] md:w-[18rem] md:h-[32rem] dark:bg-gray-800 shadow-2xl overflow-hidden cursor-pointer md:hover:scale-[1.04]   transition">
+      <div className="card relative h-[32rem] w-[19rem] md:w-[18rem] md:h-[32rem] dark:bg-gray-800 shadow-2xl overflow-hidden cursor-pointer md:hover:scale-[1.04]   transition">
         <Link to={`/channel/${data.ChannelId}`}>
           <div className="relative  transition">
             {data.BannerImage ? (
