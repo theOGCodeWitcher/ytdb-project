@@ -35,8 +35,8 @@ export default function Footer() {
       </small>
       <p className="text-xs">
         <span className="font-semibold">About this website:</span> built with
-        React , TypeScript, Tailwind CSS, MongoDb, Express, NodeJs, Auth0,
-        Vercel hosting.
+        React , TypeScript, Tailwind CSS, Redux Toolkit, MongoDb, Express,
+        NodeJs, Auth0, Vercel hosting.
       </p>
     </footer>
   );
