@@ -8,6 +8,8 @@ import SearchResultsSkeleton from "./SearchResultsSkeleton";
 import UserContext from "../context/userContext";
 import { fetchUserWithId } from "../api/UserApi";
 import logo from "../assets/logo.png";
+import { clearUserData, setUserData } from "../redux/userSlice";
+import { useDispatch } from "react-redux";
 
 export const Navbar = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -18,6 +20,8 @@ export const Navbar = () => {
   const { setuserData } = useContext(UserContext);
   const { isAuthenticated, loginWithRedirect, logout, user } = useAuth0();
   const location = useLocation();
+
+  const dispatch = useDispatch();
 
   const dropdownRef = useRef<HTMLUListElement | null>(null);
 
@@ -48,6 +52,7 @@ export const Navbar = () => {
         try {
           const obj = await fetchUserWithId(user);
           setuserData(obj);
+          dispatch(setUserData(obj));
         } catch (error) {
           console.error("Error fetching UserData:", error);
         }
@@ -215,13 +220,14 @@ export const Navbar = () => {
                 {
                   <li key={4}>
                     <a
-                      onClick={() =>
+                      onClick={() => {
                         logout({
                           logoutParams: {
                             returnTo: window.location.origin,
                           },
-                        })
-                      }
+                        });
+                        dispatch(clearUserData());
+                      }}
                     >
                       Logout
                     </a>

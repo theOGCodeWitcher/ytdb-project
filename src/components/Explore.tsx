@@ -27,8 +27,6 @@ export default function Explore() {
     }
   }
 
-  console.log(exploreData);
-
   useEffect(() => {
     fetchWishlist();
   }, [userId]);
